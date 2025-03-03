@@ -7,7 +7,7 @@ echo "Проверка ostree commit"
 if ostree --repo=/sysroot/ostree/repo refs | grep -q .; then
   echo "Репозиторий найден."
 else
-  echo "Не найден репозиторий. Создание коммита, пожалуйста ожидайте."
+  echo "Создание коммита, пожалуйста ожидайте."
 
   ## Инициализация OSTree репозитория
   mkdir -p /sysroot/ostree/repo
