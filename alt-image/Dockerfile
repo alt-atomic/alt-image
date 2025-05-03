@@ -59,6 +59,9 @@ RUN <<END
     systemctl enable brew-update.timer
     systemctl enable update-image-task.timer
 
+    chmod +x /usr/libexec/update-system.sh
+    chmod +x /usr/libexec/flatpak-user-install.sh
+
     fc-cache -fv
 
     chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap

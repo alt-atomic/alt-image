@@ -72,7 +72,6 @@ RUN --mount=type=bind,src=./src/configuration,target=/src <<END
     chmod +x /usr/libexec/check_user_and_group.sh
     chmod +x /usr/libexec/check_var_directory.sh
     chmod +x /usr/libexec/init-ostree.sh
-    chmod +x /usr/libexec/update-system.sh
 
     mkdir -p /etc/systemd/system/local-fs.target.wants/
     ln -s /usr/lib/systemd/system/ostree-remount.service /etc/systemd/system/local-fs.target.wants/ostree-remount.service
