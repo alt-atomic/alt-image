@@ -76,8 +76,7 @@ COPY ./src/source/configuration/lib/ /lib
 
 # make scripts
 
-# https://github.com/Homebrew/brew/issues/19867
-# RUN --mount=type=bind,src=./src/make/01-brew.sh,target=/s /s
+RUN --mount=type=bind,src=./src/make/01-brew.sh,target=/s /s
 COPY --from=atomic-actions-build /rootfs /
 RUN --mount=type=bind,src=./src/make/03-alr.sh,target=/s /s
 RUN --mount=type=bind,src=./src/make/04-apm.sh,target=/s /s

@@ -3,18 +3,7 @@ ARG SISYPHUS_DATE="2025/03/30"
 FROM registry.altlinux.org/sisyphus/base:latest AS base-image
 
 FROM base-image AS base
-ARG SISYPHUS_DATE
-ENV SISYPHUS_DATE=${SISYPHUS_DATE}
-RUN <<END
-    set -euo pipefail
-    rm -rf /etc/apt/sources.list.d
-    cat <<EOF > /etc/apt/sources.list
-rpm http://ftp.altlinux.org/pub/distributions archive/sisyphus/date/$SISYPHUS_DATE/x86_64 classic
-rpm http://ftp.altlinux.org/pub/distributions archive/sisyphus/date/$SISYPHUS_DATE/noarch classic
-EOF
-    apt-get update
-    apt-get dist-upgrade -y
-END
+RUN apt-get update && apt-get dist-upgrade -y
 
 FROM base AS kernel-minimal-build
 RUN apt-get install -y \
@@ -130,27 +119,4 @@ COPY --from=branding-files / /
 
 FROM scratch AS alt-atomic-base
 COPY --from=alt-atomic-base-unsquashed / /
-LABEL ostree.bootable=1
-
-#
-# Test image with reduced size
-# Need to be removed
-# 
-
-FROM alt-atomic-base AS micro-unsquashed
-RUN <<END
-    rm -rf \
-        /usr/share/locale \
-        /usr/share/doc \
-        /usr/share/license \
-        /usr/share/man \
-        /usr/share/mime \
-        /usr/share/info
-
-    rm -rf \
-        /usr/lib/locale
-END
-
-FROM scratch AS alt-atomic-micro
-COPY --from=micro-unsquashed / /
 LABEL ostree.bootable=1
