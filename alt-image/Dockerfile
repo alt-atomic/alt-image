@@ -1,3 +1,5 @@
+ARG BASE_IMAGE=ghcr.io/alt-atomic/alt-image-base:latest
+
 FROM registry.altlinux.org/sisyphus/golang:latest AS atomic-actions-build
 
 RUN apt-get update && apt-get install -y git
@@ -21,7 +23,7 @@ RUN <<END
     find "${ACTIONS_DEST_PATH}" -type f -name "*.sh" -exec chmod +x {} \;
 END
 
-FROM ghcr.io/alt-atomic/alt-image-base:latest AS alt-image-unsquashed
+FROM $BASE_IMAGE AS alt-image-unsquashed
 
 # packages scripts
 

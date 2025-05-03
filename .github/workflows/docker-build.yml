@@ -13,14 +13,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions: write-all
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver: docker
-          install: true
+          driver-opts: network=host
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -29,20 +33,34 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push alt-image-base
+      - name: Build alt-image-base
         uses: docker/build-push-action@v6
         with:
           context: alt-image-base
-          push: ${{ github.event_name != 'pull_request' }}
-          load: true
-          tags: ghcr.io/${{ github.repository_owner }}/alt-image-base:latest
+          push: true
+          tags: |
+            localhost:5000/${{ github.repository_owner }}/alt-image-base:latest
           platforms: linux/amd64
 
-      - name: Build and push alt-image
+      - name: Build alt-image
         uses: docker/build-push-action@v6
         with:
           context: alt-image
-          push: ${{ github.event_name != 'pull_request' }}
-          load: ${{ github.event_name == 'pull_request' }}
-          tags: ghcr.io/${{ github.repository_owner }}/alt-image:latest
+          push: true
+          tags: localhost:5000/${{ github.repository_owner }}/alt-image:latest
           platforms: linux/amd64
+          build-args: |
+            BASE_IMAGE=localhost:5000/${{ github.repository_owner }}/alt-image-base:latest
+
+      - name: Push images
+        run: |
+          docker pull localhost:5000/${{ github.repository_owner }}/alt-image-base:latest
+          docker pull localhost:5000/${{ github.repository_owner }}/alt-image:latest
+
+          docker tag localhost:5000/${{ github.repository_owner }}/alt-image-base:latest  ghcr.io/${{ github.repository_owner }}/alt-image-base:latest
+          docker tag localhost:5000/${{ github.repository_owner }}/alt-image:latest       ghcr.io/${{ github.repository_owner }}/alt-image:latest
+
+          docker push ghcr.io/${{ github.repository_owner }}/alt-image-base:latest
+          docker push ghcr.io/${{ github.repository_owner }}/alt-image:latest
+
+
