@@ -19,7 +19,7 @@ wget -O "$RPM_FILE" "$RPM_URL"
 
 # Устанавливаем rpm-пакет с помощью apt-get
 echo "Устанавливаем $RPM_FILE с помощью apt-get..."
-sudo apt-get install -y ./"$RPM_FILE"
+apt-get install -y ./"$RPM_FILE"
 
 # Возвращаемся в исходную директорию и очищаем временные файлы
 cd - > /dev/null
