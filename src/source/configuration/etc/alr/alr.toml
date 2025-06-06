@@ -5,7 +5,7 @@ autoPull = false
 
 [[repo]]
 name = 'aides'
-url = 'https://code.aides.space/aides-localbuild/main.git'
+url = 'https://altlinux.space/aides-community/aides.git'
 
 [unsafe]
 allowRunAsRoot = true
