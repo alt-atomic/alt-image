@@ -37,25 +37,6 @@ CONTAINER_PACKAGES=(
     skopeo
 )
 
-# --- Пакеты для разработки: Go, Rust, C/C++, системные dev-библиотеки и т.п. ---
-DEV_PACKAGES=(
-    rust-cargo
-    golang
-    rust
-    build-essential
-    pkg-config
-    openssl
-    openssl-devel
-    glib2
-    glib2-devel
-    glibc-utils
-    systemd-devel
-    libgio
-    libgio-devel
-    git
-    libostree-devel
-)
-
 # --- Утилиты для загрузки / EFI / Boot ---
 BOOT_PACKAGES=(
     efivar
@@ -120,7 +101,7 @@ GRAPHICS_PACKAGES=(
 ALL_PACKAGES=(
     "${BASE_UTILS[@]}"
     "${CONTAINER_PACKAGES[@]}"
-    "${DEV_PACKAGES[@]}"
+    # "${DEV_PACKAGES[@]}"
     "${BOOT_PACKAGES[@]}"
     "${KERNEL_PACKAGES[@]}"
     "${VIRT_PACKAGES[@]}"
