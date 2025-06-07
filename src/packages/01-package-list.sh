@@ -101,7 +101,6 @@ GRAPHICS_PACKAGES=(
 ALL_PACKAGES=(
     "${BASE_UTILS[@]}"
     "${CONTAINER_PACKAGES[@]}"
-    # "${DEV_PACKAGES[@]}"
     "${BOOT_PACKAGES[@]}"
     "${KERNEL_PACKAGES[@]}"
     "${VIRT_PACKAGES[@]}"
