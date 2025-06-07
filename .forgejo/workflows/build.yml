@@ -32,7 +32,7 @@ jobs:
           podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
-        if: github.event_name != 'pull_request'
+        if: false
         run: |
           podman build --tag $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME --platform linux/amd64 .
 
