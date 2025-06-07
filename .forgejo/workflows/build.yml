@@ -40,7 +40,7 @@ jobs:
         run: |
           podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME
 
-      - name: Trigger rebuild
+      - name: Trigger Onyx rebuild
         uses: actions/forgejo-script@v1
         with:
           github-token: ${{ secrets.REBUILD }}
