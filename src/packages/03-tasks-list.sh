@@ -2,17 +2,26 @@
 
 echo "::group:: ===$(basename "$0")==="
 
+apt-get update
+
 TASKS=(
-  # atomic-actions
-  386243
-  # apm
-  386155
-  # alr
-  386131
+    386243
+    386155
+    386131
 )
 
-for task in "${TASKS[@]}"; do
-  apt-repo test "$task"
+for task in "${TASKS[@]}"; do 
+    apt-repo add task "$task"
 done
+
+TASKS_PACKAGES=(
+    atomic-actions
+    apm
+    alr
+)
+
+if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
+    apt-get install -y "${TASKS_PACKAGES[@]}"
+fi
 
 echo "::endgroup::"
