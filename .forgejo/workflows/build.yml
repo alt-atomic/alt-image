@@ -37,7 +37,7 @@ jobs:
           podman build --tag $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME --platform linux/amd64 .
 
       - name: Push default image
-        if: github.event_name != 'pull_request'
+        if: false
         run: |
           podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME
 
