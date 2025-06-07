@@ -51,6 +51,6 @@ jobs:
               "onyx", 
               "build.yml", 
               {
-                ref: context.github.ref_name,
+                ref: process.env.GITHUB_REF_NAME,
               },
             );
