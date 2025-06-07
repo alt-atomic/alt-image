@@ -2,8 +2,6 @@
 
 echo "::group:: ===$(basename "$0")==="
 
-apt-get update
-
 TASKS=(
     386243
     386155
@@ -13,6 +11,8 @@ TASKS=(
 for task in "${TASKS[@]}"; do 
     apt-repo add task "$task"
 done
+
+apt-get update
 
 TASKS_PACKAGES=(
     atomic-actions
