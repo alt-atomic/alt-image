@@ -11,6 +11,8 @@ TASKS=(
   386131
 )
 
-apt-repo test -y "${TASKS[@]}"
+for task in "${TASKS[@]}"; do
+  apt-repo test -y "$task"
+done
 
 echo "::endgroup::"
