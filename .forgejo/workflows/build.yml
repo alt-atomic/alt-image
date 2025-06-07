@@ -32,16 +32,16 @@ jobs:
           podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
-        if: false
         run: |
           podman build --tag $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME --platform linux/amd64 .
 
       - name: Push default image
-        if: false
+        if: github.event_name != 'pull_request'
         run: |
           podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME
 
       - name: Trigger Onyx rebuild
+        if: github.event_name != 'pull_request'
         uses: actions/forgejo-script@v1
         with:
           github-token: ${{ secrets.REBUILD }}
