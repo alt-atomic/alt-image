@@ -21,6 +21,8 @@ BASE_UTILS=(
     coreutils
     iputils
     rsync
+    atomic-actions
+    apm
 )
 
 # --- Пакеты для контейнеров (Docker / Podman / Flatpak и т.д.) ---
