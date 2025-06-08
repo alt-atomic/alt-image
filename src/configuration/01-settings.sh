@@ -58,6 +58,7 @@ systemctl enable sync-users.service
 systemctl enable sync-directory.service
 systemctl enable update-image-task.timer
 systemctl enable tmp.mount
+systemctl enable apm
 
 # Расширение лимитов на число открытых файлов для всех юзеров. (при обновлении системы открывается большое число файлов/слоев)
 grep -qE "^\* hard nofile 978160$" /etc/security/limits.conf || echo "* hard nofile 978160" >> /etc/security/limits.conf
