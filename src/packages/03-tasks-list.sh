@@ -3,8 +3,6 @@
 echo "::group:: ===$(basename "$0")==="
 
 TASKS=(
-    386243
-    386155
     386131
 )
 
@@ -15,8 +13,6 @@ done
 apt-get update
 
 TASKS_PACKAGES=(
-    atomic-actions
-    apm
     alr
 )
 
