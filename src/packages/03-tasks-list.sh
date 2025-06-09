@@ -3,7 +3,10 @@
 echo "::group:: ===$(basename "$0")==="
 
 TASKS=(
+    # alr
     386131
+    # systemd (sysusers patch)
+    385591
 )
 
 for task in "${TASKS[@]}"; do 
@@ -14,6 +17,7 @@ apt-get update
 
 TASKS_PACKAGES=(
     alr
+    systemd
 )
 
 if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
