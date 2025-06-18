@@ -5,8 +5,6 @@ echo "::group:: ===$(basename "$0")==="
 TASKS=(
     # alr
     386131
-    # systemd (sysusers patch)
-    385591
 )
 
 for task in "${TASKS[@]}"; do 
