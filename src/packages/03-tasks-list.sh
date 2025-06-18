@@ -3,6 +3,7 @@
 echo "::group:: ===$(basename "$0")==="
 
 TASKS=(
+    # alr
     386131
 )
 
@@ -13,7 +14,7 @@ done
 apt-get update
 
 TASKS_PACKAGES=(
-    alr
+    # alr
 )
 
 if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
