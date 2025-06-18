@@ -16,8 +16,7 @@ done
 apt-get update
 
 TASKS_PACKAGES=(
-    alr
-    systemd
+    # alr
 )
 
 if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
