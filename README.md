@@ -14,4 +14,4 @@
 С полным списком пакетов можно ознакомиться в файле **/src/packages/01-package-list.sh**
 
 Известные проекты построенный на его основе:
-- https://github.com/alt-gnome/alt-atomic
+- https://altlinux.space/alt-atomic/onyx
