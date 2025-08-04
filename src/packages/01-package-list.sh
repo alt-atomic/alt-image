@@ -4,53 +4,53 @@ echo "::group:: ===$(basename "$0")==="
 
 # --- Базовые утилиты и консольные инструменты ---
 BASE_UTILS=(
-    tzdata
+    apm
+    atomic-actions
+    bubblewrap
+    coreutils
+    curl
     eza
+    iputils
     man
     mc
     nano
     passwd
-    bubblewrap
-    which
+    rsync
+    stplr
     su
     sudo
-    curl
-    wget
+    tzdata
     unzip
     util-linux
-    coreutils
-    iputils
-    rsync
-    atomic-actions
-    apm
-    stplr
+    wget
+    which
 )
 
 # --- Пакеты для контейнеров (Docker / Podman / Flatpak и т.д.) ---
 CONTAINER_PACKAGES=(
     bootc
     bootupd
-    distrobox
-    flatpak
-    docker-engine
-    podman
-    containers-common
-    fuse-overlayfs
     composefs
+    containers-common
+    distrobox
+    docker-engine
+    flatpak
+    fuse-overlayfs
+    podman
     skopeo
 )
 
 # --- Утилиты для загрузки / EFI / Boot ---
 BOOT_PACKAGES=(
-    efivar
-    shim-unsigned
-    shim-signed
-    efitools
-    efibootmgr
-    grub
-    grub-efi
-    grub-btrfs
     dracut
+    efibootmgr
+    efitools
+    efivar
+    grub
+    grub-btrfs
+    grub-efi
+    shim-signed
+    shim-unsigned
 )
 
 # --- Ядро и связанные модули ---
@@ -61,43 +61,43 @@ KERNEL_PACKAGES=(
 
 # --- Виртуализация и гостевые агенты (QEMU, Spice, LXD/Libvirt и т.д.) ---
 VIRT_PACKAGES=(
+    libvirt
+    lxd
     open-vm-tools
     qemu-guest-agent
     spice-vdagent
     virtiofsd
-    libvirt
-    lxd
 )
 
 # --- Системные библиотеки, инструменты и утилиты ---
 SYSTEM_TOOLS=(
+    attr
+    bluez
+    btrfs-progs
+    chrony
+    dosfstools
+    e2fsprogs
     firmware-linux
     fprintd
     jq
-    yq
-    mount
-    policycoreutils
-    libselinux
-    losetup
-    dosfstools
-    e2fsprogs
-    NetworkManager
-    sfdisk
-    bluez
-    btrfs-progs
     kbd
     kbd-data
+    libselinux
+    losetup
+    mount
+    NetworkManager
     ostree
-    systemd
-    chrony
     plymouth
-    attr
+    policycoreutils
+    sfdisk
+    systemd
+    yq
 )
 
 # --- Графические пакеты и драйверы ---
 GRAPHICS_PACKAGES=(
-    mesa-dri-drivers
     glxinfo
+    mesa-dri-drivers
 )
 
 # Теперь объединим всё в один список:
