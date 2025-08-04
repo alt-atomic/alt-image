@@ -23,6 +23,7 @@ BASE_UTILS=(
     rsync
     atomic-actions
     apm
+    stplr
 )
 
 # --- Пакеты для контейнеров (Docker / Podman / Flatpak и т.д.) ---
