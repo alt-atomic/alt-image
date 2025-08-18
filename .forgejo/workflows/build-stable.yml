@@ -8,11 +8,6 @@ on:
   push:
     branches:
       - "stable"
-      - "nightly"
-  pull_request:
-    branches:
-      - "stable"
-      - "nightly"
 
 env:
   REGISTRY: altlinux.space
@@ -28,17 +23,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to registry
+        if: github.event_name != 'pull_request'
         run: |
           podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
         run: |
-          podman build --tag $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME --platform linux/amd64 .
+          podman build --tag $REGISTRY/$GITHUB_REPOSITORY:stable --platform linux/amd64 .
 
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME
+          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:stable
 
       - name: Trigger Onyx rebuild
         if: github.event_name != 'pull_request'
@@ -51,6 +47,6 @@ jobs:
               "onyx", 
               "build.yml", 
               {
-                ref: process.env.GITHUB_REF_NAME,
+                ref: stable,
               },
             );
