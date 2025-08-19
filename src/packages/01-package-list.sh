@@ -42,6 +42,7 @@ CONTAINER_PACKAGES=(
 
 # --- Утилиты для загрузки / EFI / Boot ---
 BOOT_PACKAGES=(
+    cryptsetup
     dracut
     efibootmgr
     efitools
@@ -88,6 +89,7 @@ SYSTEM_TOOLS=(
     NetworkManager
     ostree
     plymouth
+    plymouth-theme-bgrt
     policycoreutils
     sfdisk
     systemd
