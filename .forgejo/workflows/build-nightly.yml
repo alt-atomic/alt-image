@@ -20,8 +20,6 @@ jobs:
   build:
     name: Build image
     runs-on: alt-sisyphus
-    permissions:
-      packages: write
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
@@ -42,6 +40,13 @@ jobs:
         run: |
           podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:nightly
 
+  onyx-rebuild:
+    needs: build
+    name: Trigger Onyx rebuild
+    runs-on: alt-sisyphus
+    container:
+      image: altlinux.space/actions/runner/containers:sisyphus
+    steps:
       - name: Trigger Onyx rebuild
         if: github.event_name != 'pull_request'
         uses: actions/forgejo-script@v1
@@ -50,8 +55,8 @@ jobs:
           script: |
             await forgejo.repos.dispatchWorkflow(
               "alt-atomic",
-              "onyx", 
-              "build.yml", 
+              "onyx",
+              "build-nightly.yml", 
               {
                 ref: "nightly",
               },
