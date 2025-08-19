@@ -22,6 +22,19 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Check PR source
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ "${{ github.event.pull_request.head.ref }}" != "nightly" ]; then
+            echo "PR not from nightly branch"
+            exit 1
+          fi
+
+          if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            echo "PR not from this repository"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
