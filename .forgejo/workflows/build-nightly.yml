@@ -53,6 +53,6 @@ jobs:
               "onyx", 
               "build.yml", 
               {
-                ref: nightly,
+                ref: "nightly",
               },
             );

@@ -63,6 +63,6 @@ jobs:
               "onyx", 
               "build.yml", 
               {
-                ref: stable,
+                ref: "stable",
               },
             );
