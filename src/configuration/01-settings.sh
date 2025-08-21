@@ -75,6 +75,9 @@ fc-cache -fv
 chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
 chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
 
+# Set default hostname
+hostname alt-atomic
+
 # Репозиторий flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
