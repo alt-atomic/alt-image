@@ -7,15 +7,14 @@ on:
     - cron: '0 0 1 * *'
   push:
     branches:
-      - "stable"
       - "nightly"
   pull_request:
     branches:
-      - "stable"
       - "nightly"
 
 env:
   REGISTRY: altlinux.space
+  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
 
 jobs:
   build:
@@ -28,18 +27,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to registry
+        if: github.event_name != 'pull_request'
         run: |
-          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
+          podman login --username="<token>" --password=$REGISTRY_TOKEN $REGISTRY
 
       - name: Build sisyphus default image
         run: |
-          podman build --tag $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME --platform linux/amd64 .
+          podman build --tag $REGISTRY/$GITHUB_REPOSITORY:nightly --platform linux/amd64 .
 
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:$GITHUB_REF_NAME
+          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:nightly
 
+  onyx-rebuild:
+    needs: build
+    name: Trigger Onyx rebuild
+    runs-on: alt-sisyphus
+    container:
+      image: altlinux.space/actions/runner/containers:sisyphus
+    steps:
       - name: Trigger Onyx rebuild
         if: github.event_name != 'pull_request'
         uses: actions/forgejo-script@v1
@@ -48,9 +55,9 @@ jobs:
           script: |
             await forgejo.repos.dispatchWorkflow(
               "alt-atomic",
-              "onyx", 
-              "build.yml", 
+              "onyx",
+              "build-nightly.yml", 
               {
-                ref: process.env.GITHUB_REF_NAME,
+                ref: "nightly",
               },
             );
