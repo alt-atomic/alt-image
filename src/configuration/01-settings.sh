@@ -59,6 +59,9 @@ systemctl enable sync-directory.service
 systemctl enable update-image-task.timer
 systemctl enable tmp.mount
 
+echo 'alt-atomic' > /etc/hostname
+echo "127.0.0.1  localhost.localdomain localhost alt-atomic/n::1  localhost6.localdomain localhost6 alt-atomic6" > /etc/hosts
+
 # Расширение лимитов на число открытых файлов для всех юзеров. (при обновлении системы открывается большое число файлов/слоев)
 grep -qE "^\* hard nofile 978160$" /etc/security/limits.conf || echo "* hard nofile 978160" >> /etc/security/limits.conf
 grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nofile 978160" >> /etc/security/limits.conf
