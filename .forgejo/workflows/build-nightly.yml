@@ -1,20 +1,16 @@
-name: Build Base images
+name: Build nightly images
 
 on:
   workflow_dispatch:
   schedule:
-    # Every month
-    - cron: '0 0 1 * *'
+    # Every day at 6 a.m.
+    - cron: '0 6 * * *'
   push:
-    branches:
-      - "nightly"
   pull_request:
-    branches:
-      - "nightly"
 
 env:
+  LOCAL_BUILD_NAME: localhost/build
   REGISTRY: altlinux.space
-  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
 
 jobs:
   build:
@@ -29,26 +25,33 @@ jobs:
       - name: Login to registry
         if: github.event_name != 'pull_request'
         run: |
-          podman login --username="<token>" --password=$REGISTRY_TOKEN $REGISTRY
+          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
         run: |
-          podman build --tag $REGISTRY/$GITHUB_REPOSITORY:nightly --platform linux/amd64 .
+          podman build --tag $LOCAL_BUILD_NAME --platform linux/amd64 .
 
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:nightly
+          DATE_TAG=$(date +"%Y%m%d")
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY-nightly:%DATE_TAG
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY-nightly:latest
+
+          # For renaming to base-nightly:latest from base:latest
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY:nightly
+          # For renaming to core:nightly from base:nightly
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
 
   onyx-rebuild:
     needs: build
+    if: github.event_name != 'pull_request'
     name: Trigger Onyx rebuild
     runs-on: alt-sisyphus
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
       - name: Trigger Onyx rebuild
-        if: github.event_name != 'pull_request'
         uses: actions/forgejo-script@v1
         with:
           github-token: ${{ secrets.REBUILD }}
@@ -56,8 +59,5 @@ jobs:
             await forgejo.repos.dispatchWorkflow(
               "alt-atomic",
               "onyx",
-              "build-nightly.yml", 
-              {
-                ref: "nightly",
-              },
+              "build-nightly.yml",
             );
