@@ -35,7 +35,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           DATE_TAG=$(date +"%Y%m%d")
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY-nightly:%DATE_TAG
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY-nightly:$DATE_TAG
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY-nightly:latest
 
           # For renaming to base-nightly:latest from base:latest
