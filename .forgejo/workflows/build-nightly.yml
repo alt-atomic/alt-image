@@ -14,7 +14,6 @@ on:
 
 env:
   REGISTRY: altlinux.space
-  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
 
 jobs:
   build:
@@ -29,16 +28,21 @@ jobs:
       - name: Login to registry
         if: github.event_name != 'pull_request'
         run: |
-          podman login --username="<token>" --password=$REGISTRY_TOKEN $REGISTRY
+          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
         run: |
           podman build --tag $REGISTRY/$GITHUB_REPOSITORY:nightly --platform linux/amd64 .
 
-      - name: Push default image
+      - name: Push image
         if: github.event_name != 'pull_request'
         run: |
+          DATE_TAG=$(date +"%Y%m%d")
+          podman tag $REGISTRY/$GITHUB_REPOSITORY:nightly $REGISTRY/$GITHUB_REPOSITORY:nightly-$DATE_TAG
+          podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:nightly-$DATE_TAG
+
           podman push --compression-format zstd --compress $REGISTRY/$GITHUB_REPOSITORY:nightly
+
 
   onyx-rebuild:
     needs: build
