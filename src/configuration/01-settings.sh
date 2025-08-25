@@ -56,7 +56,6 @@ systemctl enable docker.socket
 systemctl enable podman.socket
 systemctl enable sync-users.service
 systemctl enable sync-directory.service
-systemctl enable update-image-task.timer
 systemctl enable tmp.mount
 
 echo 'alt-atomic' > /etc/hostname

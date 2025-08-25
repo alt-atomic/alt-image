@@ -1,6 +1,0 @@
-[Unit]
-Description=System update
-
-[Service]
-Type=oneshot
-ExecStart=/usr/libexec/update-system.sh

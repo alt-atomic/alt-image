@@ -5,7 +5,6 @@ echo "::group:: ===$(basename "$0")==="
 # --- Базовые утилиты и консольные инструменты ---
 BASE_UTILS=(
     apm
-    atomic-actions
     bubblewrap
     coreutils
     curl
