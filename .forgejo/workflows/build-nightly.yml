@@ -2,6 +2,12 @@ name: Build nightly images
 
 on:
   workflow_dispatch:
+    inputs:
+      latest:
+        description: 'Set latest tag'
+        required: true
+        type: boolean
+        default: true
   schedule:
     # Every day at 6 a.m.
     - cron: '0 6 * * *'
@@ -41,11 +47,14 @@ jobs:
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          # For base:nightly, legacy compatobility
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
-
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
+
+          if [ "${{ github.event.inputs.latest }}" = "true" ]; then
+            # For base:nightly, legacy compatobility
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
+
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
+          fi
 
   onyx-rebuild:
     needs: build
