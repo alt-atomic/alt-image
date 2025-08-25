@@ -36,7 +36,7 @@ jobs:
         run: |
           DATE_TAG=$(date +"%Y%m%d")
 
-          # For renaming to core:nightly from base:nightly
+          # For base:nightly, legacy compatobility
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
 
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:$DATE_TAG
