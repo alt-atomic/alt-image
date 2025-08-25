@@ -23,4 +23,10 @@ WORKDIR /
 # Помечаем образ как bootc совместимый
 LABEL containers.bootc=1
 
+LABEL org.opencontainers.image.title="ALT Atomic Core"
+LABEL org.opencontainers.image.description="Core image for ALT Atomic distros"
+LABEL org.opencontainers.image.source="https://altlinux.space/alt-atomic/core"
+LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
+LABEL org.opencontainers.image.vendor="ALT Linux Team"
+
 CMD ["/sbin/init"]
