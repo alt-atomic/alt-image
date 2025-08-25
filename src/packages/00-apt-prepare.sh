@@ -3,13 +3,13 @@
 echo "::group:: ===$(basename "$0")==="
 
 mkdir -p /usr/share/rpm
-rsync -aA /var/lib/rpm/ /usr/share/rpm/
+cp -a /var/lib/rpm/* /usr/share/rpm/
 rm -rf /var/lib/rpm && ln -s ../../usr/share/rpm /var/lib/rpm
 
 rm -rf /etc/apt/sources.list.d
 
 mkdir -p /usr/share/apt
-rsync -aA /etc/apt/ /usr/share/apt/
+cp -a /etc/apt/* /usr/share/apt/
 rm -rf /etc/apt && ln -s ../../usr/share/apt /etc/apt
 
 arch=$(uname -m)
