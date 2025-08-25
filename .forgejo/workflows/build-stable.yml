@@ -8,6 +8,11 @@ on:
         required: true
         type: string
         default: latest
+      latest:
+        description: 'Set latest tag'
+        required: true
+        type: boolean
+        default: true
 
 env:
   LOCAL_BUILD_NAME: localhost/build
@@ -49,11 +54,14 @@ jobs:
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          # For onyx:stable, legacy compatobility
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/onyx:stable
-
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.date.outputs.date }}
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
+
+          if [[ -z "$DATE" || "${{ github.event.inputs.latest }}" = "true" ]]; then
+            # For onyx:stable, legacy compatobility
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/onyx:stable
+
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
+          fi
 
   onyx-rebuild:
     needs: build
