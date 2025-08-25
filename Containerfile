@@ -1,5 +1,13 @@
 FROM registry.altlinux.org/sisyphus/base:latest AS altbase
 
+ARG YEAR=""
+ARG MONTH=""
+ARG DAY=""
+
+ENV REPO_YEAR=$YEAR
+ENV REPO_MONTH=$MONTH
+ENV REPO_DAY=$DAY
+
 # Выполняем все шаги в одном RUN для минимизации слоёв
 RUN --mount=type=bind,source=./src,target=/src \
     /src/main.sh
