@@ -66,5 +66,6 @@ jobs:
               "build-nightly.yml", 
               {
                 ref: "main",
+                date: "${{ steps.date.outputs.date }}",
               },
             );
