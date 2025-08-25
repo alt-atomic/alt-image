@@ -49,7 +49,7 @@ jobs:
         run: |
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
 
-          if [ "${{ github.event.inputs.latest }}" = "true" ]; then
+          if [[ -z "$DATE" || "${{ github.event.inputs.latest }}" = "true" ]]; then
             # For base:nightly, legacy compatobility
             podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
 
