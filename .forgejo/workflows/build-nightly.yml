@@ -58,5 +58,8 @@ jobs:
             await forgejo.repos.dispatchWorkflow(
               "alt-atomic",
               "onyx",
-              "build-nightly.yml",
+              "build-nightly.yml", 
+              {
+                ref: "main",
+              },
             );
