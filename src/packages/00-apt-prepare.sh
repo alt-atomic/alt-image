@@ -41,6 +41,7 @@ esac
 
 # folder for bootc package
 mkdir /sysroot
+apt-get clean
 apt-get update
 apt-get -y dist-upgrade
 apt-get -y install apt-repo
