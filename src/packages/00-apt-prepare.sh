@@ -3,6 +3,8 @@
 echo "::group:: ===$(basename "$0")==="
 
 apt-get update
+# ca-certificates for apt-get update
+# rsync for better copying
 apt-get -y install ca-certificates rsync
 
 mkdir -p /usr/share/rpm
