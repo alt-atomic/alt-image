@@ -72,6 +72,6 @@ jobs:
               "onyx",
               "build-stable.yml", 
               {
-                ref: "stable",
+                ref: "main",
               },
             );
