@@ -19,6 +19,10 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Get date
+        id: date
+        run: echo "::set-output name=date::$(date +%Y%m%d)"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -29,17 +33,18 @@ jobs:
 
       - name: Build sisyphus default image
         run: |
-          podman build --tag $LOCAL_BUILD_NAME --platform linux/amd64 .
+          YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
+          MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
+          DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
+          podman build --tag $LOCAL_BUILD_NAME --platform linux/amd64 --build-arg YEAR=$YEAR --build-arg MONTH=$MONTH --build-arg DAY=$DAY .
 
       - name: Push default image
         if: github.event_name != 'pull_request'
         run: |
-          DATE_TAG=$(date +"%Y%m%d")
-
           # For base:nightly, legacy compatobility
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
 
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:$DATE_TAG
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
 
   onyx-rebuild:
