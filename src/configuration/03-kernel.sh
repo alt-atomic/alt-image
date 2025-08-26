@@ -3,18 +3,8 @@ set -euo pipefail
 
 echo "::group:: ===$(basename "$0")==="
 
-
-# Находим версию ядра
 KERNEL_DIR="/usr/lib/modules"
-BOOT_DIR="/boot"
-
-echo "Detecting kernel version..."
-KERNEL_VERSION=$(ls "$KERNEL_DIR" | head -n 1)
-
-if [[ -z "$KERNEL_VERSION" ]]; then
-    echo "Error: No kernel version found in $KERNEL_DIR."
-    exit 1
-fi
+KERNEL_VERSION=$(uname -r)
 
 # DRIVERS=$(find "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers" \( \
 #         -path "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers/hid/*" \
@@ -34,10 +24,22 @@ fi
 # add_drivers+=" $DRIVERS "
 # EOF
 
-echo "kernel_image=$KERNEL_DIR/$KERNEL_VERSION/vmlinuz" >> /usr/lib/dracut/dracut.conf.d/95_bootc-base.conf
-
+# TODO: Package file
+UPDATE_INITRAMFS_FILE=/usr/libexec/update-initramfs
+cat << EOF > $UPDATE_INITRAMFS_FILE
+#!/usr/bin/bash
+# File helper for rebuilding initramfs
 dracut --force \
        "$KERNEL_DIR/$KERNEL_VERSION/initramfs.img" \
        "$KERNEL_VERSION"
+
+# Copy vmlinuz for bootc
+echo "Copying vmlinuz and initramfs..."
+cp -f "/boot/vmlinuz-$KERNEL_VERSION" "$KERNEL_DIR/$KERNEL_VERSION/vmlinuz"
+EOF
+
+chmod u+x $UPDATE_INITRAMFS_FILE
+
+$UPDATE_INITRAMFS_FILE
 
 echo "::endgroup::"
