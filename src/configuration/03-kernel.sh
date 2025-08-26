@@ -35,9 +35,9 @@ fi
 # EOF
 
 dracut --force \
+       --kver "$KERNEL_VERSION" \
        --verbose \
-    #    --kernel-image "${KERNEL_DIR}/${KERNEL_VERSION}/vmlinuz"
-       "${KERNEL_DIR}/${KERNEL_VERSION}/initramfs.img" \
-       "$KERNEL_VERSION"
+       --kernel-image "${KERNEL_DIR}/${KERNEL_VERSION}/vmlinuz"
+       "${KERNEL_DIR}/${KERNEL_VERSION}/initramfs.img"
 
 echo "::endgroup::"
