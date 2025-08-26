@@ -78,6 +78,8 @@ Theme=bgrt
 ShowDelay=5
 EOF
 
+plymouth-set-default-theme bgrt
+
 # Обновление шрифтов
 fc-cache -fv
 
