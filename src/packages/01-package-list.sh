@@ -88,7 +88,7 @@ SYSTEM_TOOLS=(
     NetworkManager
     ostree
     plymouth
-    plymouth-theme-bgrt
+    plymouth-theme-spinner
     policycoreutils
     sfdisk
     systemd

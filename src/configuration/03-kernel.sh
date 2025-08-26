@@ -29,14 +29,6 @@ MODULES=$(find "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers" \( \
         -o -path "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers/video/fbdev/*" \
     \) -type f -name '*.ko*' | sed 's:.*/::')
 
-# Устанавливаем тему Plymouth перед сборкой initramfs
-if [ -f /usr/share/plymouth/themes/bgrt/bgrt.plymouth ]; then
-    plymouth-set-default-theme bgrt
-    echo "Set bgrt theme for Plymouth"
-else
-    echo "Warning: No suitable Plymouth theme found, using default"
-fi
-
 dracut --force \
        --no-hostonly \
        --kver "$KERNEL_VERSION" \
