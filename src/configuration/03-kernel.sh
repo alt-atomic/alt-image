@@ -4,7 +4,14 @@ set -euo pipefail
 echo "::group:: ===$(basename "$0")==="
 
 KERNEL_DIR="/usr/lib/modules"
-KERNEL_VERSION=$(uname -r)
+
+echo "Detecting kernel version..."
+KERNEL_VERSION=$(ls "$KERNEL_DIR" | head -n 1)
+
+if [[ -z "$KERNEL_VERSION" ]]; then
+    echo "Error: No kernel version found in $KERNEL_DIR."
+    exit 1
+fi
 
 # DRIVERS=$(find "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers" \( \
 #         -path "${KERNEL_DIR}/${KERNEL_VERSION}/kernel/drivers/hid/*" \
@@ -28,18 +35,18 @@ KERNEL_VERSION=$(uname -r)
 UPDATE_INITRAMFS_FILE=/usr/libexec/update-initramfs
 cat << EOF > $UPDATE_INITRAMFS_FILE
 #!/usr/bin/bash
-# File helper for rebuilding initramfs
-dracut --force \
-       "$KERNEL_DIR/$KERNEL_VERSION/initramfs.img" \
-       "$KERNEL_VERSION"
 
-# Copy vmlinuz for bootc
-echo "Copying vmlinuz and initramfs..."
-cp -f "/boot/vmlinuz-$KERNEL_VERSION" "$KERNEL_DIR/$KERNEL_VERSION/vmlinuz"
+set -ex
+
+# File helper for rebuilding initramfs
+dracut --force "$KERNEL_DIR/$KERNEL_VERSION/initramfs.img" $KERNEL_VERSION
 EOF
 
 chmod u+x $UPDATE_INITRAMFS_FILE
 
 $UPDATE_INITRAMFS_FILE
+
+# Copy vmlinuz for bootc
+cp -f "/boot/vmlinuz-$KERNEL_VERSION" "$KERNEL_DIR/$KERNEL_VERSION/vmlinuz"
 
 echo "::endgroup::"
