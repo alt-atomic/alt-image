@@ -3,6 +3,10 @@ set -e
 
 echo "::group:: ===$(basename "$0")==="
 
+if [ "$IMAGE_TYPE" = "nightly" ]; then
+    echo "kargs = [\"plymouth.debug\"]" > /usr/lib/bootc/kargs.d/00_plymouth-debug.toml
+fi
+
 #mkdir -p /var/root /var/home /var/mnt /var/opt /var/srv /etc/atomic
 mkdir -p /var/root /var/home /var/mnt /var/srv /etc/atomic
 rm -rf /mnt && ln -s var/mnt /mnt
