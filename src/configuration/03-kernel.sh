@@ -34,10 +34,10 @@ fi
 # add_drivers+=" $DRIVERS "
 # EOF
 
+echo "kernel_image=$KERNEL_DIR/$KERNEL_VERSION/vmlinuz" >> /usr/lib/dracut/dracut.conf.d/95_bootc-base.conf
+
 dracut --force \
-       --verbose \
-       --kernel-image "${KERNEL_DIR}/${KERNEL_VERSION}/vmlinuz" \
-       "${KERNEL_DIR}/${KERNEL_VERSION}/initramfs.img" \
+       "$KERNEL_DIR/$KERNEL_VERSION/initramfs.img" \
        "$KERNEL_VERSION"
 
 echo "::endgroup::"
