@@ -78,7 +78,14 @@ rsync -av --progress /src/source/configuration/usr/ /usr/
 # ShowDelay=0
 # EOF
 
-plymouth-set-default-theme bgrt
+# TODO: Move to branding package
+# Update plymouth theme
+cat << EOF > /etc/plymouth/plymouthd.conf
+[Daemon]
+Theme=bgrt
+ShowDelay=0
+DeviceTimeout=10
+EOF
 
 # Обновление шрифтов
 fc-cache -fv
