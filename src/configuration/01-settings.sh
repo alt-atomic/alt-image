@@ -70,14 +70,6 @@ rsync -av --progress /src/source/configuration/etc/ /etc/
 rsync -av --progress /src/source/configuration/lib/ /lib/
 rsync -av --progress /src/source/configuration/usr/ /usr/
 
-# cat << EOF > /usr/share/plymouth/plymouthd.defaults
-# # Distribution defaults. Changes to this file will get overwritten during
-# # upgrades.
-# [Daemon]
-# Theme=bgrt
-# ShowDelay=0
-# EOF
-
 # TODO: Move to branding package
 # Update plymouth theme
 cat << EOF > /etc/plymouth/plymouthd.conf
