@@ -21,6 +21,7 @@ BASE_UTILS=(
     tzdata
     unzip
     util-linux
+    vim-minimal
     wget
     which
 )
