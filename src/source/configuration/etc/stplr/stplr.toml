@@ -1,4 +1,4 @@
-rootCmd = 'sudo'
+rootCmd = 'doas'
 pagerStyle = 'native'
 ignorePkgUpdates = []
 autoPull = false

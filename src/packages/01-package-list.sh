@@ -8,6 +8,7 @@ BASE_UTILS=(
     bubblewrap
     coreutils
     curl
+    doas
     eza
     iputils
     man
@@ -15,9 +16,9 @@ BASE_UTILS=(
     nano
     passwd
     rsync
+    starship
     stplr
     su
-    sudo
     tzdata
     unzip
     util-linux
