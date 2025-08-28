@@ -27,6 +27,7 @@ BASE_UTILS=(
     vim-minimal
     wget
     which
+    zram-generator
 )
 
 # --- Пакеты для контейнеров (Docker / Podman / Flatpak и т.д.) ---
