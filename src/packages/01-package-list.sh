@@ -5,11 +5,13 @@ echo "::group:: ===$(basename "$0")==="
 # --- Базовые утилиты и консольные инструменты ---
 BASE_UTILS=(
     apm
+    bash-completion
     bubblewrap
     coreutils
     curl
     doas
     eza
+    fastfetch
     iputils
     man
     mc
