@@ -91,6 +91,6 @@ fi
 # vim:ts=4:sw=4
 export STARSHIP_CONFIG=/etc/starship/starship.toml
 # Starship
-if type "starship" > /dev/null; then
+if type "starship" &> /dev/null; then
   eval "$(starship init bash)"
 fi
