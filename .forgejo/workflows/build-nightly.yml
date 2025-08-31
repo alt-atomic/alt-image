@@ -64,6 +64,10 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Get date
+        id: date
+        run: echo "::set-output name=date::$(date +%Y%m%d)"
+
       - name: Trigger Onyx rebuild
         uses: actions/forgejo-script@v1
         with:

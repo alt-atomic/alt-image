@@ -71,6 +71,16 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Get date
+        id: date
+        run: |
+          DATE=${{ github.event.inputs.date }}
+          if [[ "$DATE" == "latest" ]]; then
+            echo "::set-output name=date::$(date +%Y%m%d)"
+          else
+            echo "::set-output name=date::$DATE"
+          fi
+
       - name: Trigger Onyx rebuild
         uses: actions/forgejo-script@v1
         with:
