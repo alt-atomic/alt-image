@@ -32,7 +32,7 @@ echo "SELINUX=disabled" > /etc/selinux/config
 # Настройка vconsole
 touch /etc/vconsole.conf
 echo "KEYMAP=ruwin-Corwin_alt_sh-UTF-8" > /etc/vconsole.conf
-echo "FONT=UniCyr_8x16" > /etc/vconsole.conf
+echo "FONT=UniCyr_8x16" >> /etc/vconsole.conf
 
 # Включаем сервис ostree-remount
 mkdir -p /etc/systemd/system/local-fs.target.wants/
@@ -75,7 +75,7 @@ ShowDelay=0
 DeviceTimeout=10
 EOF
 
-# Меняем доступ к файлам
+# For podman
 chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
 chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
 
