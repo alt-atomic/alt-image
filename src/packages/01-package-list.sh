@@ -56,6 +56,7 @@ BOOT_PACKAGES=(
     grub
     grub-btrfs
     grub-efi
+    alt-uefi-certs
     shim-signed
     shim-unsigned
 )
