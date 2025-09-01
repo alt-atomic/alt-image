@@ -88,9 +88,6 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 # Заберем полный zoneinfo так как пакет tzdata его не предоставляет
 curl -o /usr/share/zoneinfo/zone.tab https://raw.githubusercontent.com/eggert/tz/main/zone.tab
 
-# Локаль
-echo 'LANG=ru_RU.UTF-8' | tee /etc/locale.conf /etc/sysconfig/i18n
-
 if [ "$IMAGE_TYPE" = "nightly" ]; then
     echo "kargs = [\"plymouth.debug\"]" > /usr/lib/bootc/kargs.d/00_plymouth-debug.toml
 fi
