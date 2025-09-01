@@ -63,7 +63,6 @@ grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nof
 
 # Синхронизируем файлы
 rsync -av --progress /src/source/configuration/etc/ /etc/
-rsync -av --progress /src/source/configuration/lib/ /lib/
 rsync -av --progress /src/source/configuration/usr/ /usr/
 
 # TODO: Move to branding package
