@@ -75,9 +75,6 @@ ShowDelay=0
 DeviceTimeout=10
 EOF
 
-# Обновление шрифтов
-fc-cache -fv
-
 # Меняем доступ к файлам
 chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
 chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
