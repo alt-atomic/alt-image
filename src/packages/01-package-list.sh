@@ -39,6 +39,7 @@ CONTAINER_PACKAGES=(
     distrobox
     docker-engine
     flatpak
+    flatpak-repo-flathub
     fuse-overlayfs
     podman
     skopeo
