@@ -18,6 +18,7 @@ BASE_UTILS=(
     nano
     passwd
     rsync
+    shadow-change
     starship
     stplr
     su
