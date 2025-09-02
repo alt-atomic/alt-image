@@ -92,8 +92,6 @@ SYSTEM_TOOLS=(
     mount
     NetworkManager
     ostree
-    plymouth
-    plymouth-theme-bgrt
     policycoreutils
     sfdisk
     systemd

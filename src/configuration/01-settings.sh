@@ -65,21 +65,8 @@ grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nof
 rsync -av --progress /src/source/configuration/etc/ /etc/
 rsync -av --progress /src/source/configuration/usr/ /usr/
 
-# TODO: Move to branding package
-# Update plymouth theme
-cat << EOF > /etc/plymouth/plymouthd.conf
-[Daemon]
-Theme=bgrt
-ShowDelay=0
-DeviceTimeout=10
-EOF
-
 # For podman
 chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
 chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
-
-if [ "$IMAGE_TYPE" = "nightly" ]; then
-    echo "kargs = [\"plymouth.debug\"]" > /usr/lib/bootc/kargs.d/00_plymouth-debug.toml
-fi
 
 echo "::endgroup::"
