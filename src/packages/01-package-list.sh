@@ -37,7 +37,6 @@ CONTAINER_PACKAGES=(
     bootupd
     composefs
     containers-common
-    distrobox
     docker-engine
     flatpak
     flatpak-repo-flathub
