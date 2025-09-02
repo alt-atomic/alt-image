@@ -11,7 +11,6 @@ BASE_UTILS=(
     curl
     doas
     eza
-    fastfetch
     iputils
     man
     mc
@@ -19,7 +18,6 @@ BASE_UTILS=(
     passwd
     rsync
     shadow-change
-    starship
     stplr
     su
     tzdata
