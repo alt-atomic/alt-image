@@ -69,4 +69,6 @@ rsync -av --progress /src/source/configuration/usr/ /usr/
 chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
 chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
 
+echo 'LANG=en_US.UTF-8' | tee /etc/locale.conf /etc/sysconfig/i18n
+
 echo "::endgroup::"
