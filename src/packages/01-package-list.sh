@@ -17,7 +17,6 @@ BASE_UTILS=(
     passwd
     rsync
     shadow-change
-    stplr
     su
     tzdata
     unzip
