@@ -6,7 +6,6 @@ echo "::group:: ===$(basename "$0")==="
 BASE_UTILS=(
     apm
     bash-completion
-    bubblewrap
     coreutils
     curl
     doas
