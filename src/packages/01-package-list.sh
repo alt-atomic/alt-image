@@ -38,8 +38,6 @@ CONTAINER_PACKAGES=(
     composefs
     containers-common
     docker-engine
-    flatpak
-    flatpak-repo-flathub
     fuse-overlayfs
     podman
     skopeo
