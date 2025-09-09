@@ -63,35 +63,35 @@ jobs:
             podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
           fi
 
-  onyx-rebuild:
-    needs: build
-    if: github.event_name != 'pull_request'
-    name: Trigger Onyx rebuild
-    runs-on: alt-sisyphus
-    container:
-      image: altlinux.space/actions/runner/containers:sisyphus
-    steps:
-      - name: Get date
-        id: date
-        run: |
-          DATE=${{ github.event.inputs.date }}
-          if [[ "$DATE" == "latest" ]]; then
-            echo "::set-output name=date::$(date +%Y%m%d)"
-          else
-            echo "::set-output name=date::$DATE"
-          fi
+  # onyx-rebuild:
+  #   needs: build
+  #   if: github.event_name != 'pull_request'
+  #   name: Trigger Onyx rebuild
+  #   runs-on: alt-sisyphus
+  #   container:
+  #     image: altlinux.space/actions/runner/containers:sisyphus
+  #   steps:
+  #     - name: Get date
+  #       id: date
+  #       run: |
+  #         DATE=${{ github.event.inputs.date }}
+  #         if [[ "$DATE" == "latest" ]]; then
+  #           echo "::set-output name=date::$(date +%Y%m%d)"
+  #         else
+  #           echo "::set-output name=date::$DATE"
+  #         fi
 
-      - name: Trigger Onyx rebuild
-        uses: actions/forgejo-script@v1
-        with:
-          github-token: ${{ secrets.REBUILD }}
-          script: |
-            await forgejo.repos.dispatchWorkflow(
-              "alt-atomic",
-              "onyx",
-              "build-stable.yml", 
-              {
-                ref: "main",
-                date: "${{ steps.date.outputs.date }}",
-              },
-            );
+  #     - name: Trigger Onyx rebuild
+  #       uses: actions/forgejo-script@v1
+  #       with:
+  #         github-token: ${{ secrets.REBUILD }}
+  #         script: |
+  #           await forgejo.repos.dispatchWorkflow(
+  #             "alt-atomic",
+  #             "onyx",
+  #             "build-stable.yml", 
+  #             {
+  #               ref: "main",
+  #               date: "${{ steps.date.outputs.date }}",
+  #             },
+  #           );

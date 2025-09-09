@@ -56,29 +56,29 @@ jobs:
             podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
           fi
 
-  onyx-rebuild:
-    needs: build
-    if: github.event_name != 'pull_request'
-    name: Trigger Onyx rebuild
-    runs-on: alt-sisyphus
-    container:
-      image: altlinux.space/actions/runner/containers:sisyphus
-    steps:
-      - name: Get date
-        id: date
-        run: echo "::set-output name=date::$(date +%Y%m%d)"
+  # onyx-rebuild:
+  #   needs: build
+  #   if: github.event_name != 'pull_request'
+  #   name: Trigger Onyx rebuild
+  #   runs-on: alt-sisyphus
+  #   container:
+  #     image: altlinux.space/actions/runner/containers:sisyphus
+  #   steps:
+  #     - name: Get date
+  #       id: date
+  #       run: echo "::set-output name=date::$(date +%Y%m%d)"
 
-      - name: Trigger Onyx rebuild
-        uses: actions/forgejo-script@v1
-        with:
-          github-token: ${{ secrets.REBUILD }}
-          script: |
-            await forgejo.repos.dispatchWorkflow(
-              "alt-atomic",
-              "onyx",
-              "build-nightly.yml", 
-              {
-                ref: "main",
-                date: "${{ steps.date.outputs.date }}",
-              },
-            );
+  #     - name: Trigger Onyx rebuild
+  #       uses: actions/forgejo-script@v1
+  #       with:
+  #         github-token: ${{ secrets.REBUILD }}
+  #         script: |
+  #           await forgejo.repos.dispatchWorkflow(
+  #             "alt-atomic",
+  #             "onyx",
+  #             "build-nightly.yml", 
+  #             {
+  #               ref: "main",
+  #               date: "${{ steps.date.outputs.date }}",
+  #             },
+  #           );
