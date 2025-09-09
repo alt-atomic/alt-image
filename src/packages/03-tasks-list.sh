@@ -15,6 +15,7 @@ apt-get update
 TASKS_PACKAGES=(
     libostree
     ostree
+    bootc
 )
 
 if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
