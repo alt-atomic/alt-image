@@ -1,4 +1,4 @@
 # Update kernel
-INITRD_GENERATOR=/usr/bin/dracut
+INITRD_GENERATOR=mkinitrd
 MKINITRD=/bin/true
 INITRD_AUTOUPDATE=none
