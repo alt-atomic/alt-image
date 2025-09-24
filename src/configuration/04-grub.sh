@@ -219,7 +219,7 @@ generate_bootupd_metadata "BIOS" "$BIOS_VERSION"
 cat << EOF > /usr/sbin/update-grub
 #!/bin/sh -e
 
-bootupctl update
+/usr/bin/bootupctl update
 EOF
 chmod +x /usr/sbin/update-grub
 
