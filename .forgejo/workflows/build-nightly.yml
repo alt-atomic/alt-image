@@ -2,12 +2,6 @@ name: Build nightly images
 
 on:
   workflow_dispatch:
-    inputs:
-      latest:
-        description: 'Set latest tag'
-        required: true
-        type: boolean
-        default: true
   schedule:
     # Every day at 6 a.m.
     - cron: '0 6 * * *'
@@ -15,7 +9,6 @@ on:
   pull_request:
 
 env:
-  LOCAL_BUILD_NAME: localhost/build
   REGISTRY: altlinux.space
 
 jobs:
@@ -39,46 +32,43 @@ jobs:
 
       - name: Build sisyphus default image
         run: |
-          YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
-          MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
-          DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
-          podman build --tag $LOCAL_BUILD_NAME --platform linux/amd64 --build-arg YEAR=$YEAR --build-arg MONTH=$MONTH --build-arg DAY=$DAY .
+          for container_file in $(find ./container-files -type f); do
+            container_name=$(basename $container_file)
+            LOCAL_BUILD_NAME="localhost/$container_name"
+            
+            # Получаем дату
+            YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
+            MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
+            DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
+            
+            # Выполняем сборку
+            podman build \
+              --tag $LOCAL_BUILD_NAME \
+              --platform linux/amd64 \
+              --build-arg YEAR=$YEAR \
+              --build-arg MONTH=$MONTH \
+              --build-arg DAY=$DAY \
+              --file $container_file \
+              .
+          done
 
       - name: Push default image
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push' && github.ref_name == 'main'
         run: |
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
+          for container_file in $(find ./container-files -type f); do
+            container_name=$(basename $container_file)
+            LOCAL_BUILD_NAME="localhost/$container_name"
 
-          if [[ -z "$DATE" || "${{ github.event.inputs.latest }}" = "true" ]]; then
-            # For base:nightly, legacy compatobility
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/alt-atomic/base:nightly
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly:${{ steps.date.outputs.date }}
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly:latest
+          done
 
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
-          fi
+      - name: Push not main branches images
+        if: github.event_name == 'push' && github.ref_name != 'main'
+        run: |
+          for container_file in $(find ./container-files -type f); do
+            container_name=$(basename $container_file)
+            LOCAL_BUILD_NAME="localhost/$container_name"
 
-  # onyx-rebuild:
-  #   needs: build
-  #   if: github.event_name != 'pull_request'
-  #   name: Trigger Onyx rebuild
-  #   runs-on: alt-sisyphus
-  #   container:
-  #     image: altlinux.space/actions/runner/containers:sisyphus
-  #   steps:
-  #     - name: Get date
-  #       id: date
-  #       run: echo "::set-output name=date::$(date +%Y%m%d)"
-
-  #     - name: Trigger Onyx rebuild
-  #       uses: actions/forgejo-script@v1
-  #       with:
-  #         github-token: ${{ secrets.REBUILD }}
-  #         script: |
-  #           await forgejo.repos.dispatchWorkflow(
-  #             "alt-atomic",
-  #             "onyx",
-  #             "build-nightly.yml", 
-  #             {
-  #               ref: "main",
-  #               date: "${{ steps.date.outputs.date }}",
-  #             },
-  #           );
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly-testing:${{ github.ref_name }}
+          done
