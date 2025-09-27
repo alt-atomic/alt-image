@@ -35,12 +35,12 @@ jobs:
           for container_file in $(find ./container-files -type f); do
             container_name=$(basename $container_file)
             LOCAL_BUILD_NAME="localhost/$container_name"
-            
+
             # Получаем дату
             YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
             MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
             DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
-            
+
             # Выполняем сборку
             podman build \
               --tag $LOCAL_BUILD_NAME \
