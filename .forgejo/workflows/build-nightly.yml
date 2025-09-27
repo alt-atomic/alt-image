@@ -52,15 +52,15 @@ jobs:
               .
           done
 
-      - name: Push default image
+      - name: Push main branch images
         if: github.event_name == 'push' && github.ref_name == 'main'
         run: |
           for container_file in $(find ./container-files -type f); do
             container_name=$(basename $container_file)
             LOCAL_BUILD_NAME="localhost/$container_name"
 
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly:${{ steps.date.outputs.date }}
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly:latest
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly:${{ steps.date.outputs.date }}
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly:latest
           done
 
       - name: Push not main branches images
@@ -70,5 +70,5 @@ jobs:
             container_name=$(basename $container_file)
             LOCAL_BUILD_NAME="localhost/$container_name"
 
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$container_name/nightly-testing:${{ github.ref_name }}
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly-testing:$GITHUB_REF_NAME
           done
