@@ -1,6 +1,6 @@
 ARG IMAGE_TYPE="nightly"
 
-FROM $IMAGE AS altbase
+FROM registry.altlinux.org/sisyphus/base:latest AS altbase
 
 ARG YEAR=""
 ARG MONTH=""
