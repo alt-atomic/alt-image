@@ -92,7 +92,7 @@ jobs:
 
       - name: Checkout latest tag
         run: |
-          git fetch --all --tags
+          git fetch --all --tags --force
           git checkout ${{ steps.latest_tag.outputs.tag }}
 
       - name: Get changes between tags
