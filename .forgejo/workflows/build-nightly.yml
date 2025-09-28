@@ -52,7 +52,10 @@ jobs:
             .
 
       - name: Push main branch images
-        if: github.event_name == 'push' && github.ref_name == 'main'
+        if: >
+          (github.event_name == 'push' && github.ref_name == 'main') ||
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch'
         run: |
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
