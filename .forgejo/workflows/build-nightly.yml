@@ -11,7 +11,6 @@ on:
   pull_request:
 
 env:
-  CONTAINER_FILE: ./container-files/main
   LOCAL_BUILD_NAME: localhost/core
   REGISTRY: altlinux.space
 
@@ -48,7 +47,7 @@ jobs:
             --build-arg MONTH=$MONTH \
             --build-arg DAY=$DAY \
             --build-arg IMAGE_TYPE=nightly \
-            --file $CONTAINER_FILE \
+            --file ./container-files/main \
             .
 
       - name: Push main branch images
