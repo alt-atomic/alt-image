@@ -41,7 +41,6 @@ jobs:
             MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
             DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
 
-            # Выполняем сборку
             podman build \
               --tag $LOCAL_BUILD_NAME \
               --platform linux/amd64 \
