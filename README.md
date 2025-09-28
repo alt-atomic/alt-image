@@ -1,18 +1,31 @@
 # ALT Atomic Image
 
-Базовый образ **ALT Linux** в виде OCI-изображения, совместимый с **bootc**.
+The base image of **ALT Linux** in the form of an OCI image, compatible with **bootc**.
 
-Данный образ специально сделан минималистичным, чтобы его можно было использовать для сборки атомарных дистрибутивов аналогичных **Fedora Silverblue**, **Vanilla OS** и других.
+This image has been specifically designed to be minimalistic, making it suitable for building atomic distributions similar to Fedora Silverblue, Vanilla OS, and others.
 
-Внутри отсутствует графическое окружение (DE) и некоторые дополнительные утилиты, но присутствует ядро и полезные инструменты для контейнеров, такие как:
+The image does not include a graphical environment (DE) or some additional utilities, but it does contain a kernel and useful container tools such as:
 
-- **Flatpak**
-- **Distrobox**
 - **Podman**
 - **Docker**
 
-С полным списком пакетов можно ознакомиться в файле [./src/packages/01-package-list.sh](./src/packages/01-package-list.sh)
+You can view the complete list of packages in the file [./src/packages/01-package-list.sh](./src/packages/01-package-list.sh)
 
-Известные проекты на основе данного образа:
+Known projects based on this image:
 
 - https://altlinux.space/alt-atomic/onyx
+
+### Images
+
+`core/nightly:<date>`
+`core/nightly:latest`
+
+Built upon every change in the repository, using the main branch, and on a daily basis. Changes in external branches are uploaded under the name core/nightly-branch:<branch-name> for testing purposes.
+
+`core/stable:<date>`
+`core/stable:<git-tag>`
+`core/stable:latest`
+
+Built upon tag push. Also built daily using the latest tag and fresh date.
+
+The OCI storage retains up to 50 versions of each image. Versions, except for latest, live for up to 30 days.
