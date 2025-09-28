@@ -1,0 +1,63 @@
+name: Build nightly images
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every day at 4 a.m.
+    - cron: '0 5 * * *'
+  push:
+    branches:
+      - '*'
+  pull_request:
+
+env:
+  CONTAINER_FILE: ./container-files/main
+  LOCAL_BUILD_NAME: localhost/core
+  REGISTRY: altlinux.space
+
+jobs:
+  build:
+    name: Build image
+    runs-on: alt-sisyphus
+    container:
+      image: altlinux.space/actions/runner/containers:sisyphus
+    steps:
+      - name: Get date
+        id: date
+        run: |
+          echo "::set-output name=date::$(date +%Y%m%d)"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to registry
+        if: github.event_name != 'pull_request'
+        run: |
+          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
+
+      - name: Build sisyphus default image
+        run: |
+          YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
+          MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
+          DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
+
+          podman build \
+            --tag $LOCAL_BUILD_NAME \
+            --platform linux/amd64 \
+            --build-arg YEAR=$YEAR \
+            --build-arg MONTH=$MONTH \
+            --build-arg DAY=$DAY \
+            --build-arg IMAGE_TYPE=nightly \
+            --file $CONTAINER_FILE \
+            .
+
+      - name: Push main branch images
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        run: |
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
+
+      - name: Push not main branches images
+        if: github.event_name == 'push' && github.ref_name != 'main'
+        run: |
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly-branch:$GITHUB_REF_NAME
