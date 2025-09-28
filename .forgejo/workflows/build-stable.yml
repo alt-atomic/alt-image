@@ -66,8 +66,11 @@ jobs:
       - name: Push main branch images
         run: |
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.date.outputs.date }}
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.latest_tag.outputs.tag }}
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
+
+          if [[ "${{ startsWith(github.ref, 'refs/tags/') }}" == "true" ]]; then
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.latest_tag.outputs.tag }}
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
+          fi
 
   release:
     name: Publish release
