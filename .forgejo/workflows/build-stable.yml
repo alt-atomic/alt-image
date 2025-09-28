@@ -65,6 +65,7 @@ jobs:
 
       - name: Push main branch images
         run: |
+          # Image built with tag of current config but new packages date
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.date.outputs.date }}
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:${{ steps.latest_tag.outputs.tag }}
           podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/stable:latest
