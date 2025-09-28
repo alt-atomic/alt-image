@@ -97,7 +97,7 @@ jobs:
 
       - name: Get changes between tags
         id: changes
-        uses: https://github.com/simbo/changes-between-tags-action
+        uses: https://github.com/simbo/changes-between-tags-action@v1
         with:
           tag-pattern: '^.*$'
           include-hashes: false
