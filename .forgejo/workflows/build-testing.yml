@@ -2,6 +2,12 @@ name: Build nightly images
 
 on:
   workflow_dispatch:
+    inputs:
+      date:
+        description: 'Date tag of Core in format YYYYMMDD. Can be `latest`. If not `latest`, tag latest will not be pushed'
+        required: true
+        type: string
+        default: latest
   schedule:
     # Every day at 4 a.m.
     - cron: '0 4 * * *'
@@ -20,7 +26,13 @@ jobs:
     steps:
       - name: Get date
         id: date
-        run: echo "::set-output name=date::$(date +%Y%m%d)"
+        run: |
+          DATE=${{ github.event.inputs.date }}
+          if [[ -z "$DATE" || "$DATE" == "latest" ]]; then
+            echo "::set-output name=date::$(date +%Y%m%d)"
+          else
+            echo "::set-output name=date::$DATE"
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -58,8 +70,10 @@ jobs:
             container_name=$(basename $container_file)
             LOCAL_BUILD_NAME="localhost/$container_name"
 
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly:${{ steps.date.outputs.date }}
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly:latest
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/testing:${{ steps.date.outputs.date }}
+            if [[ -z "$DATE" || "$DATE" == "latest" ]]; then
+              podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/testing:latest
+            fi
           done
 
       - name: Push not main branches images
@@ -69,5 +83,5 @@ jobs:
             container_name=$(basename $container_file)
             LOCAL_BUILD_NAME="localhost/$container_name"
 
-            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/nightly-testing:$GITHUB_REF_NAME
+            podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY_OWNER/$container_name/testing-branch:$GITHUB_REF_NAME
           done
