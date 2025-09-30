@@ -18,6 +18,7 @@ BASE_UTILS=(
     rsync
     shadow-change
     su
+    time
     tzdata
     unzip
     util-linux
