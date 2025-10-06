@@ -1,13 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
+PACKAGES=("$@")
+
+if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+    echo "Error: No kernel packages specified."
+    exit 1
+fi
+
+echo "Installing kernel packages: ${PACKAGES[*]}"
+
+echo "Removing old kernels..."
+INSTALLED_KERNELS=$(rpm -qa | grep -E '^kernel-(image|modules)-' || true)
+if [[ -n "$INSTALLED_KERNELS" ]]; then
+    echo "Found installed kernel packages:"
+    echo "$INSTALLED_KERNELS"
+    apt-get remove --purge -y $INSTALLED_KERNELS
+else
+    echo "No installed kernel packages found"
+fi
+
+echo "Cleaning kernel modules directory..."
+rm -rf /usr/lib/modules/*
+
+apt-get install -y "${PACKAGES[@]}"
+
 echo "Updating the initramfs and vmlinuz..."
 
 KERNEL_DIR="/usr/lib/modules"
 
 echo "Detecting kernel version..."
-# Find the latest kernel version by sorting
-KERNEL_VERSION=$(ls "/usr/lib/modules" | sort -V | tail -n 1)
+KERNEL_VERSION=$(ls "$KERNEL_DIR" | sort -V | tail -n 1)
 
 if [[ -z "$KERNEL_VERSION" ]]; then
     echo "Error: No kernel version found in $KERNEL_DIR."

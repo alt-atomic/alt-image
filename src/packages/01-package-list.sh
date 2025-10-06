@@ -55,12 +55,6 @@ BOOT_PACKAGES=(
     shim-unsigned
 )
 
-# --- Ядро и связанные модули ---
-KERNEL_PACKAGES=(
-    kernel-image-6.12
-    kernel-modules-drm-6.12
-)
-
 # --- Виртуализация и гостевые агенты (QEMU, Spice, LXD/Libvirt и т.д.) ---
 VIRT_PACKAGES=(
     libvirt
@@ -106,7 +100,6 @@ ALL_PACKAGES=(
     "${BASE_UTILS[@]}"
     "${CONTAINER_PACKAGES[@]}"
     "${BOOT_PACKAGES[@]}"
-    "${KERNEL_PACKAGES[@]}"
     "${VIRT_PACKAGES[@]}"
     "${SYSTEM_TOOLS[@]}"
     "${GRAPHICS_PACKAGES[@]}"
