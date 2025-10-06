@@ -23,6 +23,7 @@ fi
 echo "Cleaning kernel modules directory..."
 rm -rf /usr/lib/modules/*
 
+apt-get update
 apt-get install -y "${PACKAGES[@]}"
 
 /usr/libexec/update-initramfs.sh
