@@ -6,8 +6,8 @@ echo "Updating the initramfs and vmlinuz..."
 KERNEL_DIR="/usr/lib/modules"
 
 echo "Detecting kernel version..."
-# uname is not an option
-KERNEL_VERSION=$(ls "$KERNEL_DIR" | head -n 1)
+# Find the latest kernel version by sorting
+KERNEL_VERSION=$(ls "/usr/lib/modules" | sort -V | tail -n 1)
 
 if [[ -z "$KERNEL_VERSION" ]]; then
     echo "Error: No kernel version found in $KERNEL_DIR."
