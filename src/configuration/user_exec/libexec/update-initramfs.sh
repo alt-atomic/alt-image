@@ -21,7 +21,4 @@ depmod -a -v "${KERNEL_VERSION}"
 echo "Rebuilding initramfs..."
 dracut --force "$KERNEL_DIR/$KERNEL_VERSION/initramfs.img" $KERNEL_VERSION
 
-# Copy vmlinuz for bootc
-cp -f "/boot/vmlinuz-$KERNEL_VERSION" "$KERNEL_DIR/$KERNEL_VERSION/vmlinuz"
-
 echo "::endgroup::"
