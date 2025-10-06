@@ -39,4 +39,4 @@ fi
 # Copy vmlinuz for bootc
 cp -f "/boot/vmlinuz-$KERNEL_VERSION" "$KERNEL_DIR/$KERNEL_VERSION/vmlinuz"
 
-/usr/libexec/update-initramfs.sh
+/usr/libexec/update-initramfs

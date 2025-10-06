@@ -4,7 +4,7 @@ After=systemd-tmpfiles-setup.service local-fs.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/libexec/check_var_directory.sh
+ExecStart=/usr/libexec/check_var_directory
 RemainAfterExit=yes
 
 [Install]
