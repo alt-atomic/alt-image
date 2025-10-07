@@ -11,7 +11,7 @@ fi
 echo "Installing kernel packages: ${PACKAGES[*]}"
 
 echo "Removing old kernels..."
-INSTALLED_KERNELS=$(rpm -qa | grep -E '^kernel-(image|modules)-' || true)
+INSTALLED_KERNELS=$(rpm -qa --queryformat '%{NAME}\n' | grep -E '^kernel-(image|modules)-' | sort -u || true)
 if [[ -n "$INSTALLED_KERNELS" ]]; then
     echo "Found installed kernel packages:"
     echo "$INSTALLED_KERNELS"
