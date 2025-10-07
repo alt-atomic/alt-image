@@ -74,6 +74,7 @@ SYSTEM_TOOLS=(
     dosfstools
     e2fsprogs
     firmware-linux
+    firmware-alsa-sof
     fprintd
     jq
     kbd
