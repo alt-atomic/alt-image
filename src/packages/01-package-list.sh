@@ -67,9 +67,16 @@ VIRT_PACKAGES=(
 
 # --- Системные библиотеки, инструменты и утилиты ---
 SYSTEM_TOOLS=(
+    # FS tools
+    btrfs-progs
+    exfatprogs
+    f2fs-tools
+    squashfs-tools
+    udftools
+    xfsprogs
+
     attr
     bluez
-    btrfs-progs
     chrony
     dosfstools
     e2fsprogs
