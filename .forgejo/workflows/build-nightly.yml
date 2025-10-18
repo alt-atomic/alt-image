@@ -48,6 +48,7 @@ jobs:
             --build-arg DAY=$DAY \
             --build-arg IMAGE_TYPE=nightly \
             --file ./container-files/main \
+            --label "org.altlinux.repo.date=$YEAR-$MONTH-$DAY" \
             .
 
       - name: Push main branch images
