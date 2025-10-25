@@ -3,7 +3,7 @@
 echo "::group:: ===$(basename "$0")==="
 
 TASKS=(
-
+    396962
 )
 
 for task in "${TASKS[@]}"; do 
@@ -13,7 +13,7 @@ done
 apt-get update
 
 TASKS_PACKAGES=(
-
+    bootc
 )
 
 if [ ${#TASKS_PACKAGES[@]} -gt 0 ]; then
