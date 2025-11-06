@@ -18,6 +18,10 @@ modules:
       target: root
       destination: /
       replace: true
+  
+  - type: mkdir
+    body:
+      target: /sysroot
 
   - type: include
     body:

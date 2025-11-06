@@ -6,47 +6,51 @@ modules:
         - /usr/lib/tmpfiles.d/home.conf
         - /etc/fstab
 
-  - name: Make dirs
-    type: mkdir
-    body:
-      targets:
-        - /root
-        - /home
-        - /mnt
-        - /srv
-
   - type: move
     body:
       target: /root
       destination: /var/root
+  - type: link
+    body:
+      target: var/root
+      destination: /root
+
   - type: move
     body:
       target: /home
       destination: /var/home
+  - type: link
+    body:
+      target: var/home
+      destination: /home
+
   - type: move
     body:
       target: /mnt
       destination: /var/mnt
+  - type: link
+    body:
+      target: var/mnt
+      destination: /mnt
+
   - type: move
     body:
       target: /srv
       destination: /var/srv
   - type: link
     body:
-      target: var/root
-      destination: /root
-  - type: link
-    body:
-      target: var/home
-      destination: /home
-  - type: link
-    body:
-      target: var/mnt
-      destination: /mnt
-  - type: link
-    body:
       target: var/srv
       destination: /srv
+
+  - type: move
+    body:
+      target: /media
+      destination: /var/media
+  - type: link
+    body:
+      target: var/media
+      destination: /media
+
   - type: link
     body:
       target: sysroot/ostree
