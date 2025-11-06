@@ -16,11 +16,6 @@ modules:
       create-link: true
   - type: move
     body:
-      target: /var/cache/apt
-      destination: /usr/var/cache/apt
-      create-link: true
-  - type: move
-    body:
       target: /var/lib/apm
       destination: /usr/var/lib/apm
       create-link: true
