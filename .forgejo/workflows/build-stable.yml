@@ -59,6 +59,7 @@ jobs:
             --build-arg MONTH=$MONTH \
             --build-arg DAY=$DAY \
             --build-arg IMAGE_TYPE=stable \
+            --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
             --file ./container-files/main \
             --label "org.altlinux.repo.date=$YEAR-$MONTH-$DAY" \
             .

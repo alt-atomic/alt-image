@@ -1,0 +1,5 @@
+modules:
+  - name: Set root password
+    type: shell
+    body:
+      command: echo "root:root" | chpasswd

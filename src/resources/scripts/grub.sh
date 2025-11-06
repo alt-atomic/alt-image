@@ -3,8 +3,6 @@
 # GRUB and EFI bootloader configuration for Alt Linux
 # This script prepares EFI files for bootupd
 #
-echo "::group:: ===$(basename "$0")==="
-
 BOOTUPD_UPDATES_DIR="/usr/lib/bootupd/updates"
 EFI_SOURCE_DIR="/usr/lib64/efi"
 SHIM_SIGNED_DIR="/usr/lib/shim"
@@ -222,5 +220,3 @@ cat << EOF > /usr/sbin/update-grub
 /usr/bin/bootupctl update
 EOF
 chmod +x /usr/sbin/update-grub
-
-echo "::endgroup::"

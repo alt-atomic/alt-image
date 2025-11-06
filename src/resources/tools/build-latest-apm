@@ -1,0 +1,13 @@
+#!/usr/bin/bash -e
+
+apt-get update
+apt-get dist-upgrade -y
+
+apt-get install -y golang libapt-devel gettext-devel git meson gcc-c++ "pkgconfig(systemd)"
+
+cd $(mktemp -d)
+git clone -b build-command https://altlinux.space/alt-atomic/apm.git
+cd apm
+
+meson setup _build --wipe --prefix /usr
+meson install -C _build

@@ -1,18 +1,23 @@
+ARG IMAGE
+
+FROM $IMAGE AS altbase
+
+ARG IMAGE
 ARG IMAGE_TYPE="nightly"
+ARG YEAR
+ARG MONTH
+ARG DAY
 
-FROM registry.altlinux.org/sisyphus/base:latest AS altbase
+ENV IMAGE_TYPE=$IMAGE_TYPE
+ENV APM_BUILD_IMAGE=$IMAGE
+ENV APM_BUILD_REPO_DATE="${YEAR}/${MONTH}/${DAY}"
 
-ARG YEAR=""
-ARG MONTH=""
-ARG DAY=""
+COPY src/image.yml /etc/apm/image.yml
+COPY src/resources /etc/apm/resources
 
-ENV REPO_YEAR=$YEAR
-ENV REPO_MONTH=$MONTH
-ENV REPO_DAY=$DAY
+RUN /etc/apm/resources/tools/build-latest-apm
 
-# Выполняем все шаги в одном RUN для минимизации слоёв
-RUN --mount=type=bind,source=./src,target=/src \
-    /src/main.sh
+RUN apm system image build && rm -rf /etc/apm
 
 # Стадия 2: Переход к пустому образу
 FROM scratch

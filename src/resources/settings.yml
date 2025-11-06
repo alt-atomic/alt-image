@@ -1,0 +1,67 @@
+modules:
+  - name: Remove classic tmpfiles
+    type: remove
+    body:
+      targets:
+        - /usr/lib/tmpfiles.d/home.conf
+        - /etc/fstab
+
+  - name: Make dirs
+    type: mkdir
+    body:
+      targets:
+        - /root
+        - /home
+        - /mnt
+        - /srv
+
+  - type: move
+    body:
+      target: /root
+      destination: /var/root
+      create-link: true
+  - type: move
+    body:
+      target: /home
+      destination: /var/home
+      create-link: true
+  - type: move
+    body:
+      target: /mnt
+      destination: /var/mnt
+      create-link: true
+  - type: move
+    body:
+      target: /srv
+      destination: /var/srv
+      create-link: true
+  - type: link
+    body:
+      target: /sysroot/ostree
+      destination: /ostree
+
+  - type: shell
+    body:
+      command: |
+        grep -qE "^\* hard nofile 978160$" /etc/security/limits.conf || echo "* hard nofile 978160" >> /etc/security/limits.conf
+        grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nofile 978160" >> /etc/security/limits.conf
+
+  - name: Fix podman
+    type: shell
+    body:
+      command: |
+        chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
+        chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
+
+  - name: Set locale
+    type: copy
+    body:
+      target: files/locale.conf
+      destination: /etc/locale.conf
+      replace: true
+
+  - type: copy
+    body:
+      target: files/locale.conf
+      destination: /etc/sysconfig/i18n
+      replace: true

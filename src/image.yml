@@ -1,0 +1,34 @@
+name: core
+hostname: alt-atomic
+
+kernel:
+  flavour: 6.12
+  modules:
+    - drm
+
+clean-repos: true
+repos:
+  branch: sisyphus
+tasks: []
+
+modules:
+  - name: Move root
+    type: move
+    body:
+      target: root
+      destination: /
+      replace: true
+
+  - type: include
+    body:
+      targets:
+        - packages.yml
+        - apt-rpm.yml
+        - systemd.yml
+        - settings.yml
+        - passwd.yml
+    
+  - name: Configurate grub
+    type: shell
+    body:
+      command: bash -efu scripts/grub.sh
