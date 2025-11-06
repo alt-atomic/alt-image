@@ -6,10 +6,10 @@ kernel:
   modules:
     - drm
 
-clean-repos: true
 repos:
+  clean: true
   branch: sisyphus
-tasks: []
+  tasks: []
 
 modules:
   - name: Move root
