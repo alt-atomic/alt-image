@@ -1,5 +1,5 @@
 name: core
-hostname: alt-atomic
+hostname: alt-atomic-core
 
 kernel:
   flavour: 6.12
