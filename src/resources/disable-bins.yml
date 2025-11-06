@@ -1,0 +1,25 @@
+modules:
+  - type: move
+    body:
+      target: /usr/bin/apt-cache
+      destination: /usr/libexec/apt-cache
+  - type: move
+    body:
+      target: /usr/bin/apt-cdrom
+      destination: /usr/libexec/apt-cdrom
+  - type: move
+    body:
+      target: /usr/bin/apt-config
+      destination: /usr/libexec/apt-config
+  - type: move
+    body:
+      target: /usr/bin/apt-get
+      destination: /usr/libexec/apt-get
+  - type: move
+    body:
+      target: /usr/bin/apt-mark
+      destination: /usr/libexec/apt-mark
+  - type: move
+    body:
+      target: /usr/bin/apt-shell
+      destination: /usr/libexec/apt-shell

@@ -27,6 +27,7 @@ modules:
         - systemd.yml
         - settings.yml
         - passwd.yml
+        - disable-bins.yml
     
   - name: Configurate grub
     type: shell
