@@ -19,25 +19,37 @@ modules:
     body:
       target: /root
       destination: /var/root
-      create-link: true
   - type: move
     body:
       target: /home
       destination: /var/home
-      create-link: true
   - type: move
     body:
       target: /mnt
       destination: /var/mnt
-      create-link: true
   - type: move
     body:
       target: /srv
       destination: /var/srv
-      create-link: true
   - type: link
     body:
-      target: /sysroot/ostree
+      target: var/root
+      destination: /root
+  - type: link
+    body:
+      target: var/home
+      destination: /home
+  - type: link
+    body:
+      target: var/mnt
+      destination: /mnt
+  - type: link
+    body:
+      target: var/srv
+      destination: /srv
+  - type: link
+    body:
+      target: sysroot/ostree
       destination: /ostree
 
   - type: shell
