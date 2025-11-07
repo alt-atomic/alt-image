@@ -33,6 +33,7 @@ modules:
         - fuse-overlayfs
         - podman
         - skopeo
+        - sysctl-conf-userns
 
         # Boot
         - cryptsetup
