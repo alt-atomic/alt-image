@@ -21,16 +21,13 @@ modules:
       target: root
       destination: /
       replace: true
-  
-  - type: mkdir
-    body:
-      target: /sysroot
 
   - type: include
     body:
       targets:
         - packages.yml
         - apt-rpm.yml
+        - filesystem.yml
         - systemd.yml
         - settings.yml
         - passwd.yml
