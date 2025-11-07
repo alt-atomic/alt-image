@@ -6,7 +6,6 @@ modules:
         - NetworkManager
         - libvirtd
         - chrony
-        - docker.socket
         - podman.socket
         - sync-users.service
         - sync-directory.service

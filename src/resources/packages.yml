@@ -29,7 +29,6 @@ modules:
         - bootupd
         - composefs
         - containers-common
-        - docker-engine
         - fuse-overlayfs
         - podman
         - skopeo
