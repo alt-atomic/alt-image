@@ -24,6 +24,7 @@ modules:
         - wget
         - which
         - zram-generator
+        - command-not-found
 
         # Container
         - bootupd
