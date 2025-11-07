@@ -10,51 +10,36 @@ modules:
     body:
       target: /root
       destination: /var/root
-  - type: link
-    body:
-      target: var/root
-      destination: /root
+      create-link: true
 
   - type: move
     body:
       target: /home
       destination: /var/home
-  - type: link
-    body:
-      target: var/home
-      destination: /home
+      create-link: true
 
   - type: move
     body:
       target: /mnt
       destination: /var/mnt
-  - type: link
-    body:
-      target: var/mnt
-      destination: /mnt
+      create-link: true
 
   - type: move
     body:
       target: /srv
       destination: /var/srv
-  - type: link
-    body:
-      target: var/srv
-      destination: /srv
+      create-link: true
 
   - type: move
     body:
       target: /media
       destination: /var/media
-  - type: link
-    body:
-      target: var/media
-      destination: /media
+      create-link: true
 
   - type: link
     body:
-      target: sysroot/ostree
-      destination: /ostree
+      target: /ostree
+      destination: /sysroot/ostree
 
   - type: shell
     body:
