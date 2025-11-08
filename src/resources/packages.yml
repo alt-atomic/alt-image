@@ -5,6 +5,7 @@ modules:
         # Base
         - apm
         - bash-completion
+        - command-not-found
         - coreutils
         - curl
         - doas
@@ -23,8 +24,8 @@ modules:
         - vim-minimal
         - wget
         - which
+        - xdg-user-dirs
         - zram-generator
-        - command-not-found
 
         # Container
         - bootupd
