@@ -1,5 +1,7 @@
 #!/usr/bin/bash -e
 
+# USE ONLY FOR TESTS, SCRIPTS DONT CLEAN UP DEVEL PACKAGES
+
 apt-get update
 apt-get dist-upgrade -y
 
