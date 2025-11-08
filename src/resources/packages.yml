@@ -24,7 +24,6 @@ modules:
         - vim-minimal
         - wget
         - which
-        - xdg-user-dirs
         - zram-generator
 
         # Container

@@ -1,9 +1,4 @@
 modules:
-  - name: Enable aitocreation of user dirs
-    type: shell
-    body:
-      command: sed -i 's/^[[:space:]]*enabled=false/enabled=True/i' /etc/xdg/user-dirs.conf
-
   - name: Increase limits of opened fd
     type: shell
     body:
