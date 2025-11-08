@@ -15,8 +15,8 @@ modules:
     type: shell
     body:
       command: |
-        chmod u+s /usr/bin/newuidmap /usr/bin/newgidmap
-        chmod a+x /usr/bin/newuidmap /usr/bin/newgidmap
+        control newuidmap public
+        control newgidmap public
 
   - name: Set locale
     type: copy
