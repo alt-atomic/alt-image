@@ -36,4 +36,4 @@ modules:
   - name: Configurate grub
     type: shell
     body:
-      command: bash -efu scripts/grub.sh
+      command: scripts/grub.sh
