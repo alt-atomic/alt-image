@@ -2,6 +2,7 @@ modules:
   - type: mkdir
     body:
       target: /sysroot
+      perm: 0755
 
   - type: remove
     body:
