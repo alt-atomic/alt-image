@@ -15,8 +15,8 @@ repos:
   tasks: []
 
 modules:
-  - name: Move root
-    type: move
+  - name: Copy root
+    type: copy
     body:
       target: root
       destination: /
