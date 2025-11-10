@@ -82,6 +82,7 @@ modules:
         - mount
         - NetworkManager
         - ostree
+        - bubblewrap
         - policycoreutils
         - sfdisk
         - systemd
