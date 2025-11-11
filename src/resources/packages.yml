@@ -3,7 +3,6 @@ modules:
     body:
       install:
         # Base
-        # - apm
         - bash-completion
         - command-not-found
         - coreutils
