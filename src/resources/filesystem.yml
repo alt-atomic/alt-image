@@ -1,0 +1,46 @@
+modules:
+  - type: mkdir
+    body:
+      target: /sysroot
+      perm: rwxr-xr-x
+
+  - type: remove
+    body:
+      targets:
+        - /usr/lib/tmpfiles.d/home.conf
+        - /etc/fstab
+
+  - type: move
+    body:
+      target: /root
+      destination: /var/root
+      create-link: true
+
+  - type: move
+    body:
+      target: /home
+      destination: /var/home
+      create-link: true
+
+  - type: move
+    body:
+      target: /mnt
+      destination: /var/mnt
+      create-link: true
+
+  - type: move
+    body:
+      target: /srv
+      destination: /var/srv
+      create-link: true
+
+  - type: move
+    body:
+      target: /media
+      destination: /var/media
+      create-link: true
+
+  - type: link
+    body:
+      target: /ostree
+      destination: /sysroot/ostree

@@ -1,0 +1,92 @@
+modules:
+  - type: packages
+    body:
+      install:
+        # Base
+        - bash-completion
+        - command-not-found
+        - coreutils
+        - curl
+        - doas
+        - eza
+        - iputils
+        - man
+        - mc
+        - nano
+        - passwd
+        - rsync
+        - shadow-change
+        - su
+        - time
+        - tzdata
+        - unzip
+        - vim-minimal
+        - wget
+        - which
+        - zram-generator
+
+        # Container
+        - bootupd
+        - composefs
+        - containers-common
+        - fuse-overlayfs
+        - podman
+        - skopeo
+        - sysctl-conf-userns
+
+        # Boot
+        - cryptsetup
+        - dracut
+        - efibootmgr
+        - efitools
+        - efivar
+        - grub
+        - grub-btrfs
+        - grub-efi
+        - alt-uefi-certs
+        - shim-signed
+        - shim-unsigned
+
+        # Virtualization
+        - libvirt
+        - lxd
+        - open-vm-tools
+        - qemu-guest-agent
+        - spice-vdagent
+        - virtiofsd
+
+        # Filesystem
+        - btrfs-progs
+        - exfatprogs
+        - f2fs-tools
+        - squashfs-tools
+        - udftools
+        - xfsprogs
+
+        # System
+        - attr
+        - bluez
+        - bootc
+        - chrony
+        - dosfstools
+        - e2fsprogs
+        - firmware-alsa-sof
+        - firmware-linux
+        - fprintd
+        - jq
+        - kbd
+        - kbd-data
+        - libselinux
+        - losetup
+        - mount
+        - NetworkManager
+        - ostree
+        - bubblewrap
+        - policycoreutils
+        - sfdisk
+        - systemd
+        - yq
+
+        # Graphic
+        - glxinfo
+        - mesa-dri-drivers

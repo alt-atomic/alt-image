@@ -1,0 +1,13 @@
+modules:
+  - type: systemd
+    body:
+      targets:
+        - ostree-remount
+        - NetworkManager
+        - libvirtd
+        - chrony
+        - podman.socket
+        - sync-users.service
+        - sync-directory.service
+        - tmp.mount
+      enabled: true

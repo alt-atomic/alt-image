@@ -1,0 +1,27 @@
+modules:
+  - name: Increase limits of opened fd
+    type: shell
+    body:
+      command: |
+        grep -qE "^\* hard nofile 978160$" /etc/security/limits.conf || echo "* hard nofile 978160" >> /etc/security/limits.conf
+        grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nofile 978160" >> /etc/security/limits.conf
+
+  - name: Fix podman
+    type: shell
+    body:
+      command: |
+        control newuidmap public
+        control newgidmap public
+
+  - name: Set locale
+    type: copy
+    body:
+      target: files/locale.conf
+      destination: /etc/locale.conf
+      replace: true
+
+  - type: copy
+    body:
+      target: files/locale.conf
+      destination: /etc/sysconfig/i18n
+      replace: true
