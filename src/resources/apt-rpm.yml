@@ -14,8 +14,3 @@ modules:
       target: /var/lib/apt
       destination: /usr/var/lib/apt
       create-link: true
-  - type: move
-    body:
-      target: /var/lib/apm
-      destination: /usr/var/lib/apm
-      create-link: true
