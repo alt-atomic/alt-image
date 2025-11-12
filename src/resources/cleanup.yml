@@ -1,0 +1,8 @@
+modules:
+  - type: remove
+    targets:
+      - /etc/fstab
+  - type: remove
+    targets:
+      - /boot
+    inside: true

@@ -37,3 +37,8 @@ modules:
     type: shell
     body:
       command: scripts/grub.sh
+
+  - name: Cleanup
+    type: include
+    body:
+      target: cleanup.yml
