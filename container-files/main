@@ -16,8 +16,7 @@ COPY src/image.yml /etc/apm/image.yml
 COPY src/resources /etc/apm/resources
 
 RUN apt-get update
-RUN apt-get install -y ca-certificates
-RUN apt-get install -y https://git.altlinux.org/tasks/399760/build/1100/x86_64/rpms/apm-0.1.10-alt1.x86_64.rpm
+RUN apt-get install -y apm
 
 RUN /etc/apm/resources/tools/image-prepare.sh && \
     apm system image build && \
