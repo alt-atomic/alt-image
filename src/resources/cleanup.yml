@@ -7,5 +7,5 @@ modules:
     body:
       targets:
         - /boot
-        - /var/apt/cache
+        - /var/cache/apt
       inside: true
