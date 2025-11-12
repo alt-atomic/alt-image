@@ -3,9 +3,13 @@ modules:
     body:
       targets:
         - /etc/fstab
+        - /var/cache/apt
   - type: remove
     body:
       targets:
         - /boot
-        - /var/cache/apt
       inside: true
+  - type: mkdir
+    body:
+      target: /var/cache/apt/archives/partial
+      perm: 660
