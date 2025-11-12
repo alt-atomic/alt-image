@@ -12,16 +12,13 @@ ENV APM_BUILD_BUILD_TYPE=$IMAGE_TYPE
 ENV APM_BUILD_IMAGE=$IMAGE
 ENV APM_BUILD_REPO_DATE="${YEAR}/${MONTH}/${DAY}"
 
-COPY src/image.yml /etc/apm/image.yml
-COPY src/resources /etc/apm/resources
-
 RUN apt-get update
 RUN apt-get install -y ca-certificates
-RUN apt-get install -y https://git.altlinux.org/tasks/399760/build/1100/x86_64/rpms/apm-0.1.10-alt1.x86_64.rpm
+RUN apt-get install -y apm
 
-RUN /etc/apm/resources/tools/image-prepare.sh && \
-    apm system image build && \
-    rm -rf /etc/apm
+RUN --mount=type=bind,source=./src,target=/etc/apm \
+    /etc/apm/resources/tools/image-prepare.sh && \
+    apm system image build
 
 # Стадия 2: Переход к пустому образу
 FROM scratch
