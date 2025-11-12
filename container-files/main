@@ -14,8 +14,7 @@ ENV APM_BUILD_REPO_DATE="${YEAR}/${MONTH}/${DAY}"
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
-# RUN apt-get install -y apm
-RUN apt-get install -y https://git.altlinux.org/tasks/399826/build/100/x86_64/rpms/apm-0.1.11-alt1.x86_64.rpm
+RUN apt-get install -y apm
 
 RUN --mount=type=bind,source=./src,target=/etc/apm \
     /etc/apm/resources/tools/image-prepare.sh && \
