@@ -20,7 +20,7 @@ modules:
         - time
         - tzdata
         - unzip
-        - vim-minimal
+        - vim-enhanced
         - wget
         - which
         - zram-generator
