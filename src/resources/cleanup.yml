@@ -4,14 +4,13 @@ modules:
       targets:
         - /etc/fstab
         - /usr/etc
-  - name: Clean dirs
-    type: remove
+
+  - type: remove
     body:
       targets:
         - /boot
-        # Clean logs
-        - /var/log/README.logs
-        - /var/log/rpmpkgs
+      inside: true
+
   - name: Clean logs
     type: remove
     body:
@@ -19,6 +18,7 @@ modules:
         - /var/log/README.logs
         - /var/log/rpmpkgs
       inside: true
+
   - type: shell
     body:
       command: /usr/libexec/apt-get clean
