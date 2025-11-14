@@ -9,7 +9,6 @@ modules:
       targets:
         - /boot
       inside: true
-  - type: mkdir
+  - type: shell
     body:
-      target: /var/cache/apt/archives/partial
-      perm: 660
+      command: /usr/libexec/apt-get clean
