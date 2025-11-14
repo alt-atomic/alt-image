@@ -4,10 +4,20 @@ modules:
       targets:
         - /etc/fstab
         - /usr/etc
-  - type: remove
+  - name: Clean dirs
+    type: remove
     body:
       targets:
         - /boot
+        # Clean logs
+        - /var/log/README.logs
+        - /var/log/rpmpkgs
+  - name: Clean logs
+    type: remove
+    body:
+      targets:
+        - /var/log/README.logs
+        - /var/log/rpmpkgs
       inside: true
   - type: shell
     body:
