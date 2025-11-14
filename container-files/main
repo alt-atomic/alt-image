@@ -20,6 +20,7 @@ RUN apt-get install -y https://git.altlinux.org/tasks/399826/build/100/x86_64/rp
 RUN --mount=type=bind,source=./src,target=/etc/apm \
     /etc/apm/resources/tools/image-prepare.sh && \
     apm system image build
+RUN bootc container lint
 
 # Стадия 2: Переход к пустому образу
 FROM scratch

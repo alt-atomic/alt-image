@@ -3,7 +3,7 @@ modules:
     body:
       targets:
         - /etc/fstab
-        - /var/cache/apt
+        - /usr/etc
   - type: remove
     body:
       targets:
