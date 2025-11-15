@@ -12,7 +12,6 @@ kernel:
 repos:
   clean: true
   branch: sisyphus
-  tasks: []
 
 modules:
   - name: Copy root
