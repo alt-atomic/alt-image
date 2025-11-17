@@ -21,6 +21,11 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y cosign skopeo
+
       - name: Get date
         id: date
         run: |
@@ -28,11 +33,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Login to registry
-        if: github.event_name != 'pull_request'
-        run: |
-          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
 
       - name: Build sisyphus default image
         run: |
@@ -52,15 +52,34 @@ jobs:
             --label "org.altlinux.repo.date=$YEAR-$MONTH-$DAY" \
             .
 
-      - name: Push main branch images
+      - name: Push and sign images
+        env: 
+          IMAGE_SIGN: ${{ secrets.IMAGE_SIGN }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         if: >
-          ((github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == 'main') ||
-          github.event_name == 'schedule'
+          contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
         run: |
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:${{ steps.date.outputs.date }}
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly:latest
+          podman login --username="<token>" --password="${{ secrets.REGISTRY_TOKEN }}" $REGISTRY
 
-      - name: Push not main branches images
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name != 'main'
-        run: |
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME $REGISTRY/$GITHUB_REPOSITORY/nightly-branch:$GITHUB_REF_NAME
+          if [ "$GITHUB_REF_NAME" == "main" ]; then
+            aliases=("${{ steps.date.outputs.date }}")
+            tag="latest"
+            postfix="nightly"
+          else
+            aliases=()
+            tag="$GITHUB_REF_NAME"
+            postfix="nightly-branch"
+          fi
+
+          orig_dest_image="$REGISTRY/$GITHUB_REPOSITORY/${postfix}"
+
+          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME ${orig_dest_image}:${tag}
+          echo ${orig_dest_image}:${tag}
+
+          DIGEST=$(skopeo inspect --format '{{.Digest}}' docker://${orig_dest_image}:${tag})
+
+          cosign sign -y --key env://IMAGE_SIGN --registry-username="<token>" --registry-password="${{ secrets.REGISTRY_TOKEN }}" "${orig_dest_image}@$DIGEST"
+
+          for alias in $aliases; do
+            skopeo copy docker://${orig_dest_image}:${tag} docker://$REGISTRY/$GITHUB_REPOSITORY/${postfix}:${alias}
+          done
