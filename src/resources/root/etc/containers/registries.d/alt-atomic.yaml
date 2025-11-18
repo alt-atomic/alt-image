@@ -1,0 +1,3 @@
+docker:
+  altlinux.space/alt-atomic:
+    use-sigstore-attachments: true
