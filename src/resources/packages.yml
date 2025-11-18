@@ -53,6 +53,7 @@ modules:
         - open-vm-tools
         - qemu-guest-agent
         - spice-vdagent
+        - spice-webdavd
         - virtiofsd
 
         # Filesystem
