@@ -1,0 +1,5 @@
+# Configuration file for command-not-found
+
+WORK_ENABLED=1
+ROOT_EXEC_CMD=doas %s
+INSTALL_CMD=doas apm s install %s
