@@ -20,6 +20,11 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y cosign skopeo
+
       - name: Get date
         id: date
         run: |
