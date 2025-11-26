@@ -18,7 +18,7 @@ ENV DAY=$DAY
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 RUN cd /var/cache/apt/archives && \
-    apt-get install -y https://git.altlinux.org/tasks/401049/build/200/x86_64/rpms/apm-0.2.1-alt1.x86_64.rpm && \
+    apt-get install -y https://git.altlinux.org/tasks/401049/build/300/x86_64/rpms/apm-0.2.2-alt1.x86_64.rpm && \
     cd /
 
 RUN --mount=type=bind,source=./src,target=/etc/apm \
