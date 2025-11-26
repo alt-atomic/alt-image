@@ -44,4 +44,5 @@ modules:
   - type: link
     body:
       target: /ostree
-      destination: /sysroot/ostree
+      to: /sysroot/ostree
+      replace: true
