@@ -14,13 +14,6 @@ modules:
       update: true
       upgrade: true
 
-  - name: Update kernel
-    type: kernel
-    body:
-      flavour: 6.12
-      modules:
-        - drm
-
   - name: Set branding
     type: branding
     body:
@@ -51,8 +44,12 @@ modules:
     body:
       command: scripts/grub.sh
     
-  - type: kernel
+  - name: Update kernel
+    type: kernel
     body:
+      flavour: 6.12
+      modules:
+        - drm
       rebuild-initrd-method: dracut
 
   - name: Cleanup
