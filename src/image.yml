@@ -1,19 +1,25 @@
-name: core
-hostname: alt-atomic-core
-
-branding:
-  name: alt-atomic-core
-
-kernel:
-  flavour: 6.12
-  modules:
-    - drm
-
-repos:
-  clean: true
-  branch: sisyphus
+image: ${{ Env.IMAGE }}
 
 modules:
+  - name: Set repos
+    type: repos
+    body:
+      branch: sisyphus
+      date: ${{ Env.YEAR }}.${{ Env.MONTH }}.${{ Env.DAY }}
+      clean: true
+      name: ${{ Env.IMAGE_NAME }}
+
+  - type: packages
+    body:
+      update: true
+      upgrade: true
+
+  - name: Set branding
+    type: branding
+    body:
+      name: alt-atomic-${{ Env.IMAGE_NAME }}
+      build-type: ${{ Env.IMAGE_TYPE }}
+
   - name: Copy root
     type: copy
     body:
@@ -25,6 +31,7 @@ modules:
     body:
       targets:
         - packages.yml
+        - network.yml
         - apt-rpm.yml
         - filesystem.yml
         - systemd.yml
@@ -36,8 +43,17 @@ modules:
     type: shell
     body:
       command: scripts/grub.sh
+    
+  - name: Update kernel
+    type: kernel
+    body:
+      flavour: 6.12
+      modules:
+        - drm
+      rebuild-initrd-method: dracut
 
   - name: Cleanup
     type: include
     body:
-      target: cleanup.yml
+      targets:
+        - cleanup.yml

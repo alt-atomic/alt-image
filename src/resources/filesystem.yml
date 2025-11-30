@@ -1,7 +1,8 @@
 modules:
   - type: mkdir
     body:
-      target: /sysroot
+      targets:
+        - /sysroot
       perm: rwxr-xr-x
 
   - type: remove
@@ -43,4 +44,5 @@ modules:
   - type: link
     body:
       target: /ostree
-      destination: /sysroot/ostree
+      to: /sysroot/ostree
+      replace: true

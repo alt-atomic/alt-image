@@ -8,13 +8,19 @@ ARG YEAR
 ARG MONTH
 ARG DAY
 
-ENV APM_BUILD_BUILD_TYPE=$IMAGE_TYPE
-ENV APM_BUILD_IMAGE=$IMAGE
-ENV APM_BUILD_REPO_DATE="${YEAR}/${MONTH}/${DAY}"
+ENV IMAGE_NAME="core"
+ENV IMAGE=$IMAGE
+ENV IMAGE_TYPE=$IMAGE_TYPE
+ENV YEAR=$YEAR
+ENV MONTH=$MONTH
+ENV DAY=$DAY
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 RUN apt-get install -y apm
+# RUN cd /var/cache/apt/archives && \
+#     apt-get install -y https://git.altlinux.org/tasks/401049/build/300/x86_64/rpms/apm-0.2.2-alt1.x86_64.rpm && \
+#     cd /
 
 RUN --mount=type=bind,source=./src,target=/etc/apm \
     /etc/apm/resources/tools/image-prepare.sh && \
