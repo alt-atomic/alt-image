@@ -20,15 +20,12 @@ jobs:
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
-      - name: Install tools
-        run: |
-          apt-get update
-          apt-get install -y cosign skopeo
+      - name: Prepare env
+        uses: alt-atomic/actions/prepare-env@main
 
       - name: Get date
         id: date
-        run: |
-          echo "::set-output name=date::$(date +%Y%m%d)"
+        uses: alt-atomic/actions/parse-date@main
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,9 +34,7 @@ jobs:
 
       - name: Get latest tag
         id: latest_tag
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          echo "::set-output name=tag::$LATEST_TAG"
+        uses: alt-atomic/actions/get-tag@main
 
       - name: Checkout latest tag
         run: |
@@ -55,32 +50,24 @@ jobs:
           podman build \
             --tag $LOCAL_BUILD_NAME \
             --platform linux/amd64 \
-            --build-arg YEAR=$YEAR \
-            --build-arg MONTH=$MONTH \
-            --build-arg DAY=$DAY \
+            --build-arg YEAR=${{ steps.date.outputs.year }} \
+            --build-arg MONTH=${{ steps.date.outputs.month }} \
+            --build-arg DAY=${{ steps.date.outputs.day }} \
             --build-arg IMAGE_TYPE=stable \
             --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
             --file ./container-files/main \
-            --label "org.altlinux.repo.date=$YEAR-$MONTH-$DAY" \
+            --label "org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}" \
             .
 
-      - name: Push main branch images
-        run: |
-          podman login --username="<token>" --password=${{ secrets.REGISTRY_TOKEN }} $REGISTRY
-
-          aliases=("${{ steps.date.outputs.date }}" "${{ steps.latest_tag.outputs.tag }}")
-          tag="latest"
-          postfix="stable"
-
-          orig_dest_image="$REGISTRY/$GITHUB_REPOSITORY/${postfix}"
-
-          podman push --compression-format zstd --compress $LOCAL_BUILD_NAME ${orig_dest_image}:${tag}
-          echo ${orig_dest_image}:${tag}
-
-          DIGEST=$(skopeo inspect --format '{{.Digest}}' docker://${orig_dest_image}:${tag})
-
-          cosign sign -y --key env://IMAGE_SIGN --registry-username="<token>" --registry-password="${{ secrets.REGISTRY_TOKEN }}" "${orig_dest_image}@$DIGEST"
-
-          for alias in $aliases; do
-            skopeo copy docker://${orig_dest_image}:${tag} docker://$REGISTRY/$GITHUB_REPOSITORY/${postfix}:${alias}
-          done
+      - name: Push and sign image
+        uses: alt-atomic/actions/push-and-sign@main
+        with:
+          registry: ${{ env.REGISTRY }}
+          registry-username: "<token>"
+          registry-password: ${{ secrets.REGISTRY_TOKEN }}
+          image-name: ${{ github.repository }}/stable
+          image-tag: latest
+          image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }}
+          local-build-name: ${{ env.LOCAL_BUILD_NAME}}
+          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}

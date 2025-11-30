@@ -27,8 +27,6 @@ jobs:
       - name: Get date
         id: date
         uses: alt-atomic/actions/parse-date@main
-        with:
-          date: ${{ github.event.inputs.date }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
