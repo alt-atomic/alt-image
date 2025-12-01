@@ -1,5 +1,8 @@
 image: ${{ Env.IMAGE }}
 
+env:
+  KERNEL_FLAVOUR: 6.12
+
 modules:
   - name: Set repos
     type: repos
@@ -47,7 +50,7 @@ modules:
   - name: Update kernel
     type: kernel
     body:
-      flavour: 6.12
+      flavour: ${{ Env.KERNEL_FLAVOUR }}
       modules:
         - drm
       rebuild-initrd-method: dracut
