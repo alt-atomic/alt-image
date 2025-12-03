@@ -15,8 +15,7 @@ modules:
     type: remove
     body:
       targets:
-        - /var/log/README.logs
-        - /var/log/rpmpkgs
+        - /var/log
       inside: true
 
   - type: shell
