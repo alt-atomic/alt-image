@@ -1,18 +1,18 @@
 modules:
   - type: move
     body:
-      target: /etc/apt
+      source: /etc/apt
       destination: /usr/share/apt
       create-link: true
 
   - type: move
     body:
-      target: /var/lib/rpm
+      source: /var/lib/rpm
       destination: /usr/var/lib/rpm
       create-link: true
 
   - type: move
     body:
-      target: /var/lib/apt
+      source: /var/lib/apt
       destination: /usr/var/lib/apt
       create-link: true

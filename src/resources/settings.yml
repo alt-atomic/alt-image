@@ -16,12 +16,12 @@ modules:
   - name: Set locale
     type: copy
     body:
-      target: files/locale.conf
+      source: files/locale.conf
       destination: /etc/locale.conf
       replace: true
 
   - type: copy
     body:
-      target: files/locale.conf
+      source: files/locale.conf
       destination: /etc/sysconfig/i18n
       replace: true

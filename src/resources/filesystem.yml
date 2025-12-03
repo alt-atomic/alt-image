@@ -13,31 +13,31 @@ modules:
 
   - type: move
     body:
-      target: /root
+      source: /root
       destination: /var/root
       create-link: true
 
   - type: move
     body:
-      target: /home
+      source: /home
       destination: /var/home
       create-link: true
 
   - type: move
     body:
-      target: /mnt
+      source: /mnt
       destination: /var/mnt
       create-link: true
 
   - type: move
     body:
-      target: /srv
+      source: /srv
       destination: /var/srv
       create-link: true
 
   - type: move
     body:
-      target: /media
+      source: /media
       destination: /var/media
       create-link: true
 
