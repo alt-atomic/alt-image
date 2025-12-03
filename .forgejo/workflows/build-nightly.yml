@@ -45,6 +45,18 @@ jobs:
             --label "org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}" \
             .
 
+      - name: Rechunk image
+        uses: alt-atomic/actions/rechunk@main
+        id: rechunk
+        with:
+          ref: ${{ env.LOCAL_BUILD_NAME }}
+          prev-ref: >-
+            ${{
+              github.ref_name == 'main' &&
+              '${{ env.REGISTRY }}/${{ github.repository }}/nightly:latest' || 
+              '${{ env.REGISTRY }}/${{ github.repository }}/nightly-branch:${{ github.ref_name }}'
+            }}
+
       - name: Push and sign images
         uses: alt-atomic/actions/push-and-sign@main
         if: >
@@ -71,6 +83,6 @@ jobs:
               steps.date.outputs.date || 
               '' 
             }}
-          local-build-name: ${{ env.LOCAL_BUILD_NAME}}
+          local-build-name: ${{ steps.rechunk.outputs.ref }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
