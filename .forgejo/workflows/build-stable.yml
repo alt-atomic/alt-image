@@ -59,6 +59,13 @@ jobs:
             --label "org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}" \
             .
 
+      - name: Rechunk image
+        uses: alt-atomic/actions/rechunk@main
+        id: rechunk
+        with:
+          ref: ${{ env.LOCAL_BUILD_NAME }}
+          prev-ref: ${{ env.REGISTRY }}/${{ github.repository }}/stable:latest
+
       - name: Push and sign image
         uses: alt-atomic/actions/push-and-sign@main
         with:
@@ -68,6 +75,6 @@ jobs:
           image-name: ${{ github.repository }}/stable
           image-tag: latest
           image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }}
-          local-build-name: ${{ env.LOCAL_BUILD_NAME}}
+          local-build-name: ${{ steps.rechunk.outputs.ref }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
