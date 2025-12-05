@@ -57,6 +57,11 @@ jobs:
               '${{ env.REGISTRY }}/${{ github.repository }}/nightly-branch:${{ github.ref_name }}'
             }}
 
+      - name: Lint image
+        uses: alt-atomic/actions/bootc-lint@main
+        with:
+          ref: ${{ steps.rechunk.outputs.ref }}
+
       - name: Push and sign images
         uses: alt-atomic/actions/push-and-sign@main
         if: >
