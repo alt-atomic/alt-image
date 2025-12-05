@@ -66,6 +66,11 @@ jobs:
           ref: ${{ env.LOCAL_BUILD_NAME }}
           prev-ref: ${{ env.REGISTRY }}/${{ github.repository }}/stable:latest
 
+      - name: Lint image
+        uses: alt-atomic/actions/bootc-lint@main
+        with:
+          ref: ${{ steps.rechunk.outputs.ref }}
+
       - name: Push and sign image
         uses: alt-atomic/actions/push-and-sign@main
         with:
