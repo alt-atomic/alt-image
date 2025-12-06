@@ -56,15 +56,21 @@ jobs:
             --build-arg IMAGE_TYPE=stable \
             --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
             --file ./container-files/main \
-            --label "org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}" \
             .
 
       - name: Rechunk image
-        uses: alt-atomic/actions/rechunk@main
+        uses: alt-atomic/actions/rechunk@faaade06f5d9e666ea73e6b9e6c3454bc331629b
         id: rechunk
         with:
           ref: ${{ env.LOCAL_BUILD_NAME }}
           prev-ref: ${{ env.REGISTRY }}/${{ github.repository }}/stable:latest
+          labels: |
+            org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}
+            org.opencontainers.image.title=ALT Atomic Core
+            org.opencontainers.image.description=Core image for ALT Atomic distros
+            org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
+            org.opencontainers.image.licenses=GPL-3.0-or-later
+            org.opencontainers.image.vendor=ALT Linux Team
 
       - name: Lint image
         uses: alt-atomic/actions/bootc-lint@main
