@@ -7,7 +7,6 @@ modules:
         - command-not-found
         - coreutils
         - curl
-        - doas
         - eza
         - iputils
         - man
@@ -17,6 +16,7 @@ modules:
         - rsync
         - shadow-change
         - su
+        - sudo
         - time
         - tzdata
         - unzip
