@@ -1,5 +1,5 @@
 # Configuration file for command-not-found
 
 WORK_ENABLED=1
-ROOT_EXEC_CMD=doas %s
-INSTALL_CMD=doas apm s install %s
+ROOT_EXEC_CMD=sudo %s
+INSTALL_CMD=sudo apm s install %s

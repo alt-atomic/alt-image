@@ -13,6 +13,12 @@ modules:
         control newuidmap public
         control newgidmap public
 
+  - name: Enable sudo
+    type: shell
+    body:
+      command: |
+        control sudowheel enabled
+
   - name: Set locale
     type: copy
     body:
