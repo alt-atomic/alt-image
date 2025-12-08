@@ -17,7 +17,8 @@ ENV DAY=$DAY
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
-RUN apt-get install -y apm
+# We must install bootc for apm IsAtomic check
+RUN apt-get install -y apm bootc
 # RUN cd /var/cache/apt/archives && \
 #     apt-get install -y https://git.altlinux.org/tasks/401049/build/300/x86_64/rpms/apm-0.2.2-alt1.x86_64.rpm && \
 #     cd /
