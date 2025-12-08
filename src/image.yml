@@ -12,6 +12,14 @@ modules:
       clean: true
       name: ${{ Env.IMAGE_NAME }}
 
+  - name: Initial includes
+    type: include
+    body:
+      targets:
+        - apt-rpm.yml
+        - filesystem.yml
+        - disable-bins.yml
+
   - type: packages
     body:
       update: true
@@ -35,12 +43,9 @@ modules:
       targets:
         - packages.yml
         - network.yml
-        - apt-rpm.yml
-        - filesystem.yml
         - systemd.yml
         - settings.yml
         - passwd.yml
-        - disable-bins.yml
     
   - name: Configurate grub
     type: shell
