@@ -31,6 +31,7 @@ modules:
         - containers-common
         - fuse-overlayfs
         - podman
+        - podman-compose
         - skopeo
         - sysctl-conf-userns
 
