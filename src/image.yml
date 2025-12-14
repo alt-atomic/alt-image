@@ -1,7 +1,7 @@
 image: ${{ Env.IMAGE }}
 
 env:
-  KERNEL_FLAVOUR: 6.12
+  KERNEL_FLAVOUR: 6.18
 
 modules:
   - name: Set repos
