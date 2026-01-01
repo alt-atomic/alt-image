@@ -20,4 +20,8 @@ modules:
 
   - type: shell
     body:
+      command: fc-cache -fv
+
+  - type: shell
+    body:
       command: /usr/libexec/apt-get clean
