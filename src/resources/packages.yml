@@ -87,6 +87,7 @@ modules:
         - sfdisk
         - systemd
         - yq
+        - fontconfig
 
         # Graphic
         - glxinfo
