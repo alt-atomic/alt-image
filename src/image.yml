@@ -64,4 +64,4 @@ modules:
     type: include
     body:
       targets:
-        - cleanup.yml
+        - /usr/share/apm/includes/common/cleanup.yml
