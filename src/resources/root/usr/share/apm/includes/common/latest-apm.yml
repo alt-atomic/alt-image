@@ -1,0 +1,13 @@
+modules:
+  - name: Add nightly apm repo
+    type: repos
+    body:
+      name: apm-nightly
+      custom:
+        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/apm-nightly/sisyphus.repo x86_64 classic
+
+  - name: Install apm
+    type: packages
+    body:
+      install:
+        - apm

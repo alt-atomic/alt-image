@@ -1,0 +1,53 @@
+modules:
+  - name: Install nvidia module
+    type: kernel
+    body:
+      modules:
+        - nvidia
+
+  - name: Add kernel args
+    type: shell
+    body:
+      command: |
+        echo 'kargs = ["nvidia_drm.modeset=1"]' > /usr/lib/bootc/kargs.d/10-nvidia.toml
+
+  - type: packages
+    body:
+      install:
+        - blacklist-nouveau
+        - libcuda
+        - libnvcuvid
+        - libnvidia-container-tools
+        - libnvidia-container1
+        - libnvidia-encode
+        - libnvidia-opticalflow
+        - libnvidia-vksc-core
+        - libnvoptix
+        - nvidia-modprobe
+        - nvidia-powerd
+        - nvidia-settings
+        - nvidia-settings
+        - nvidia-smi
+        - nvidia-vaapi-driver
+        - ocl-nvidia
+        - switcheroo-control
+
+  - name: Enable video memory preservation for suspend/resume
+    type: shell
+    body:
+      command: |
+        # Add NVreg_PreserveVideoMemoryAllocations if not already present
+        if ! grep -q "NVreg_PreserveVideoMemoryAllocations" /etc/modprobe.d/nvidia_common.conf; then
+          sed -i '/# If artifacts after sleep/a options nvidia NVreg_PreserveVideoMemoryAllocations=1' /etc/modprobe.d/nvidia_common.conf
+        fi
+
+  - type: systemd
+    body:
+      targets:
+        - nvidia-suspend
+        - nvidia-hibernate
+        - nvidia-suspend-then-hibernate
+        - nvidia-resume
+        - nvidia-powerd
+        - switcheroo-control
+      enabled: true
