@@ -17,13 +17,15 @@ ENV DAY=$DAY
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
-# We must install bootc for apm IsAtomic check
 RUN apt-get install -y apm bootc
-# RUN cd /var/cache/apt/archives && \
-#     apt-get install -y https://git.altlinux.org/tasks/401049/build/300/x86_64/rpms/apm-0.2.2-alt1.x86_64.rpm && \
-#     cd /
 
-RUN --mount=type=bind,source=./src,target=/etc/apm \
+RUN --mount=type=bind,ro,source=./src/resources/root/usr/share/apm/includes/common/latest-apm.yml,target=/etc/apm/image.yml \
+    if [ "$IMAGE_TYPE" = "nightly" ]; then \
+        apm system image build; \
+    fi
+
+RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
+    --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
     /etc/apm/resources/tools/image-prepare.sh && \
     apm system image build
 
