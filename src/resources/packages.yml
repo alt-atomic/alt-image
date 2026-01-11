@@ -1,10 +1,4 @@
 modules:
-  - type: include
-    if: Env.IMAGE_TYPE == "nightly"
-    body:
-      targets:
-        - /usr/share/apm/includes/common/latest-apm.yml
-
   - type: packages
     body:
       install:
