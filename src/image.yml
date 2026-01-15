@@ -16,7 +16,6 @@ modules:
       targets:
         - apt-rpm.yml
         - filesystem.yml
-        - disable-bins.yml
 
   - type: packages
     body:
@@ -39,6 +38,7 @@ modules:
   - type: include
     body:
       targets:
+        - disable-bins.yml
         - packages.yml
         - network.yml
         - systemd.yml
