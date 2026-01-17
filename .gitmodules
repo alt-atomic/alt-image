@@ -1,4 +1,4 @@
 [submodule "common-includes"]
 	path = src/resources/root/usr/share/apm/includes/common
 	url = https://altlinux.space/alt-atomic/common-includes.git
-	branch = 7431991331a9ad967228f619b85fe7e956df891f
+	branch = ab8469378b35e6a3feed9b0ab603d108291de23d
