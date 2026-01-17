@@ -6,7 +6,7 @@ modules:
     type: repos
     body:
       branch: sisyphus
-      date: ${{ Env.YEAR }}.${{ Env.MONTH }}.${{ Env.DAY }}
+      date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
       clean: true
 
   - name: Initial includes
