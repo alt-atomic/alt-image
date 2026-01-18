@@ -14,6 +14,7 @@ modules:
   - name: Add apm repo
     type: repos
     body:
+      name: LEGACY
       custom:
         - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/${{ Modules.apm_group.Output.ApmGroup }}/sisyphus.repo _arch_ classic
 
