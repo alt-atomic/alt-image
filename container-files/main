@@ -20,7 +20,7 @@ RUN apt-get install -y ca-certificates
 RUN apt-get install -y apm bootc
 
 # Needs for apm build validation
-COPY COPY common-includes/ /usr/share/apm/includes/common/
+COPY common-includes/ /usr/share/apm/includes/common/
 
 RUN --mount=type=bind,ro,source=./common-includes/latest-apm.yml,target=/etc/apm/image.yml \
     if [ "$IMAGE_TYPE" = "nightly" ]; then \
