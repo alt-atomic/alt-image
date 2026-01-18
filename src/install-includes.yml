@@ -1,4 +1,9 @@
 modules:
+  - type: packages
+    body:
+      install:
+        - git
+
   - type: git
     env:
       INCLUDES_DIR: /usr/share/apm/includes/common
