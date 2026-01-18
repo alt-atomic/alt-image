@@ -44,10 +44,6 @@ jobs:
 
       - name: Build sisyphus default image
         run: |
-          YEAR=$(date --date="${{ steps.date.outputs.date }}" +"%Y")
-          MONTH=$(date --date="${{ steps.date.outputs.date }}" +"%m")
-          DAY=$(date --date="${{ steps.date.outputs.date }}" +"%d")
-
           podman build \
             --tag $LOCAL_BUILD_NAME \
             --platform linux/amd64 \
