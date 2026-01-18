@@ -19,16 +19,12 @@ RUN apt-get update
 RUN apt-get install -y ca-certificates
 RUN apt-get install -y apm bootc
 
-# Needs for apm build validation
-RUN --mount=type=bind,ro,source=./src/resources/tools/install-inlcudes.yml,target=/etc/apm/image.yml \
+RUN --mount=type=bind,ro,source=./src/latest-apm.yml,target=/etc/apm/image.yml \
     apm system image build;
 
-RUN \
-    if [ "$IMAGE_TYPE" = "nightly" ]; then \
-        cp -f /usr/share/apm/includes/common/latest-apm.yml /etc/apm/image.yml \
-        apm system image build; \
-        rm -f /usr/share/apm/includes/common/latest-apm.yml \
-    fi
+# Needs for apm build validation
+RUN --mount=type=bind,ro,source=./src/install-includes.yml,target=/etc/apm/image.yml \
+    apm system image build;
 
 RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
