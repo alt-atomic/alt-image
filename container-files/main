@@ -25,7 +25,7 @@ RUN --mount=type=bind,ro,source=./src/resources/root/usr/share/apm/includes/comm
     fi
 
 # Needs for apm build validation
-COPY common-includes /usr/share/apm/includes/common 
+COPY common-includes/* /usr/share/apm/includes/common 
 
 RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
