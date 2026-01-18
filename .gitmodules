@@ -1,4 +1,0 @@
-[submodule "common-includes"]
-	path = common-includes
-	url = https://altlinux.space/alt-atomic/common-includes.git
-	branch = ab8469378b35e6a3feed9b0ab603d108291de23d

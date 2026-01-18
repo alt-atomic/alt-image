@@ -1,0 +1,16 @@
+modules:
+  - type: git
+    env:
+      INCLUDES_DIR: /usr/share/apm/includes/common
+    body:
+      url: https://altlinux.space/alt-atomic/common-includes.git
+      rev: ab8469378b35e6a3feed9b0ab603d108291de23d
+      command: |
+        for file in *; do
+          if [ -f "$file" ]; then
+            if [[ "$file" == ".git" || "$file" == "LICENSE" ]]; then
+              continue
+            fi
+            install -D -m755 "$file" ${{ Env.INCLUDES_DIR }}/"$file"
+          fi
+        done
