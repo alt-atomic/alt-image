@@ -27,16 +27,11 @@ modules:
       name: alt-atomic-${{ Env.IMAGE_NAME }}
       build-type: ${{ Env.IMAGE_TYPE }}
 
-  - type: include
+  - name: Install packages
+    type: include
     body:
       targets:
-        - disable-bins.yml
         - packages.yml
-        - network.yml
-        - systemd.yml
-        - settings.yml
-        - passwd.yml
-        - fix-dracut.yml
 
   - name: Copy root
     type: copy
@@ -44,6 +39,17 @@ modules:
       source: root
       destination: /
       replace: true
+
+  - name: Settings image
+    type: include
+    body:
+      targets:
+        - disable-bins.yml
+        - network.yml
+        - settings.yml
+        - passwd.yml
+        - fix-dracut.yml
+        - systemd.yml
 
   - name: Configurate grub
     type: shell
