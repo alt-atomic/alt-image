@@ -27,13 +27,6 @@ modules:
       name: alt-atomic-${{ Env.IMAGE_NAME }}
       build-type: ${{ Env.IMAGE_TYPE }}
 
-  - name: Copy root
-    type: copy
-    body:
-      source: root
-      destination: /
-      replace: true
-
   - type: include
     body:
       targets:
@@ -43,12 +36,20 @@ modules:
         - systemd.yml
         - settings.yml
         - passwd.yml
-    
+        - fix-dracut.yml
+
+  - name: Copy root
+    type: copy
+    body:
+      source: root
+      destination: /
+      replace: true
+
   - name: Configurate grub
     type: shell
     body:
       command: scripts/grub.sh
-    
+
   - name: Update kernel
     type: kernel
     body:
