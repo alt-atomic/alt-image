@@ -149,34 +149,6 @@ else
     copy_efi_file "$CSV_DIR/ia32/BOOTIA32.CSV" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/BOOTIA32.CSV" "ia32 boot entry metadata"
 fi
 
-# Create grub.cfg for EFI/BOOT directory
-message "Creating EFI/BOOT/grub.cfg..."
-cat > "$BOOTUPD_UPDATES_DIR/EFI/BOOT/grub.cfg" << 'EOF'
-# Stub config for EFI/BOOT - redirects to main grub config
-# This is needed because Secure Boot loads from EFI/BOOT/
-
-# Try to find bootuuid.cfg on ESP
-if [ -f ($root)/EFI/altlinux/bootuuid.cfg ]; then
-  source ($root)/EFI/altlinux/bootuuid.cfg
-fi
-
-# Search for boot partition
-if [ -n "${BOOT_UUID}" ]; then
-  search --fs-uuid "${BOOT_UUID}" --set=root --no-floppy
-else
-  search --label boot --set=root --no-floppy
-fi
-
-# Load main grub config
-if [ -d ($root)/grub ]; then
-  set prefix=($root)/grub
-else
-  set prefix=($root)/boot/grub
-fi
-
-configfile $prefix/grub.cfg
-EOF
-
 # Setup GRUB modules
 message "Setting up GRUB modules and resources..."
 
