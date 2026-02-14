@@ -31,6 +31,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - id: get_commit
+        name: Get current commit
+        run: |
+          echo "::set-output name=commit::$(git rev-parse HEAD)"
+
+
       - name: Build sisyphus default image
         run: |
           podman build \
@@ -93,7 +99,7 @@ jobs:
               github.ref_name == 'main' && 
               steps.date.outputs.date || 
               '' 
-            }}
-          local-build-name: ${{ steps.rechunk.outputs.ref }}
+            }} ${{ steps.get_commit.outputs.ref }}
+          local-build-name: ${{ steps.rechunk.outputs.commit }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}

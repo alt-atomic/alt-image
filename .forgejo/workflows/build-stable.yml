@@ -81,7 +81,7 @@ jobs:
           registry-password: ${{ secrets.REGISTRY_TOKEN }}
           image-name: ${{ github.repository }}/stable
           image-tag: latest
-          image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }}
+          image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }} ${{ steps.latest_tag.outputs.release }} ${{ steps.latest_tag.outputs.commit }}
           local-build-name: ${{ steps.rechunk.outputs.ref }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
