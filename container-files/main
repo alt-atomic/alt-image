@@ -31,6 +31,9 @@ RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
     /etc/apm/resources/tools/image-prepare.sh && \
     apm system image build
 
+# Lint image
+RUN bootc container lint
+
 WORKDIR /
 
 CMD ["/sbin/init"]

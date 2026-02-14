@@ -68,11 +68,6 @@ jobs:
             org.opencontainers.image.licenses=GPL-3.0-or-later
             org.opencontainers.image.vendor=ALT Atomic Team
 
-      - name: Lint image
-        uses: alt-atomic/actions/bootc-lint@main
-        with:
-          ref: ${{ steps.rechunk.outputs.ref }}
-
       - name: Push and sign image
         uses: alt-atomic/actions/push-and-sign@main
         with:
