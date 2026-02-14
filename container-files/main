@@ -32,7 +32,7 @@ RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
     apm system image build
 
 # Lint image
-RUN bootc container lint
+RUN echo -e "\033[1;33m$(bootc container lint)\033[0m"
 
 WORKDIR /
 
