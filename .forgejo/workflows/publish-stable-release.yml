@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     name: Publish release
-    runs-on: alt-sisyphus
+    runs-on: als-tiny
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

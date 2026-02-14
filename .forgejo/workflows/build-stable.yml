@@ -16,7 +16,7 @@ env:
 jobs:
   build:
     name: Build image
-    runs-on: alt-sisyphus
+    runs-on: als-huge
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     steps:
