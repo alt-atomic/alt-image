@@ -55,7 +55,7 @@ jobs:
             .
 
       - name: Rechunk image
-        uses: alt-atomic/actions/rechunk@faaade06f5d9e666ea73e6b9e6c3454bc331629b
+        uses: alt-atomic/actions/rechunk@main
         id: rechunk
         with:
           ref: ${{ env.LOCAL_BUILD_NAME }}

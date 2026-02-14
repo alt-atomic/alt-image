@@ -51,7 +51,7 @@ jobs:
             .
 
       - name: Rechunk image
-        uses: alt-atomic/actions/rechunk@48e0ab0e1f1f8fa0bd193bf067dea8627f40917d
+        uses: alt-atomic/actions/rechunk@main
         id: rechunk
         with:
           ref: ${{ env.LOCAL_BUILD_NAME }}
@@ -70,7 +70,7 @@ jobs:
             org.opencontainers.image.vendor=ALT Atomic Team
 
       - name: Push and sign images
-        uses: alt-atomic/actions/push-and-sign@48e0ab0e1f1f8fa0bd193bf067dea8627f40917d
+        uses: alt-atomic/actions/push-and-sign@main
         if: >
           contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
         with:
