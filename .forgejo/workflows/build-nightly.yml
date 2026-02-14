@@ -99,7 +99,7 @@ jobs:
               github.ref_name == 'main' && 
               steps.date.outputs.date || 
               '' 
-            }} ${{ steps.get_commit.outputs.ref }}
-          local-build-name: ${{ steps.rechunk.outputs.commit }}
+            }} ${{ steps.get_commit.outputs.commit }}
+          local-build-name: ${{ steps.rechunk.outputs.ref }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
