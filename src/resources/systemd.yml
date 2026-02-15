@@ -9,6 +9,5 @@ modules:
         - podman.socket
         - sync-users.service
         - sync-directory.service
-        - tmp.mount
         - fstrim.timer
       enabled: true
