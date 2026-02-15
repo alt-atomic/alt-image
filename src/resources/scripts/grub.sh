@@ -1,4 +1,4 @@
-#!/bin/bash -efu
+#!/bin/bash -efux
 #
 # GRUB and EFI bootloader configuration for Alt Linux
 # This script prepares EFI files for bootupd
