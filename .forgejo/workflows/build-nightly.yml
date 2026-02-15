@@ -27,8 +27,10 @@ jobs:
           - arm64
         include:
           - arch: amd64
+            larch: x86_64
             runner: als-huge
           - arch: arm64
+            larch: aarch64
             runner: self-hosted-arm64-alt-sisyphus
     steps:
       - name: Prepare env
@@ -58,6 +60,7 @@ jobs:
             --build-arg DAY=${{ steps.date.outputs.day }} \
             --build-arg IMAGE_TYPE=nightly \
             --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
+            --build-arg ARCH=${{ matrix.larch }} \
             --file ./container-files/main \
             .
 

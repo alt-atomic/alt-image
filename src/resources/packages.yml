@@ -1,5 +1,14 @@
 modules:
-  - type: packages
+  - type: shell
+    id: platform_arch
+    body:
+      command: |
+        export ARCH=$(arch)
+    output:
+      Arch: ${{ Env.ARCH }}
+
+  - name: Install multiarch packages
+    type: packages
     body:
       install:
         # Base
@@ -45,7 +54,6 @@ modules:
         - grub-btrfs
         - grub-efi
         - alt-uefi-certs
-        - shim-signed
         - shim-unsigned
 
         # Virtualization
@@ -92,3 +100,9 @@ modules:
         # Graphic
         - glxinfo
         - mesa-dri-drivers
+
+  - name: Install x86_64-only packages
+    if: Env.ARCH == 'x86_64'
+    body:
+      install:
+        - shim-signed

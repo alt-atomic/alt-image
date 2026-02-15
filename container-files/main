@@ -7,6 +7,7 @@ ARG IMAGE_TYPE="nightly"
 ARG YEAR
 ARG MONTH
 ARG DAY
+ARG ARCH
 
 ENV IMAGE_NAME="core"
 ENV IMAGE=$IMAGE
@@ -14,6 +15,7 @@ ENV IMAGE_TYPE=$IMAGE_TYPE
 ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
+ENV ARCH=$ARCH
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates

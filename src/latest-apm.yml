@@ -11,20 +11,12 @@ modules:
     output:
       ApmGroup: ${{ Env.APM_GROUP }}
 
-  - type: shell
-    id: platform_arch
-    body:
-      command: |
-        export ARCH=$(arch)
-    output:
-      Arch: ${{ Env.ARCH }}
-
   - name: Add apm repo
     type: repos
     body:
       name: apm
       custom:
-        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/${{ Modules.apm_group.Output.ApmGroup }}/sisyphus.repo ${{ Modules.platform_arch.Output.Arch }} classic
+        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/${{ Modules.apm_group.Output.ApmGroup }}/sisyphus.repo ${{ Env.ARCH }} classic
 
   - name: Install apm
     type: packages
