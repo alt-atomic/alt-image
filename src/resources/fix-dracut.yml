@@ -10,9 +10,9 @@ modules:
     body:
       command: |
         cd /tmp
-        wget http://git.altlinux.org/tasks/384694/build/100/x86_64/rpms/dracut-107-alt1.x86_64.rpm
-        rpm -i ./dracut-107-alt1.x86_64.rpm
-        rm -f ./dracut-107-alt1.x86_64.rpm
+        wget http://git.altlinux.org/tasks/384694/build/100/${{ Env.ARCH }}/rpms/dracut-107-alt1.${{ Env.ARCH }}.rpm
+        rpm -i ./dracut-107-alt1.${{ Env.ARCH }}.rpm
+        rm -f ./dracut-107-alt1.${{ Env.ARCH }}.rpm
 
   - name: Hold dracut
     type: copy
