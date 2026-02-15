@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Prepare env
         uses: alt-atomic/actions/prepare-env@main
+        with:
+          with-qemu: true
 
       - name: Get date
         id: date
