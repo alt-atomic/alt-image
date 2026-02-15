@@ -117,7 +117,7 @@ jobs:
         uses: alt-atomic/actions/prepare-env@main
 
       - name: Create manifest
-        uses: alt-atomic/actions/manifest-create@main
+        uses: alt-atomic/actions/create-manifest@main
         with:
           registry: ${{ env.REGISTRY }}
           registry-username: "<token>"
