@@ -20,6 +20,11 @@ jobs:
     runs-on: als-huge
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
     steps:
       - name: Prepare env
         uses: alt-atomic/actions/prepare-env@main
@@ -36,12 +41,11 @@ jobs:
         run: |
           echo "::set-output name=commit::$(git rev-parse HEAD)"
 
-
       - name: Build sisyphus default image
         run: |
           podman build \
             --tag $LOCAL_BUILD_NAME \
-            --platform linux/amd64 \
+            --platform linux/${{ matrix.arch }} \
             --build-arg YEAR=${{ steps.date.outputs.year }} \
             --build-arg MONTH=${{ steps.date.outputs.month }} \
             --build-arg DAY=${{ steps.date.outputs.day }} \
@@ -83,11 +87,42 @@ jobs:
               '${{ github.repository }}/nightly' || 
               '${{ github.repository }}/nightly-branch' 
             }}
-          image-tag: >-
+          image-tag: ${{ matrix.arch }}
+          local-build-name: ${{ steps.rechunk.outputs.ref }}
+          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+  manifest:
+    name: Multiarch manifest push
+    needs: build
+    if: >
+      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    runs-on: als-tiny
+    container:
+      image: altlinux.space/actions/runner/containers:sisyphus
+
+    steps:
+      - name: Prepare env
+        uses: alt-atomic/actions/prepare-env@main
+
+      - name: Create manifest
+        uses: alt-atomic/actions/manifest-create@main
+        with:
+          registry: ${{ env.REGISTRY }}
+          registry-username: "<token>"
+          registry-password: ${{ secrets.REGISTRY_TOKEN }}
+          image-name: >-
             ${{ 
               github.ref_name == 'main' && 
-              'latest' || 
-              github.ref_name 
+              '${{ github.repository }}/nightly' || 
+              '${{ github.repository }}/nightly-branch' 
+            }}
+          arch-tags: amd64 arm64
+          image-tag: >-
+            ${{
+              github.ref_name == 'main' &&
+              'latest' ||
+              github.ref_name
             }}
           image-aliases: >-
             ${{ 
@@ -95,6 +130,3 @@ jobs:
               steps.date.outputs.date || 
               '' 
             }} ${{ steps.get_commit.outputs.commit }}
-          local-build-name: ${{ steps.rechunk.outputs.ref }}
-          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
