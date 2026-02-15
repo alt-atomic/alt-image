@@ -1,12 +1,4 @@
 modules:
-  - type: shell
-    id: platform_arch
-    body:
-      command: |
-        export ARCH=$(arch)
-    output:
-      Arch: ${{ Env.ARCH }}
-
   - name: Install multiarch packages
     type: packages
     body:
