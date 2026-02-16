@@ -19,9 +19,24 @@ jobs:
     runs-on: als-huge
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
+        include:
+          - arch: amd64
+            larch: x86_64
+            runner: als-huge
+          - arch: arm64
+            larch: aarch64
+            # runner: self-hosted-arm64-alt-sisyphus
+            runner: als-huge
     steps:
       - name: Prepare env
         uses: alt-atomic/actions/prepare-env@main
+        with:
+          with-qemu: true
 
       - name: Get date
         id: date
@@ -45,12 +60,13 @@ jobs:
         run: |
           podman build \
             --tag $LOCAL_BUILD_NAME \
-            --platform linux/amd64 \
+            --platform linux/${{ matrix.arch }} \
             --build-arg YEAR=${{ steps.date.outputs.year }} \
             --build-arg MONTH=${{ steps.date.outputs.month }} \
             --build-arg DAY=${{ steps.date.outputs.day }} \
             --build-arg IMAGE_TYPE=stable \
             --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
+            --build-arg ARCH=${{ matrix.larch }} \
             --file ./container-files/main \
             .
 
@@ -75,8 +91,44 @@ jobs:
           registry-username: "<token>"
           registry-password: ${{ secrets.REGISTRY_TOKEN }}
           image-name: ${{ github.repository }}/stable
-          image-tag: latest
-          image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }} ${{ steps.latest_tag.outputs.release }} ${{ steps.latest_tag.outputs.commit }}
+          image-tag: ${{ matrix.arch }}
           local-build-name: ${{ steps.rechunk.outputs.ref }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+  manifest:
+    name: Multiarch manifest push
+    needs: build
+    if: >
+      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    runs-on: als-tiny
+    container:
+      image: altlinux.space/actions/runner/containers:sisyphus
+
+    steps:
+      - name: Prepare env
+        uses: alt-atomic/actions/prepare-env@main
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: latest_tag
+        uses: alt-atomic/actions/get-tag@main
+
+      - name: Get date
+        id: date
+        uses: alt-atomic/actions/parse-date@main
+
+      - name: Create manifest
+        uses: alt-atomic/actions/create-manifest@5cf8009c2f201eb7a5f583e7f315e2e8d9fc6652
+        with:
+          registry: ${{ env.REGISTRY }}
+          registry-username: "<token>"
+          registry-password: ${{ secrets.REGISTRY_TOKEN }}
+          image-name: ${{ github.repository }}/stable
+          arch-tags: amd64 arm64
+          image-tag: latest
+          image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }} ${{ steps.latest_tag.outputs.release }} ${{ steps.latest_tag.outputs.commit }}
