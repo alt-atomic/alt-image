@@ -129,7 +129,7 @@ jobs:
         uses: alt-atomic/actions/parse-date@main
 
       - name: Create manifest
-        uses: alt-atomic/actions/create-manifest@5cf8009c2f201eb7a5f583e7f315e2e8d9fc6652
+        uses: alt-atomic/actions/create-manifest@e9a988bd46a3e1cc5270c70bdc575217babdfbd7
         with:
           registry: ${{ env.REGISTRY }}
           registry-username: "<token>"
