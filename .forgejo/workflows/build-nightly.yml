@@ -116,8 +116,20 @@ jobs:
       - name: Prepare env
         uses: alt-atomic/actions/prepare-env@main
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get current commit
+        id: get_commit
+        run: |
+          echo "::set-output name=commit::$(git rev-parse HEAD)"
+
+      - name: Get date
+        id: date
+        uses: alt-atomic/actions/parse-date@main
+
       - name: Create manifest
-        uses: alt-atomic/actions/manifest-create@main
+        uses: alt-atomic/actions/create-manifest@9e6b3cd14aee512285db94e915807cec569cc6e4
         with:
           registry: ${{ env.REGISTRY }}
           registry-username: "<token>"
