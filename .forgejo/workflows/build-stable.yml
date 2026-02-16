@@ -15,8 +15,8 @@ env:
 
 jobs:
   build:
-    name: Build image
-    runs-on: als-huge
+    name: Build ${{ matrix.arch }} image
+    runs-on: ${{ matrix.runner }}
     container:
       image: altlinux.space/actions/runner/containers:sisyphus
     strategy:
