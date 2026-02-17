@@ -1,22 +1,11 @@
 modules:
-  - type: shell
-    id: apm_group
-    body:
-      command: |
-        if [ "$IMAGE_TYPE" = "nightly" ]; then
-          export APM_GROUP=apm-nightly
-        else
-          export APM_GROUP=apm
-        fi
-    output:
-      ApmGroup: ${{ Env.APM_GROUP }}
-
   - name: Add apm repo
     type: repos
+    if: Env.IMAGE_TYPE == 'nightly'
     body:
       name: apm
       custom:
-        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/${{ Modules.apm_group.Output.ApmGroup }}/sisyphus.repo ${{ Env.ARCH }} classic
+        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/apm-nightly/sisyphus.repo ${{ Env.ARCH }} classic
 
   - name: Install apm
     type: packages
