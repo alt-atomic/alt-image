@@ -121,7 +121,7 @@ jobs:
         uses: alt-atomic/actions/parse-date@main
 
       - name: Create manifest
-        uses: alt-atomic/actions/create-manifest@e9a988bd46a3e1cc5270c70bdc575217babdfbd7
+        uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
         with:
           registry: ${{ env.REGISTRY }}
           registry-username: "<token>"
@@ -130,3 +130,5 @@ jobs:
           arch-tags: amd64 arm64
           image-tag: latest
           image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }} ${{ steps.latest_tag.outputs.release }} ${{ steps.latest_tag.outputs.commit }}
+          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
