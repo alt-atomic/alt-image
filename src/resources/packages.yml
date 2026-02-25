@@ -13,6 +13,7 @@ modules:
         - man
         - mc
         - nano
+        - pam-limits-off
         - passwd
         - rsync
         - shadow-change

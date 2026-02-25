@@ -1,11 +1,4 @@
 modules:
-  - name: Increase limits of opened fd
-    type: shell
-    body:
-      command: |
-        grep -qE "^\* hard nofile 978160$" /etc/security/limits.conf || echo "* hard nofile 978160" >> /etc/security/limits.conf
-        grep -qE "^\* soft nofile 978160$" /etc/security/limits.conf || echo "* soft nofile 978160" >> /etc/security/limits.conf
-
   - name: Fix podman
     type: shell
     body:
