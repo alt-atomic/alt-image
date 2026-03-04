@@ -7,7 +7,7 @@ on:
     - cron: '0 4 * * *'
   push:
     tags:
-      - '*'
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 env:
   LOCAL_BUILD_NAME: localhost/core
@@ -31,7 +31,6 @@ jobs:
           - arch: arm64
             larch: aarch64
             runner: self-hosted-arm64-huge
-            # runner: als-huge
     steps:
       - name: Prepare env
         uses: alt-atomic/actions/prepare-env@main
@@ -132,3 +131,33 @@ jobs:
           image-aliases: ${{ steps.date.outputs.date }} ${{ steps.latest_tag.outputs.tag }} ${{ steps.latest_tag.outputs.release }} ${{ steps.latest_tag.outputs.commit }}
           cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+  release:
+    name: Publish release
+    runs-on: als-tiny
+    needs: manifest
+    if: startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get changes between tags
+        id: changes
+        uses: https://github.com/simbo/changes-between-tags-action@v1
+        with:
+          tag-pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+          include-hashes: false
+
+      - name: Publish release
+        id: create_release
+        uses: https://github.com/softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.changes.outputs.tag }}
+          name: "Release ${{ steps.changes.outputs.tag }}"
+          body: "${{ steps.changes.outputs.changes }}"
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
