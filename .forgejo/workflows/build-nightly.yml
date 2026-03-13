@@ -33,7 +33,7 @@ jobs:
         - arch: arm64
           larch: aarch64
           runner: self-hosted-arm64-huge
-          # runner: als-huge
+
     steps:
     - name: Prepare env
       uses: alt-atomic/actions/prepare-env@main
@@ -150,3 +150,32 @@ jobs:
           }} ${{ steps.get_commit.outputs.commit }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+  run-derivatives:
+    name: Run derivarives workflow for ${{ matrix.image }}
+    needs: manifest
+    if: >
+      github.event_name == 'schedule'
+    runs-on: als-tiny
+    strategy:
+      matrix:
+        image:
+        - kyanite
+        - onyx
+
+    steps:
+    - name: Trigger rebuild
+      uses: actions/forgejo-script@v1
+      env:
+        IMAGE: ${{ matrix.image }}
+      with:
+        github-token: ${{ secrets.REBUILD }}
+        script: |
+          await forgejo.repos.dispatchWorkflow(
+            "alt-atomic",
+            process.env.IMAGE,
+            "build-nightly.yml", 
+            {
+              ref: "main",
+            },
+          );
