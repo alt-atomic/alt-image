@@ -3,12 +3,12 @@ name: Build nightly images
 on:
   workflow_dispatch:
   schedule:
-    # Every day at 4 a.m.
-    - cron: '0 4 * * *'
+  # Every day at 4 a.m.
+  - cron: '0 4 * * *'
   push:
     branches:
-      - 'nightly-*'
-      - 'main'
+    - 'nightly-*'
+    - 'main'
   pull_request:
 
 env:
@@ -24,79 +24,79 @@ jobs:
     strategy:
       matrix:
         arch:
-          - amd64
-          - arm64
+        - amd64
+        - arm64
         include:
-          - arch: amd64
-            larch: x86_64
-            runner: als-huge
-          - arch: arm64
-            larch: aarch64
-            runner: self-hosted-arm64-huge
-            # runner: als-huge
+        - arch: amd64
+          larch: x86_64
+          runner: als-huge
+        - arch: arm64
+          larch: aarch64
+          runner: self-hosted-arm64-huge
+          # runner: als-huge
     steps:
-      - name: Prepare env
-        uses: alt-atomic/actions/prepare-env@main
+    - name: Prepare env
+      uses: alt-atomic/actions/prepare-env@main
 
-      - name: Get date
-        id: date
-        uses: alt-atomic/actions/parse-date@main
+    - name: Get date
+      id: date
+      uses: alt-atomic/actions/parse-date@main
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Build sisyphus default image
-        run: |
-          podman build \
-            --tag $LOCAL_BUILD_NAME \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg YEAR=${{ steps.date.outputs.year }} \
-            --build-arg MONTH=${{ steps.date.outputs.month }} \
-            --build-arg DAY=${{ steps.date.outputs.day }} \
-            --build-arg IMAGE_TYPE=nightly \
-            --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
-            --build-arg ARCH=${{ matrix.larch }} \
-            --file ./container-files/main \
-            .
+    - name: Build sisyphus default image
+      run: |
+        podman build \
+          --tag $LOCAL_BUILD_NAME \
+          --platform linux/${{ matrix.arch }} \
+          --build-arg YEAR=${{ steps.date.outputs.year }} \
+          --build-arg MONTH=${{ steps.date.outputs.month }} \
+          --build-arg DAY=${{ steps.date.outputs.day }} \
+          --build-arg IMAGE_TYPE=nightly \
+          --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
+          --build-arg ARCH=${{ matrix.larch }} \
+          --file ./container-files/main \
+          .
 
-      - name: Rechunk image
-        uses: alt-atomic/actions/rechunk@main
-        id: rechunk
-        if: (github.event_name == 'push' && github.ref_name == 'main' ) || contains(fromJSON('["workflow_dispatch", "schedule"]'), github.event_name)
-        with:
-          ref: ${{ env.LOCAL_BUILD_NAME }}
-          prev-ref: >-
-            ${{
-              github.ref_name == 'main' &&
-              '${{ env.REGISTRY }}/${{ github.repository }}/nightly:latest' || 
-              '${{ env.REGISTRY }}/${{ github.repository }}/nightly-branch:${{ github.ref_name }}'
-            }}
-          labels: |
-            org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}
-            org.opencontainers.image.title=ALT Atomic Core Nightly
-            org.opencontainers.image.description=Nightly Core image for ALT Atomic distros
-            org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
-            org.opencontainers.image.licenses=GPL-3.0-or-later
-            org.opencontainers.image.vendor=ALT Atomic Team
+    - name: Rechunk image
+      uses: alt-atomic/actions/rechunk@main
+      id: rechunk
+      if: (github.event_name == 'push' && github.ref_name == 'main' ) || contains(fromJSON('["workflow_dispatch", "schedule"]'), github.event_name)
+      with:
+        ref: ${{ env.LOCAL_BUILD_NAME }}
+        prev-ref: >-
+          ${{
+            github.ref_name == 'main' &&
+            '${{ env.REGISTRY }}/${{ github.repository }}/nightly:latest' || 
+            '${{ env.REGISTRY }}/${{ github.repository }}/nightly-branch:${{ github.ref_name }}'
+          }}
+        labels: |
+          org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}
+          org.opencontainers.image.title=ALT Atomic Core Nightly
+          org.opencontainers.image.description=Nightly Core image for ALT Atomic distros
+          org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
+          org.opencontainers.image.licenses=GPL-3.0-or-later
+          org.opencontainers.image.vendor=ALT Atomic Team
 
-      - name: Push and sign images
-        uses: alt-atomic/actions/push-and-sign@main
-        if: >
-          contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
-        with:
-          registry: ${{ env.REGISTRY }}
-          registry-username: "<token>"
-          registry-password: ${{ secrets.REGISTRY_TOKEN }}
-          image-name: >-
-            ${{ 
-              github.ref_name == 'main' && 
-              '${{ github.repository }}/nightly' || 
-              '${{ github.repository }}/nightly-branch' 
-            }}
-          image-tag: ${{ matrix.arch }}
-          local-build-name: ${{ steps.rechunk.outputs.ref }}
-          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+    - name: Push and sign images
+      uses: alt-atomic/actions/push-and-sign@main
+      if: >
+        contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+      with:
+        registry: ${{ env.REGISTRY }}
+        registry-username: "<token>"
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        image-name: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            '${{ github.repository }}/nightly' || 
+            '${{ github.repository }}/nightly-branch' 
+          }}
+        image-tag: ${{ matrix.arch }}
+        local-build-name: ${{ steps.rechunk.outputs.ref }}
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
   manifest:
     name: Multiarch manifest push
@@ -108,45 +108,45 @@ jobs:
       image: altlinux.space/actions/runner/containers:sisyphus
 
     steps:
-      - name: Prepare env
-        uses: alt-atomic/actions/prepare-env@main
+    - name: Prepare env
+      uses: alt-atomic/actions/prepare-env@main
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Get current commit
-        id: get_commit
-        run: |
-          echo "::set-output name=commit::$(git rev-parse HEAD)"
+    - name: Get current commit
+      id: get_commit
+      run: |
+        echo "::set-output name=commit::$(git rev-parse HEAD)"
 
-      - name: Get date
-        id: date
-        uses: alt-atomic/actions/parse-date@main
+    - name: Get date
+      id: date
+      uses: alt-atomic/actions/parse-date@main
 
-      - name: Create manifest
-        uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
-        with:
-          registry: ${{ env.REGISTRY }}
-          registry-username: "<token>"
-          registry-password: ${{ secrets.REGISTRY_TOKEN }}
-          image-name: >-
-            ${{ 
-              github.ref_name == 'main' && 
-              '${{ github.repository }}/nightly' || 
-              '${{ github.repository }}/nightly-branch' 
-            }}
-          arch-tags: amd64 arm64
-          image-tag: >-
-            ${{
-              github.ref_name == 'main' &&
-              'latest' ||
-              github.ref_name
-            }}
-          image-aliases: >-
-            ${{ 
-              github.ref_name == 'main' && 
-              steps.date.outputs.date || 
-              '' 
-            }} ${{ steps.get_commit.outputs.commit }}
-          cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+    - name: Create manifest
+      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
+      with:
+        registry: ${{ env.REGISTRY }}
+        registry-username: "<token>"
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        image-name: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            '${{ github.repository }}/nightly' || 
+            '${{ github.repository }}/nightly-branch' 
+          }}
+        arch-tags: amd64 arm64
+        image-tag: >-
+          ${{
+            github.ref_name == 'main' &&
+            'latest' ||
+            github.ref_name
+          }}
+        image-aliases: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            steps.date.outputs.date || 
+            '' 
+          }} ${{ steps.get_commit.outputs.commit }}
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
