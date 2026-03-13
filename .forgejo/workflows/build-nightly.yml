@@ -152,7 +152,7 @@ jobs:
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
   run-derivatives:
-    name: Run derivarives workflow for ${{ matrix.image }}
+    name: Run ${{ matrix.image }} build-nightly workflow
     needs: manifest
     if: >
       github.event_name == 'schedule'
