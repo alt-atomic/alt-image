@@ -105,12 +105,9 @@ jobs:
       contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
     runs-on: als-tiny
     container:
-      image: altlinux.space/actions/runner/containers:sisyphus
+      image: altlinux.space/alt-atomic/builder-image:sisyphus
 
     steps:
-    - name: Prepare env
-      uses: alt-atomic/actions/prepare-env@main
-
     - name: Checkout repository
       uses: actions/checkout@v4
 

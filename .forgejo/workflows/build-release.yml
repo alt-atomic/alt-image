@@ -18,7 +18,7 @@ jobs:
     name: Build ${{ matrix.arch }} image
     runs-on: ${{ matrix.runner }}
     container:
-      image: altlinux.space/actions/runner/containers:sisyphus
+      image: altlinux.space/alt-atomic/builder-image:sisyphus
     strategy:
       matrix:
         arch:
@@ -32,9 +32,6 @@ jobs:
             larch: aarch64
             runner: self-hosted-arm64-huge
     steps:
-      - name: Prepare env
-        uses: alt-atomic/actions/prepare-env@main
-
       - name: Get date
         id: date
         uses: alt-atomic/actions/parse-date@main
