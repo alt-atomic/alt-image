@@ -1,0 +1,41 @@
+modules:
+  - name: Remove current grub
+    type: packages
+    body:
+      remove:
+        - grub-common
+        - grub-common-extra
+        - grub-efi
+
+  - name: Remove current grub-pc
+    type: packages
+    if: Env.ARCH == 'x86_64'
+    body:
+      remove:
+        - grub-pc
+
+  - name: Download and install grub 2.12
+    type: shell
+    body:
+      command: |
+        cd /tmp
+        wget http://git.altlinux.org/tasks/400547/build/100/${{ Env.ARCH }}/rpms/grub-common-2.12-alt16.${{ Env.ARCH }}.rpm
+        wget http://git.altlinux.org/tasks/400547/build/100/${{ Env.ARCH }}/rpms/grub-efi-2.12-alt16.${{ Env.ARCH }}.rpm
+        rpm -i ./grub-common-2.12-alt16.${{ Env.ARCH }}.rpm ./grub-efi-2.12-alt16.${{ Env.ARCH }}.rpm
+        rm -f ./grub-common-2.12-alt16.${{ Env.ARCH }}.rpm ./grub-efi-2.12-alt16.${{ Env.ARCH }}.rpm
+
+  - name: Download and install grub-pc 2.12
+    type: shell
+    if: Env.ARCH == 'x86_64'
+    body:
+      command: |
+        cd /tmp
+        wget http://git.altlinux.org/tasks/400547/build/100/x86_64/rpms/grub-pc-2.12-alt16.x86_64.rpm
+        rpm -i ./grub-pc-2.12-alt16.x86_64.rpm
+        rm -f ./grub-pc-2.12-alt16.x86_64.rpm
+
+  - name: Hold grub
+    type: copy
+    body:
+      source: files/hold-grub.conf
+      destination: /etc/apt/apt.conf.d/hold-grub.conf

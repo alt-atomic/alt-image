@@ -49,6 +49,7 @@ modules:
         - settings.yml
         - passwd.yml
         - fix-dracut.yml
+        - fix-grub.yml
         - systemd.yml
 
   - name: Configurate grub
