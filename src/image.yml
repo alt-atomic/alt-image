@@ -47,6 +47,7 @@ modules:
 
   - name: Settings image
     type: include
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       targets:
         - disable-bins.yml
@@ -55,6 +56,11 @@ modules:
         - passwd.yml
         - fix-dracut.yml
         - fix-grub.yml
+
+  - name: Systemd services
+    type: include
+    body:
+      targets:
         - systemd.yml
 
   - name: Configurate grub
