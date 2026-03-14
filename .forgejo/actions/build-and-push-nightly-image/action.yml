@@ -23,9 +23,6 @@ inputs:
   pretty-date:
     required: true
     description: ''
-  commit:
-    required: true
-    description: ''
   registry-token:
     required: true
     description: ''
@@ -64,7 +61,7 @@ runs:
       if [[ "${{ inputs.build }}" == "minimal" ]]; then
         IMAGE="registry.altlinux.org/sisyphus/base:latest"
       else
-        IMAGE="${{ inputs.registry }}/${{ github.repository }}/nightly:${{ inputs.commit }}"
+        IMAGE="${{ inputs.registry }}/${{ github.repository }}/nightly:${{ inputs.arch }}"
       fi
 
       podman build \
