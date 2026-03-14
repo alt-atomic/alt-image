@@ -85,7 +85,7 @@ jobs:
         larch: ${{ matrix.larch }}
 
   build-default:
-    name: Build minimal ${{ matrix.arch }} image
+    name: Build default ${{ matrix.arch }} image
     needs:
     - build-minimal
     - gather-build-data
@@ -109,7 +109,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Build minimal image
+    - name: Build default image
       uses: ./.forgejo/actions/build-and-push-nightly-image
       with:
         build: default
@@ -124,7 +124,7 @@ jobs:
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
         local-build-name: localhost/core
-        need-rechunk: 'false'
+        need-rechunk: 'true'
         arch: ${{ matrix.arch }}
         larch: ${{ matrix.larch }}
 
@@ -169,7 +169,7 @@ jobs:
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
   manifest-default:
-    name: Multiarch minimal manifest push
+    name: Multiarch default manifest push
     needs:
     - build-default
     - gather-build-data
