@@ -111,15 +111,15 @@ runs:
       image-name: >-
         ${{
           github.ref_name == 'main' && 
-          '${{ inputs.image-name }}/nightly' || 
-          '${{ inputs.image-name }}/nightly-branch' 
+          format('{0}/nightly', inputs.image-name) || 
+          format('{0}/nightly-branch', inputs.image-name) 
         }}
       image-tag: ${{ inputs.arch }}
       local-build-name: >-
         ${{
           inputs.need-rechunk == 'true' && 
-          '${{ steps.rechunk.outputs.ref }}' || 
-          '${{ inputs.local-build-name }}' 
+          steps.rechunk.outputs.ref || 
+          inputs.local-build-name 
         }}
       cosign-image-sign: ${{ inputs.cosign-image-sign }}
       cosign-password: ${{ inputs.cosign-password }}
