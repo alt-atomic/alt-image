@@ -39,9 +39,8 @@ modules:
 
   - name: Copy root
     type: copy
-    if: Env.BUILD_TYPE == 'minimal'
     body:
-      source: root
+      source: root-${{ Env.BUILD_TYPE }}
       destination: /
       replace: true
 
