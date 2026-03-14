@@ -46,6 +46,7 @@ modules:
         - grub
         - grub-btrfs
         - grub-efi
+        - grub-pc
         - alt-uefi-certs
         - shim-unsigned
 
