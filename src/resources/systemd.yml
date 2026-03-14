@@ -1,10 +1,17 @@
 modules:
   - type: systemd
+    if: Env.BUILD_TYPE != 'minimal'
+    body:
+      targets:
+        - libvirtd
+      enabled: true
+
+  - type: systemd
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       targets:
         - ostree-remount
         - NetworkManager
-        - libvirtd
         - chrony
         - podman.socket
         - sync-users.service

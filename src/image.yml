@@ -47,7 +47,6 @@ modules:
 
   - name: Settings image
     type: include
-    if: Env.BUILD_TYPE == 'minimal'
     body:
       targets:
         - disable-bins.yml
