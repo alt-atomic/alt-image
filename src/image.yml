@@ -32,7 +32,6 @@ modules:
     body:
       targets:
         - packages.yml
-        - bootupd_task.yml
 
   - name: Copy root
     type: copy
