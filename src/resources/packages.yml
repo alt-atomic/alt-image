@@ -1,18 +1,17 @@
 modules:
   - name: Install multiarch packages
     type: packages
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       install:
         # Base
         - bash-completion
-        - command-not-found
         - coreutils
         - curl
         - eza
         - iputils
         - man
         - mc
-        - nano
         - pam-limits-off
         - passwd
         - rsync
@@ -33,7 +32,6 @@ modules:
         - containers-common
         - fuse-overlayfs
         - podman
-        - podman-compose
         - skopeo
         - sysctl-conf-userns
 
@@ -47,16 +45,7 @@ modules:
         - grub-btrfs
         - grub-efi
         - alt-uefi-certs
-        - shim-unsigned
-
-        # Virtualization
-        - libvirt
-        - lxd
-        - open-vm-tools
-        - qemu-guest-agent
-        - spice-vdagent
-        - spice-webdavd
-        - virtiofsd
+        - shim-unsigned       
 
         # Filesystem
         - btrfs-progs
@@ -68,7 +57,6 @@ modules:
 
         # System
         - attr
-        - bluez
         - chrony
         - dosfstools
         - e2fsprogs
@@ -83,12 +71,31 @@ modules:
         - mount
         - NetworkManager
         - ostree
-        - bubblewrap
         - policycoreutils
         - sfdisk
         - systemd
         - yq
         - fontconfig
+
+  - name: Install non minimal packages
+    type: packages
+    if: Env.BUILD_TYPE != 'minimal'
+    body:
+      install:
+        - podman-compose
+        - command-not-found
+        - bluez
+        - bubblewrap
+        - nano
+
+        # Virtualization
+        - libvirt
+        - lxd
+        - open-vm-tools
+        - qemu-guest-agent
+        - spice-vdagent
+        - spice-webdavd
+        - virtiofsd
 
         # Graphic
         - glxinfo
@@ -96,7 +103,7 @@ modules:
 
   - name: Install x86_64-only packages
     type: packages
-    if: Env.ARCH == 'x86_64'
+    if: Env.ARCH == 'x86_64' && Env.BUILD_TYPE == 'minimal'
     body:
       install:
         - shim-signed

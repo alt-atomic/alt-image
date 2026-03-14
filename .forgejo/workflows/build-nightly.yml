@@ -16,8 +16,35 @@ env:
   REGISTRY: altlinux.space
 
 jobs:
-  build:
-    name: Build ${{ matrix.arch }} image
+  gather-build-data:
+    name: Gather build data
+    runs-on: als-tiny
+
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+      year: ${{ steps.date.outputs.year }}
+      month: ${{ steps.date.outputs.month }}
+      day: ${{ steps.date.outputs.day }}
+      pretty-date: ${{ steps.date.outputs.pretty-date }}
+      commit: ${{ steps.get_commit.outputs.commit }} 
+
+    steps:
+    - name: Get date
+      id: date
+      uses: alt-atomic/actions/parse-date@main
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - id: get_commit
+      name: Get current commit
+      run: |
+        echo "commit=$(git rev-parse HEAD)" >> $FORGEJO_OUTPUT
+
+  build-minimal:
+    name: Build minimal ${{ matrix.arch }} image
+    needs:
+    - gather-build-data
     runs-on: ${{ matrix.runner }}
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
@@ -35,69 +62,77 @@ jobs:
           runner: self-hosted-arm64-huge
 
     steps:
-    - name: Get date
-      id: date
-      uses: alt-atomic/actions/parse-date@main
-
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Build sisyphus default image
-      run: |
-        podman build \
-          --tag $LOCAL_BUILD_NAME \
-          --platform linux/${{ matrix.arch }} \
-          --build-arg YEAR=${{ steps.date.outputs.year }} \
-          --build-arg MONTH=${{ steps.date.outputs.month }} \
-          --build-arg DAY=${{ steps.date.outputs.day }} \
-          --build-arg IMAGE_TYPE=nightly \
-          --build-arg IMAGE=registry.altlinux.org/sisyphus/base:latest \
-          --build-arg ARCH=${{ matrix.larch }} \
-          --file ./container-files/main \
-          .
-
-    - name: Rechunk image
-      uses: alt-atomic/actions/rechunk@main
-      id: rechunk
-      if: (github.event_name == 'push' && github.ref_name == 'main' ) || contains(fromJSON('["workflow_dispatch", "schedule"]'), github.event_name)
+    - name: Build minimal image
+      uses: ./.forgejo/actions/build-and-push-nightly-image
       with:
-        ref: ${{ env.LOCAL_BUILD_NAME }}
-        prev-ref: >-
-          ${{
-            github.ref_name == 'main' &&
-            '${{ env.REGISTRY }}/${{ github.repository }}/nightly:latest' || 
-            '${{ env.REGISTRY }}/${{ github.repository }}/nightly-branch:${{ github.ref_name }}'
-          }}
-        labels: |
-          org.altlinux.repo.date=${{ steps.date.outputs.pretty-date }}
-          org.opencontainers.image.title=ALT Atomic Core Nightly
-          org.opencontainers.image.description=Nightly Core image for ALT Atomic distros
-          org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
-          org.opencontainers.image.licenses=GPL-3.0-or-later
-          org.opencontainers.image.vendor=ALT Atomic Team
-
-    - name: Push and sign images
-      uses: alt-atomic/actions/push-and-sign@main
-      if: >
-        contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
-      with:
-        registry: ${{ env.REGISTRY }}
-        registry-username: "<token>"
-        registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            '${{ github.repository }}/nightly' || 
-            '${{ github.repository }}/nightly-branch' 
-          }}
-        image-tag: ${{ matrix.arch }}
-        local-build-name: ${{ steps.rechunk.outputs.ref }}
+        build: minimal
+        image-name: ${{ github.repository }}-minimal
+        name-pretty: '(Minimal)'
+        year: ${{ needs.gather-build-data.outputs.year }}
+        month: ${{ needs.gather-build-data.outputs.month }}
+        day: ${{ needs.gather-build-data.outputs.day }}
+        pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
+        commit: ${{ needs.gather-build-data.outputs.commit }}
+        registry-token: ${{ secrets.REGISTRY_TOKEN }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+        local-build-name: localhost/core/minimal
+        need-rechunk: 'false'
+        arch: ${{ matrix.arch }}
+        larch: ${{ matrix.larch }}
 
-  manifest:
-    name: Multiarch manifest push
-    needs: build
+  build-default:
+    name: Build minimal ${{ matrix.arch }} image
+    needs:
+    - build-minimal
+    - gather-build-data
+    runs-on: ${{ matrix.runner }}
+    container:
+      image: altlinux.space/alt-atomic/builder-image:sisyphus
+    strategy:
+      matrix:
+        arch:
+        - amd64
+        - arm64
+        include:
+        - arch: amd64
+          larch: x86_64
+          runner: als-huge
+        - arch: arm64
+          larch: aarch64
+          runner: self-hosted-arm64-huge
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Build minimal image
+      uses: ./.forgejo/actions/build-and-push-nightly-image
+      with:
+        build: default
+        image-name: ${{ github.repository }}
+        name-pretty: ''
+        year: ${{ needs.gather-build-data.outputs.year }}
+        month: ${{ needs.gather-build-data.outputs.month }}
+        day: ${{ needs.gather-build-data.outputs.day }}
+        pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
+        commit: ${{ needs.gather-build-data.outputs.commit }}
+        registry-token: ${{ secrets.REGISTRY_TOKEN }}
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+        local-build-name: localhost/core
+        need-rechunk: 'false'
+        arch: ${{ matrix.arch }}
+        larch: ${{ matrix.larch }}
+
+  manifest-minimal:
+    name: Multiarch minimal manifest push
+    needs:
+    - build-minimal
+    - gather-build-data
     if: >
       contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
     runs-on: als-tiny
@@ -105,18 +140,46 @@ jobs:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - name: Create manifest
+      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
+      with:
+        registry: ${{ env.REGISTRY }}
+        registry-username: "<token>"
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        image-name: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            '${{ github.repository }}-minimal/nightly' || 
+            '${{ github.repository }}-minimal/nightly-branch' 
+          }}
+        arch-tags: amd64 arm64
+        image-tag: >-
+          ${{
+            github.ref_name == 'main' &&
+            'latest' ||
+            github.ref_name
+          }}
+        image-aliases: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            needs.gather-build-data.outputs.date || 
+            '' 
+          }} ${{ needs.gather-build-data.outputs.commit }}
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
-    - name: Get current commit
-      id: get_commit
-      run: |
-        echo "::set-output name=commit::$(git rev-parse HEAD)"
+  manifest-default:
+    name: Multiarch minimal manifest push
+    needs:
+    - build-default
+    - gather-build-data
+    if: >
+      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    runs-on: als-tiny
+    container:
+      image: altlinux.space/alt-atomic/builder-image:sisyphus
 
-    - name: Get date
-      id: date
-      uses: alt-atomic/actions/parse-date@main
-
+    steps:
     - name: Create manifest
       uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
       with:
@@ -139,15 +202,18 @@ jobs:
         image-aliases: >-
           ${{ 
             github.ref_name == 'main' && 
-            steps.date.outputs.date || 
+            needs.gather-build-data.outputs.date || 
             '' 
-          }} ${{ steps.get_commit.outputs.commit }}
+          }} ${{ needs.gather-build-data.outputs.commit }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
+
   run-derivatives:
     name: Run ${{ matrix.image }} build-nightly workflow
-    needs: manifest
+    needs:
+    - manifest-minimal
+    - manifest-default
     if: >
       github.event_name == 'schedule'
     runs-on: als-tiny

@@ -4,6 +4,7 @@ env:
 modules:
   - name: Set repos
     type: repos
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       branch: sisyphus
       date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
@@ -11,18 +12,21 @@ modules:
 
   - name: Initial includes
     type: include
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       targets:
         - apt-rpm.yml
         - filesystem.yml
 
   - type: packages
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       update: true
       upgrade: true
 
   - name: Set branding
     type: branding
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       name: alt-atomic-${{ Env.IMAGE_NAME }}
       build-type: ${{ Env.IMAGE_TYPE }}
@@ -35,6 +39,7 @@ modules:
 
   - name: Copy root
     type: copy
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       source: root
       destination: /
@@ -42,6 +47,7 @@ modules:
 
   - name: Settings image
     type: include
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       targets:
         - disable-bins.yml
@@ -54,11 +60,13 @@ modules:
 
   - name: Configurate grub
     type: shell
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       command: scripts/grub.sh
 
   - name: Update kernel
     type: kernel
+    if: Env.BUILD_TYPE == 'minimal'
     body:
       kernel-info:
         flavour: ${{ Env.KERNEL_FLAVOUR }}

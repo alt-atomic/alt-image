@@ -8,6 +8,7 @@ ARG YEAR
 ARG MONTH
 ARG DAY
 ARG ARCH
+ARG BUILD_TYPE
 
 ENV IMAGE_NAME="core"
 ENV IMAGE=$IMAGE
@@ -16,21 +17,22 @@ ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
 ENV ARCH=$ARCH
+ENV BUILD_TYPE=$BUILD_TYPE
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 RUN apt-get install -y apm bootc
 
 RUN --mount=type=bind,ro,source=./src/latest-apm.yml,target=/etc/apm/image.yml \
-    apm system image build;
+    if [ "$BUILD_TYPE" = "minimal" ]; then apm system image build; fi
 
 # Needs for apm build validation
 RUN --mount=type=bind,ro,source=./src/install-includes.yml,target=/etc/apm/image.yml \
-    apm system image build;
+    if [ "$BUILD_TYPE" = "minimal" ]; then apm system image build; fi
 
 RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
-    /etc/apm/resources/tools/image-prepare.sh && \
+    if [ "$BUILD_TYPE" = "minimal" ]; then /etc/apm/resources/tools/image-prepare.sh; fi && \
     apm system image build
 
 # Lint image

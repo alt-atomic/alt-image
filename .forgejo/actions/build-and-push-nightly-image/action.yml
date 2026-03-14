@@ -1,0 +1,125 @@
+name: Build nightly image
+description: Build, rechunk, lint and push nightly image
+
+inputs:
+  build:
+    required: true
+    description: ''
+  image-name:
+    required: true
+    description: ''
+  name-pretty:
+    required: true
+    description: ''
+  year:
+    required: true
+    description: ''
+  month:
+    required: true
+    description: ''
+  day:
+    required: true
+    description: ''
+  pretty-date:
+    required: true
+    description: ''
+  commit:
+    required: true
+    description: ''
+  registry-token:
+    required: true
+    description: ''
+  cosign-image-sign:
+    required: true
+    description: ''
+  cosign-password:
+    required: true
+    description: ''
+  local-build-name:
+    required: true
+    description: ''
+    default: localhost/core
+  registry:
+    required: true
+    description: ''
+    default: altlinux.space
+  need-rechunk:
+    required: true
+    description: ''
+    default: 'true'
+  arch:
+    required: true
+    description: ''
+  larch:
+    required: true
+    description: ''
+
+runs:
+  using: composite
+  steps:
+  - name: Build image
+    run: |
+      set -x
+
+      if [[ "${{ inputs.build }}" == "minimal" ]]; then
+        IMAGE="registry.altlinux.org/sisyphus/base:latest"
+      else
+        IMAGE="${{ inputs.registry }}/${{ github.repository }}/nightly:${{ inputs.commit }}"
+      fi
+
+      podman build \
+        --tag ${{ inputs.local-build-name }} \
+        --platform linux/${{ inputs.arch }} \
+        --build-arg YEAR=${{ inputs.year }} \
+        --build-arg MONTH=${{ inputs.month }} \
+        --build-arg DAY=${{ inputs.day }} \
+        --build-arg IMAGE_TYPE=nightly \
+        --build-arg IMAGE=$IMAGE \
+        --build-arg ARCH=${{ inputs.larch }} \
+        --build-arg BUILD_TYPE=${{ inputs.build }} \
+        --file ./container-files/main \
+        .
+
+  - name: Rechunk image
+    uses: alt-atomic/actions/rechunk@main
+    id: rechunk
+    if: ((github.event_name == 'push' && github.ref_name == 'main' ) || contains(fromJSON('["workflow_dispatch", "schedule"]'), github.event_name)) && inputs.need-rechunk == 'true'
+    with:
+      ref: ${{ inputs.local-build-name }}
+      prev-ref: >-
+        ${{
+          github.ref_name == 'main' &&
+          '${{ inputs.registry }}/${{ inputs.image-name }}/nightly:latest' || 
+          '${{ inputs.registry }}/${{ inputs.image-name }}/nightly-branch:${{ github.ref_name }}'
+        }}
+      labels: |
+        org.altlinux.repo.date=${{ inputs.pretty-date }}
+        org.opencontainers.image.title=ALT Atomic Core Nightly
+        org.opencontainers.image.description=Nightly Core image for ALT Atomic distros
+        org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
+        org.opencontainers.image.licenses=GPL-3.0-or-later
+        org.opencontainers.image.vendor=ALT Atomic Team
+
+  - name: Push and sign images
+    uses: alt-atomic/actions/push-and-sign@main
+    if: >
+      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    with:
+      registry: ${{ inputs.registry }}
+      registry-username: "<token>"
+      registry-password: ${{ inputs.registry-token }}
+      image-name: >-
+        ${{
+          github.ref_name == 'main' && 
+          '${{ inputs.image-name }}/nightly' || 
+          '${{ inputs.image-name }}/nightly-branch' 
+        }}
+      image-tag: ${{ inputs.arch }}
+      local-build-name: >-
+        ${{
+          inputs.need-rechunk == 'true' && 
+          '${{ steps.rechunk.outputs.ref }}' || 
+          '${{ inputs.local-build-name }}' 
+        }}
+      cosign-image-sign: ${{ inputs.cosign-image-sign }}
+      cosign-password: ${{ inputs.cosign-password }}
