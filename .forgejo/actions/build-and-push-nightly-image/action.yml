@@ -73,8 +73,7 @@ runs:
         --build-arg IMAGE_TYPE=nightly \
         --build-arg IMAGE=$IMAGE \
         --build-arg ARCH=${{ inputs.larch }} \
-        --build-arg BUILD_TYPE=${{ inputs.build }} \
-        --file ./container-files/main \
+        --file ./container-files/main-${{ inputs.build }} \
         .
 
   - name: Rechunk image
