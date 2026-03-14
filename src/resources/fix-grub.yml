@@ -4,7 +4,6 @@ modules:
     body:
       remove:
         - grub-common
-        - grub-common-extra
         - grub-efi
 
   - name: Remove current grub-pc
