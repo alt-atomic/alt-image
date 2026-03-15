@@ -1,0 +1,103 @@
+name: Build nightly image
+description: Build, rechunk, lint and push nightly image
+
+inputs:
+  build:
+    required: true
+    description: ''
+  image-name:
+    required: true
+    description: ''
+  name-pretty:
+    required: true
+    description: ''
+  year:
+    required: true
+    description: ''
+  month:
+    required: true
+    description: ''
+  day:
+    required: true
+    description: ''
+  pretty-date:
+    required: true
+    description: ''
+  registry-token:
+    required: true
+    description: ''
+  cosign-image-sign:
+    required: true
+    description: ''
+  cosign-password:
+    required: true
+    description: ''
+  local-build-name:
+    required: true
+    description: ''
+    default: localhost/core
+  registry:
+    required: true
+    description: ''
+    default: altlinux.space
+  need-rechunk:
+    required: true
+    description: ''
+    default: 'true'
+  arch:
+    required: true
+    description: ''
+  larch:
+    required: true
+    description: ''
+
+runs:
+  using: composite
+  steps:
+  - name: Build image
+    run: |
+      set -x
+
+      if [[ "${{ inputs.build }}" == "minimal" ]]; then
+        IMAGE="registry.altlinux.org/sisyphus/base:latest"
+      else
+        IMAGE="${{ inputs.registry }}/${{ github.repository }}-minimal/stable:${{ inputs.arch }}"
+      fi
+
+      podman build \
+        --tag ${{ inputs.local-build-name }} \
+        --platform linux/${{ inputs.arch }} \
+        --build-arg YEAR=${{ inputs.year }} \
+        --build-arg MONTH=${{ inputs.month }} \
+        --build-arg DAY=${{ inputs.day }} \
+        --build-arg IMAGE_TYPE=stable \
+        --build-arg IMAGE=$IMAGE \
+        --build-arg ARCH=${{ inputs.larch }} \
+        --file ./container-files/main-${{ inputs.build }} \
+        .
+
+  - name: Rechunk image
+    uses: alt-atomic/actions/rechunk@main
+    id: rechunk
+    with:
+      ref: ${{ inputs.local-build-name }}
+      prev-ref: ${{ inputs.registry }}/${{ inputs.image-name }}/stable:latest
+      labels: |
+        org.altlinux.repo.date=${{ inputs.pretty-date }}
+        org.opencontainers.image.title=ALT Atomic Core
+        org.opencontainers.image.description=Core image for ALT Atomic distros
+        org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
+        org.opencontainers.image.licenses=GPL-3.0-or-later
+        org.opencontainers.image.vendor=ALT Atomic Team
+
+  - name: Push and sign images
+    uses: alt-atomic/actions/push-and-sign@main
+    with:
+      registry: ${{ inputs.registry }}
+      registry-username: "<token>"
+      registry-password: ${{ inputs.registry-token }}
+      image-name: ${{ inputs.image-name }}/stable
+      image-tag: ${{ inputs.arch }}
+      local-build-name: ${{ steps.rechunk.outputs.ref }}
+      cosign-image-sign: ${{ inputs.cosign-image-sign }}
+      cosign-password: ${{ inputs.cosign-password }}
