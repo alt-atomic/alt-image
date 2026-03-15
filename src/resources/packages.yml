@@ -5,37 +5,22 @@ modules:
     body:
       install:
         # Base
-        - bash-completion
         - coreutils
-        - curl
-        - eza
-        - iputils
-        - man
-        - mc
-        - pam-limits-off
         - passwd
-        - rsync
         - shadow-change
         - su
-        - sudo
-        - time
         - tzdata
-        - unzip
-        - vim-enhanced
-        - wget
         - which
-        - zram-generator
-
-        # Container
-        - bootupd
-        - composefs
-        - containers-common
-        - fuse-overlayfs
-        - podman
-        - skopeo
-        - sysctl-conf-userns
+        - pam-limits-off
+        # used by fix-dracut and fix-grub
+        - wget
+        # used by check_var_directory and init-ostree.sh
+        - rsync
+        # for grub-common
+        - libfreetype
 
         # Boot
+        - alt-uefi-certs
         - cryptsetup
         - dracut
         - efibootmgr
@@ -44,26 +29,27 @@ modules:
         - grub
         - grub-btrfs
         - grub-efi
-        - alt-uefi-certs
-        - shim-unsigned       
+        - shim-unsigned
+
+        # Container
+        - bootupd
+        - composefs
+        - containers-common
+        - fuse-overlayfs
+        # used by bootc
+        - podman
+        - skopeo
+        #
 
         # Filesystem
         - btrfs-progs
-        - exfatprogs
-        - f2fs-tools
-        - squashfs-tools
-        - udftools
+        - dosfstools
+        - e2fsprogs
         - xfsprogs
 
         # System
-        - attr
         - chrony
-        - dosfstools
-        - e2fsprogs
-        - fprintd
-        - jq
         - kbd
-        - kbd-data
         - libselinux
         - losetup
         - mount
@@ -72,23 +58,54 @@ modules:
         - policycoreutils
         - sfdisk
         - systemd
-        - yq
-        - fontconfig
+        - zram-generator
 
   - name: Install non minimal packages
     type: packages
     if: Env.BUILD_TYPE != 'minimal'
     body:
       install:
-        - podman-compose
-        - command-not-found
+        # Base
+        - attr
+        - bash-completion
         - bluez
         - bubblewrap
+        - command-not-found
+        - curl
+        - eza
+        - iputils
+        - man
+        - mc
         - nano
+        - sudo
+        - time
+        - unzip
+        - vim-enhanced
+
+        # Container
+        - podman-compose
+        - sysctl-conf-userns
+
+        # Filesystem
+        - exfatprogs
+        - f2fs-tools
+        - squashfs-tools
+        - udftools
 
         # Firmware
         - firmware-alsa-sof
         - firmware-linux
+
+        # Graphic
+        - fontconfig
+        - glxinfo
+        - mesa-dri-drivers
+
+        # System
+        - fprintd
+        - jq
+        - kbd-data
+        - yq
 
         # Virtualization
         - libvirt
@@ -98,10 +115,6 @@ modules:
         - spice-vdagent
         - spice-webdavd
         - virtiofsd
-
-        # Graphic
-        - glxinfo
-        - mesa-dri-drivers
 
   - name: Install x86_64-only packages
     type: packages
