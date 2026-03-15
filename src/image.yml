@@ -3,7 +3,8 @@ env:
   KERNEL_FLAVOUR: 6.18
 
 modules:
-- type: include
+- name: Building ${{ Env.BUILD_TYPE }}
+  type: include
   body:
     targets:
     - image-${{ Env.BUILD_TYPE }}.yml
