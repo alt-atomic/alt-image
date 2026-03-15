@@ -89,6 +89,6 @@ modules:
     type: shell
     if: Env.BUILD_TYPE == 'minimal'
     body:
-      command:
-        - find /var/lib/apt/lists/ -type f -delete
-        - find /var/lib/apm/ -type f -delete
+      command: |
+        find /var/lib/apt/lists/ -type f -delete
+        find /var/lib/apm/ -type f -delete
