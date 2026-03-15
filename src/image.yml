@@ -19,7 +19,6 @@ modules:
         - filesystem.yml
 
   - type: packages
-    if: Env.BUILD_TYPE == 'minimal'
     body:
       update: true
       upgrade: true
