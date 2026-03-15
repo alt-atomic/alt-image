@@ -79,15 +79,10 @@ runs:
   - name: Rechunk image
     uses: alt-atomic/actions/rechunk@main
     id: rechunk
-    if: ((github.event_name == 'push' && github.ref_name == 'main' ) || contains(fromJSON('["workflow_dispatch", "schedule"]'), github.event_name)) && inputs.need-rechunk == 'true'
+    if: github.ref_name == 'main' && github.event_name != 'pull_request' && inputs.need-rechunk == 'true'
     with:
       ref: ${{ inputs.local-build-name }}
-      prev-ref: >-
-        ${{
-          github.ref_name == 'main' &&
-          '${{ inputs.registry }}/${{ inputs.image-name }}/nightly:latest' || 
-          '${{ inputs.registry }}/${{ inputs.image-name }}/nightly-branch:${{ github.ref_name }}'
-        }}
+      prev-ref: ${{ format('{0}/{1}/nightly:latest', inputs.registry, inputs.image-name ) }}
       labels: |
         org.altlinux.repo.date=${{ inputs.pretty-date }}
         org.opencontainers.image.title=ALT Atomic Core Nightly
@@ -98,8 +93,7 @@ runs:
 
   - name: Push and sign images
     uses: alt-atomic/actions/push-and-sign@main
-    if: >
-      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    if: github.event_name != 'pull_request'
     with:
       registry: ${{ inputs.registry }}
       registry-username: "<token>"
@@ -113,7 +107,7 @@ runs:
       image-tag: ${{ inputs.arch }}
       local-build-name: >-
         ${{
-          inputs.need-rechunk == 'true' && 
+          (github.ref_name == 'main' && inputs.need-rechunk == 'true') && 
           steps.rechunk.outputs.ref || 
           inputs.local-build-name 
         }}
