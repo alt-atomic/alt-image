@@ -61,7 +61,7 @@ runs:
       if [[ "${{ inputs.build }}" == "minimal" ]]; then
         IMAGE="registry.altlinux.org/sisyphus/base:latest"
       else
-        IMAGE="${{ inputs.registry }}/${{ github.repository }}/nightly:${{ inputs.arch }}"
+        IMAGE="${{ inputs.registry }}/${{ github.repository }}-minimal/nightly:${{ inputs.arch }}"
       fi
 
       podman build \
