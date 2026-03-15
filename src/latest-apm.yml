@@ -3,7 +3,6 @@ modules:
     type: repos
     if: Env.IMAGE_TYPE == 'nightly'
     body:
-      name: apm
       custom:
         - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/apm-nightly/sisyphus.repo ${{ Env.ARCH }} classic
 
