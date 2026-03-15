@@ -83,7 +83,6 @@ jobs:
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
         local-build-name: localhost/core/minimal
-        need-rechunk: 'false'
         arch: ${{ matrix.arch }}
         larch: ${{ matrix.larch }}
 
@@ -129,7 +128,6 @@ jobs:
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
         local-build-name: localhost/core
-        need-rechunk: 'false'
         arch: ${{ matrix.arch }}
         larch: ${{ matrix.larch }}
 
