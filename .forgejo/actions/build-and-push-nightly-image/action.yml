@@ -75,7 +75,6 @@ runs:
   - name: Rechunk image
     uses: alt-atomic/actions/rechunk@main
     id: rechunk
-    if: github.ref_name == 'main' && github.event_name != 'pull_request'
     with:
       ref: ${{ inputs.local-build-name }}
       prev-ref: ${{ format('{0}/{1}/nightly:latest', inputs.registry, inputs.image-name ) }}
@@ -101,11 +100,6 @@ runs:
           format('{0}/nightly-branch', inputs.image-name) 
         }}
       image-tag: ${{ inputs.arch }}
-      local-build-name: >-
-        ${{
-          github.ref_name == 'main' && 
-          steps.rechunk.outputs.ref || 
-          inputs.local-build-name 
-        }}
+      local-build-name: ${{ steps.rechunk.outputs.ref }}
       cosign-image-sign: ${{ inputs.cosign-image-sign }}
       cosign-password: ${{ inputs.cosign-password }}
