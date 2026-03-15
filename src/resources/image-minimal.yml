@@ -1,0 +1,81 @@
+env:
+  KERNEL_FLAVOUR: 6.18
+
+modules:
+  - name: Set repos
+    type: repos
+    body:
+      branch: sisyphus
+      date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
+      clean: true
+
+  - name: Initial includes
+    type: include
+    body:
+      targets:
+        - apt-rpm.yml
+        - filesystem.yml
+
+  - type: packages
+    body:
+      update: true
+      upgrade: true
+
+  - name: Set branding
+    type: branding
+    body:
+      name: alt-atomic-${{ Env.IMAGE_NAME }}
+      build-type: ${{ Env.IMAGE_TYPE }}
+
+  - name: Install packages
+    type: include
+    body:
+      targets:
+        - packages.yml
+
+  - name: Copy root
+    type: copy
+    body:
+      source: root-${{ Env.BUILD_TYPE }}
+      destination: /
+      replace: true
+
+  - name: Settings image
+    type: include
+    body:
+      targets:
+        - disable-bins.yml
+        - network.yml
+        - settings-${{ Env.BUILD_TYPE }}.yml
+        - passwd.yml
+        - fix-dracut.yml
+        - fix-grub.yml
+        - systemd-${{ Env.BUILD_TYPE }}.yml
+
+  - name: Configurate grub
+    type: shell
+    body:
+      command: scripts/grub.sh
+
+  - name: Update kernel
+    type: kernel
+    body:
+      kernel-info:
+        flavour: ${{ Env.KERNEL_FLAVOUR }}
+        modules:
+          - drm
+      initrd:
+        method: dracut
+
+  - name: Cleanup
+    type: include
+    body:
+      targets:
+        - /usr/share/apm/includes/common/cleanup.yml
+
+  - name: Cleanup apm and apt db
+    type: shell
+    body:
+      command: |
+        find /var/lib/apt/lists/ -type f -delete
+        find /var/lib/apm/ -type f -delete

@@ -1,0 +1,12 @@
+modules:
+  - type: systemd
+    body:
+      targets:
+        - ostree-remount
+        - NetworkManager
+        - chrony
+        - podman.socket
+        - sync-users.service
+        - sync-directory.service
+        - fstrim.timer
+      enabled: true

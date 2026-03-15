@@ -1,93 +1,9 @@
+# image.yml exists in order to keep the kernel version in one place
 env:
   KERNEL_FLAVOUR: 6.18
 
 modules:
-  - name: Set repos
-    type: repos
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      branch: sisyphus
-      date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
-      clean: true
-
-  - name: Initial includes
-    type: include
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      targets:
-        - apt-rpm.yml
-        - filesystem.yml
-
-  - type: packages
-    body:
-      update: true
-      upgrade: true
-
-  - name: Set branding
-    type: branding
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      name: alt-atomic-${{ Env.IMAGE_NAME }}
-      build-type: ${{ Env.IMAGE_TYPE }}
-
-  - name: Install packages
-    type: include
-    body:
-      targets:
-        - packages.yml
-
-  - name: Copy root
-    type: copy
-    body:
-      source: root-${{ Env.BUILD_TYPE }}
-      destination: /
-      replace: true
-
-  - name: Settings image
-    type: include
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      targets:
-        - disable-bins.yml
-        - network.yml
-        - settings.yml
-        - passwd.yml
-        - fix-dracut.yml
-        - fix-grub.yml
-
-  - name: Systemd services
-    type: include
-    body:
-      targets:
-        - systemd.yml
-
-  - name: Configurate grub
-    type: shell
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      command: scripts/grub.sh
-
-  - name: Update kernel
-    type: kernel
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      kernel-info:
-        flavour: ${{ Env.KERNEL_FLAVOUR }}
-        modules:
-          - drm
-      initrd:
-        method: dracut
-
-  - name: Cleanup
-    type: include
-    body:
-      targets:
-        - /usr/share/apm/includes/common/cleanup.yml
-
-  - name: Cleanup apm and apt db
-    type: shell
-    if: Env.BUILD_TYPE == 'minimal'
-    body:
-      command: |
-        find /var/lib/apt/lists/ -type f -delete
-        find /var/lib/apm/ -type f -delete
+- type: include
+  body:
+    targets:
+    - image-${{ Env.BUILD_TYPE }}.yml

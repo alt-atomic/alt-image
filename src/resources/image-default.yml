@@ -1,0 +1,34 @@
+env:
+  KERNEL_FLAVOUR: 6.18
+
+modules:
+  - type: packages
+    body:
+      update: true
+      upgrade: true
+
+  - name: Install packages
+    type: include
+    body:
+      targets:
+        - packages.yml
+
+  - name: Copy root
+    type: copy
+    body:
+      source: root-${{ Env.BUILD_TYPE }}
+      destination: /
+      replace: true
+
+  - name: Settings image
+    type: include
+    body:
+      targets:
+        - settings-${{ Env.BUILD_TYPE }}.yml
+        - systemd-${{ Env.BUILD_TYPE }}.yml
+
+  - name: Cleanup
+    type: include
+    body:
+      targets:
+        - /usr/share/apm/includes/common/cleanup.yml
