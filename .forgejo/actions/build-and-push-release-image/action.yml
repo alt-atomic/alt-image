@@ -40,10 +40,6 @@ inputs:
     required: true
     description: ''
     default: altlinux.space
-  need-rechunk:
-    required: true
-    description: ''
-    default: 'true'
   arch:
     required: true
     description: ''

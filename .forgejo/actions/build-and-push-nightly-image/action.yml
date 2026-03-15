@@ -40,10 +40,6 @@ inputs:
     required: true
     description: ''
     default: altlinux.space
-  need-rechunk:
-    required: true
-    description: ''
-    default: 'true'
   arch:
     required: true
     description: ''
@@ -79,7 +75,7 @@ runs:
   - name: Rechunk image
     uses: alt-atomic/actions/rechunk@main
     id: rechunk
-    if: github.ref_name == 'main' && github.event_name != 'pull_request' && inputs.need-rechunk == 'true'
+    if: github.ref_name == 'main' && github.event_name != 'pull_request'
     with:
       ref: ${{ inputs.local-build-name }}
       prev-ref: ${{ format('{0}/{1}/nightly:latest', inputs.registry, inputs.image-name ) }}
@@ -107,7 +103,7 @@ runs:
       image-tag: ${{ inputs.arch }}
       local-build-name: >-
         ${{
-          (github.ref_name == 'main' && inputs.need-rechunk == 'true') && 
+          github.ref_name == 'main' && 
           steps.rechunk.outputs.ref || 
           inputs.local-build-name 
         }}
