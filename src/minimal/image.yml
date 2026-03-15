@@ -36,7 +36,7 @@ modules:
   - name: Copy root
     type: copy
     body:
-      source: root-${{ Env.BUILD_TYPE }}
+      source: root
       destination: /
       replace: true
 
@@ -46,11 +46,11 @@ modules:
       targets:
         - disable-bins.yml
         - network.yml
-        - settings-${{ Env.BUILD_TYPE }}.yml
+        - settings.yml
         - passwd.yml
         - fix-dracut.yml
         - fix-grub.yml
-        - systemd-${{ Env.BUILD_TYPE }}.yml
+        - systemd.yml
 
   - name: Configurate grub
     type: shell

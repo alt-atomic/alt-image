@@ -18,8 +18,8 @@ ENV DAY=$DAY
 ENV ARCH=$ARCH
 ENV BUILD_TYPE="default"
 
-RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
-    --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
+RUN --mount=type=bind,ro,source=./src/default/image.yml,target=/etc/apm/image.yml \
+    --mount=type=bind,ro,source=./src/default/resources,target=/etc/apm/resources \
     apm system image build
 
 # Lint image

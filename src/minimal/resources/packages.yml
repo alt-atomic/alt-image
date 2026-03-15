@@ -1,7 +1,6 @@
 modules:
   - name: Install multiarch packages
     type: packages
-    if: Env.BUILD_TYPE == 'minimal'
     body:
       install:
         # Base
@@ -60,65 +59,9 @@ modules:
         - systemd
         - zram-generator
 
-  - name: Install non minimal packages
-    type: packages
-    if: Env.BUILD_TYPE != 'minimal'
-    body:
-      install:
-        # Base
-        - attr
-        - bash-completion
-        - bluez
-        - bubblewrap
-        - command-not-found
-        - curl
-        - eza
-        - iputils
-        - man
-        - mc
-        - nano
-        - sudo
-        - time
-        - unzip
-        - vim-enhanced
-
-        # Container
-        - podman-compose
-        - sysctl-conf-userns
-
-        # Filesystem
-        - exfatprogs
-        - f2fs-tools
-        - squashfs-tools
-        - udftools
-
-        # Firmware
-        - firmware-alsa-sof
-        - firmware-linux
-
-        # Graphic
-        - fontconfig
-        - glxinfo
-        - mesa-dri-drivers
-
-        # System
-        - fprintd
-        - jq
-        - kbd-data
-        - yq
-
-        # Virtualization
-        - libvirt
-        - lxd
-        - open-vm-tools
-        - qemu-guest-agent
-        - spice-vdagent
-        - spice-webdavd
-        - virtiofsd
-
   - name: Install x86_64-only packages
     type: packages
-    if: Env.ARCH == 'x86_64' && Env.BUILD_TYPE == 'minimal'
+    if: Env.ARCH == 'x86_64'
     body:
       install:
         - shim-signed

@@ -29,9 +29,11 @@ RUN --mount=type=bind,ro,source=./src/latest-apm.yml,target=/etc/apm/image.yml \
 RUN --mount=type=bind,ro,source=./src/install-includes.yml,target=/etc/apm/image.yml \
     apm system image build
 
-RUN --mount=type=bind,ro,source=./src/image.yml,target=/etc/apm/image.yml \
-    --mount=type=bind,ro,source=./src/resources,target=/etc/apm/resources \
-    /etc/apm/resources/tools/image-prepare.sh && \
+RUN --mount=type=bind,ro,source=./src/tools,target=/tools \
+    /tools/image-prepare.sh
+
+RUN --mount=type=bind,ro,source=./src/minimal/image.yml,target=/etc/apm/image.yml \
+    --mount=type=bind,ro,source=./src/minimal/resources,target=/etc/apm/resources \
     apm system image build
 
 # Lint image
