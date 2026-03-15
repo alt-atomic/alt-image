@@ -131,8 +131,7 @@ jobs:
     needs:
     - build-minimal
     - gather-build-data
-    if: >
-      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    if: github.event_name != 'pull_request'
     runs-on: als-tiny
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
@@ -171,8 +170,7 @@ jobs:
     needs:
     - build-default
     - gather-build-data
-    if: >
-      contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event_name)
+    if: github.event_name != 'pull_request'
     runs-on: als-tiny
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
