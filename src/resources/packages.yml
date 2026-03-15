@@ -60,8 +60,6 @@ modules:
         - chrony
         - dosfstools
         - e2fsprogs
-        - firmware-alsa-sof
-        - firmware-linux
         - fprintd
         - jq
         - kbd
@@ -87,6 +85,10 @@ modules:
         - bluez
         - bubblewrap
         - nano
+
+        # Firmware
+        - firmware-alsa-sof
+        - firmware-linux
 
         # Virtualization
         - libvirt
