@@ -1,0 +1,16 @@
+#!/bin/bash
+
+APT_DB_DIR="/var/lib/apt"
+APM_DB_DIR="/var/lib/apm"
+
+if [ -L "$APT_DB_DIR" ]; then
+    rm -f "$APT_DB_DIR"
+    mkdir -p "$APT_DB_DIR/lists/partial"
+    mkdir -p "$APT_DB_DIR/prefetch"
+fi
+
+if [ -L "$APM_DB_DIR" ]; then
+    rm -f "$APM_DB_DIR"
+    # Create apm dir
+    systemd-tmpfiles.shared --create
+fi

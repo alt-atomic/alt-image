@@ -1,0 +1,11 @@
+[Unit]
+Description=Migrate from locked apt/apm db's
+After=systemd-tmpfiles-setup.service local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/locked-db-migrate
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

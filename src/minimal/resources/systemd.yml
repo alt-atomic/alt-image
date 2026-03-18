@@ -8,5 +8,6 @@ modules:
         - podman.socket
         - sync-users.service
         - sync-directory.service
+        - locked-db-migrate.service
         - fstrim.timer
       enabled: true

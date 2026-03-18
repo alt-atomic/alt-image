@@ -2,5 +2,5 @@ modules:
   - type: move
     body:
       source: /var/lib/rpm
-      destination: /usr/share/rpm
+      destination: /usr/var/lib/rpm
       create-link: true
