@@ -72,10 +72,3 @@ modules:
     body:
       targets:
         - /usr/share/apm/includes/common/cleanup.yml
-
-  - name: Cleanup apm and apt db
-    type: shell
-    body:
-      command: |
-        find /var/lib/apt/lists/ -type f -delete
-        find /var/lib/apm/ -type f -delete
