@@ -36,9 +36,9 @@ modules:
         - containers-common
         - fuse-overlayfs
         # used by bootc
+        - bubblewrap
         - podman
         - skopeo
-        #
 
         # Filesystem
         - btrfs-progs

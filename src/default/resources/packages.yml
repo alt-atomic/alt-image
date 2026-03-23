@@ -7,7 +7,6 @@ modules:
         - attr
         - bash-completion
         - bluez
-        - bubblewrap
         - command-not-found
         - curl
         - eza
