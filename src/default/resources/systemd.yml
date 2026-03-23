@@ -3,4 +3,5 @@ modules:
     body:
       targets:
         - libvirtd
+        - docker.socket
       enabled: true

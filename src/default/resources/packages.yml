@@ -21,6 +21,7 @@ modules:
         - vim-enhanced
 
         # Container
+        - docker-engine
         - podman-compose
         - sysctl-conf-userns
 
