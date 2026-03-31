@@ -25,10 +25,6 @@ jobs:
       release: ${{ steps.latest_tag.outputs.release }} 
 
     steps:
-    - name: Get date
-      id: date
-      uses: alt-atomic/actions/parse-date@main
-
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
@@ -39,6 +35,12 @@ jobs:
       uses: alt-atomic/actions/get-tag@main
       with:
         desired-tag: ${{ github.ref_name }}
+
+    - name: Get date
+      id: date
+      uses: alt-atomic/actions/parse-date@main
+      with:
+        date: ${{ steps.latest_tag.outputs.date }}
 
   build-minimal:
     name: Build ${{ matrix.arch }} minimal image
