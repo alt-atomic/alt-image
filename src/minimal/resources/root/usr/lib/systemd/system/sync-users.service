@@ -1,13 +1,13 @@
 [Unit]
 Description=Sync system users and groups for nss-altfiles
-After=local-fs.target
+After=systemd-tmpfiles-setup.service local-fs.target
 Before=nss-user-lookup.target
 
 [Service]
 Type=oneshot
-ExecStart=apm s i fix-nss -ft plain
-ExecStart=apm s i sync-groups -ft plain
+ExecStart=/usr/bin/apm s i fix-nss -ft plain
+ExecStart=/usr/bin/apm s i sync-groups -ft plain
 RemainAfterExit=yes
 
 [Install]
-WantedBy=nss-user-lookup.target
+WantedBy=multi-user.target
