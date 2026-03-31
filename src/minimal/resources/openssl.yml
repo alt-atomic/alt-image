@@ -1,0 +1,6 @@
+modules:
+  - type: move
+    body:
+      source: /var/lib/ssl
+      destination: /usr/var/lib/ssl
+      create-link: true

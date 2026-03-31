@@ -14,6 +14,7 @@ modules:
     body:
       targets:
         - apt-rpm.yml
+        - openssl.yml
         - filesystem.yml
 
   - type: packages
