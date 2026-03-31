@@ -1,0 +1,21 @@
+sync:
+  groups:
+    - docker
+    - lxd
+    - cuse
+    - fuse
+    - libvirt
+    - adm
+    - wheel
+    - uucp
+    - cdrom
+    - cdwriter
+    - audio
+    - users
+    - video
+    - netadmin
+    - scanner
+    - xgrp
+    - camera
+    - render
+    - usershares

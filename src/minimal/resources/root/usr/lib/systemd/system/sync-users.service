@@ -1,13 +1,13 @@
 [Unit]
-Description=Sync using system users and groups
-After=systemd-tmpfiles-setup.service local-fs.target
-# Возможно стоит добавить конкретное монтирование:
-# After=systemd-tmpfiles-setup.service usr.mount
+Description=Sync system users and groups for nss-altfiles
+After=local-fs.target
+Before=nss-user-lookup.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/libexec/check_user_and_group
+ExecStart=apm s i fix-nss -ft plain
+ExecStart=apm s i sync-groups -ft plain
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=nss-user-lookup.target
