@@ -69,6 +69,7 @@ runs:
         --build-arg IMAGE_TYPE=nightly \
         --build-arg IMAGE=$IMAGE \
         --build-arg ARCH=${{ inputs.larch }} \
+        --build-arg VERSION=${{ inputs.year }}${{ inputs.month }}${{ inputs.day }} \
         --file ./container-files/main-${{ inputs.build }} \
         .
 
@@ -81,6 +82,7 @@ runs:
       labels: |
         org.altlinux.repo.date=${{ inputs.pretty-date }}
         org.opencontainers.image.title=ALT Atomic Core Nightly
+        org.opencontainers.image.version=${{ inputs.year }}${{ inputs.month }}${{ inputs.day }}
         org.opencontainers.image.description=Nightly Core image for ALT Atomic distros
         org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
         org.opencontainers.image.licenses=GPL-3.0-or-later

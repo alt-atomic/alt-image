@@ -20,6 +20,9 @@ inputs:
   day:
     required: true
     description: ''
+  version:
+    required: true
+    description: ''
   pretty-date:
     required: true
     description: ''
@@ -69,6 +72,7 @@ runs:
         --build-arg IMAGE_TYPE=stable \
         --build-arg IMAGE=$IMAGE \
         --build-arg ARCH=${{ inputs.larch }} \
+        --build-arg VERSION=${{ inputs.version }} \
         --file ./container-files/main-${{ inputs.build }} \
         .
 
@@ -81,6 +85,7 @@ runs:
       labels: |
         org.altlinux.repo.date=${{ inputs.pretty-date }}
         org.opencontainers.image.title=ALT Atomic Core
+        org.opencontainers.image.version=${{ inputs.version }}
         org.opencontainers.image.description=Core image for ALT Atomic distros
         org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
         org.opencontainers.image.licenses=GPL-3.0-or-later

@@ -78,6 +78,7 @@ jobs:
         year: ${{ needs.gather-build-data.outputs.year }}
         month: ${{ needs.gather-build-data.outputs.month }}
         day: ${{ needs.gather-build-data.outputs.day }}
+        version: ${{ github.ref_name }}
         pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
         registry-token: ${{ secrets.REGISTRY_TOKEN }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
@@ -123,6 +124,7 @@ jobs:
         year: ${{ needs.gather-build-data.outputs.year }}
         month: ${{ needs.gather-build-data.outputs.month }}
         day: ${{ needs.gather-build-data.outputs.day }}
+        version: ${{ github.ref_name }}
         pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
         registry-token: ${{ secrets.REGISTRY_TOKEN }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}

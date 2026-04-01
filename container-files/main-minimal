@@ -8,6 +8,7 @@ ARG YEAR
 ARG MONTH
 ARG DAY
 ARG ARCH
+ARG VERSION
 
 ENV IMAGE_NAME="core"
 ENV IMAGE=$IMAGE
@@ -17,6 +18,7 @@ ENV MONTH=$MONTH
 ENV DAY=$DAY
 ENV ARCH=$ARCH
 ENV BUILD_TYPE="minimal"
+ENV VERSION=$VERSION
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
