@@ -18,7 +18,9 @@ ENV MONTH=$MONTH
 ENV DAY=$DAY
 ENV ARCH=$ARCH
 ENV BUILD_TYPE="minimal"
+
 ENV VERSION=$VERSION
+ENV VARIANT="Minimal"
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates

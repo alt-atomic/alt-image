@@ -4,6 +4,13 @@ modules:
       update: true
       upgrade: true
 
+  - name: Set variant to branding
+    type: branding
+    body:
+      release-overrides:
+        VARIANT: ${{ Env.VARIANT }}
+        VARIANT_ID: ${{ Env.BUILD_TYPE }}
+
   - name: Install packages
     type: include
     body:

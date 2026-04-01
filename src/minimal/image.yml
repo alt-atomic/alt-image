@@ -29,6 +29,8 @@ modules:
       build-type: ${{ Env.IMAGE_TYPE }}
       release-overrides:
         VERSION: ${{ Env.VERSION }}
+        VARIANT: ${{ Env.VARIANT }}
+        VARIANT_ID: ${{ Env.BUILD_TYPE }}
 
   - name: Install packages
     type: include

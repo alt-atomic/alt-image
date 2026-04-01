@@ -19,6 +19,8 @@ ENV DAY=$DAY
 ENV ARCH=$ARCH
 ENV BUILD_TYPE="default"
 
+ENV VARIANT="Default"
+
 RUN --mount=type=bind,ro,source=./src/default/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/default/resources,target=/etc/apm/resources \
     apm system image build
