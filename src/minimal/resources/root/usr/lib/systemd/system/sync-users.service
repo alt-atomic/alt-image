@@ -7,6 +7,7 @@ Before=nss-user-lookup.target
 Type=oneshot
 ExecStart=/usr/bin/apm s i fix-nss -ft plain
 ExecStart=/usr/bin/apm s i sync-groups -ft plain
+ExecStart=/usr/bin/systemd-tmpfiles --create /usr/lib/tmpfiles.d/apm-lint.conf
 RemainAfterExit=yes
 
 [Install]
