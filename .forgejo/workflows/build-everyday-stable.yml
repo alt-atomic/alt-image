@@ -144,8 +144,7 @@ jobs:
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         image-name: ${{ github.repository }}/stable
         arch-tags: amd64 arm64
-        image-tag: latest
-        image-aliases: ${{ needs.gather-build-data.outputs.date }}
+        image-tag: ${{ needs.gather-build-data.outputs.date }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
@@ -167,7 +166,6 @@ jobs:
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         image-name: ${{ github.repository }}/stable
         arch-tags: amd64 arm64
-        image-tag: latest
-        image-aliases: ${{ needs.gather-build-data.outputs.date }}
+        image-tag: ${{ needs.gather-build-data.outputs.date }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
