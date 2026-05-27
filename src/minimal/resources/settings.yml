@@ -5,9 +5,3 @@ modules:
       source: files/locale.conf
       destination: /etc/locale.conf
       replace: true
-
-  - type: copy
-    body:
-      source: files/locale.conf
-      destination: /etc/sysconfig/i18n
-      replace: true
