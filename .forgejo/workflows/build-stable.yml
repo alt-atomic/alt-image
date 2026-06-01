@@ -145,7 +145,7 @@ jobs:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: ${{ github.repository }}/stable
+        image-name: ${{ github.repository }}-minimal/stable
         arch-tags: amd64 arm64
         image-tag: latest
         image-aliases: ${{ needs.gather-build-data.outputs.date }}
