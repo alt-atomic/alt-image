@@ -89,7 +89,7 @@ runs:
         org.opencontainers.image.description=Core image for ALT Atomic distros
         org.opencontainers.image.source=https://altlinux.space/alt-atomic/core
         org.opencontainers.image.licenses=GPL-3.0-or-later
-        org.opencontainers.image.vendor=ALT Atomic Team
+        org.opencontainers.image.vendor=ALT Linux Team
 
   - name: Push and sign images
     uses: alt-atomic/actions/push-and-sign@main
