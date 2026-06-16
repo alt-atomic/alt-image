@@ -32,6 +32,7 @@ modules:
 
         # Container
         - bootupd
+        - erofs-utils
         - composefs
         - containers-common
         - fuse-overlayfs
