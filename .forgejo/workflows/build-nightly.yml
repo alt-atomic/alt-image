@@ -52,14 +52,10 @@ jobs:
       matrix:
         arch:
         - amd64
-        - arm64
         include:
         - arch: amd64
           larch: x86_64
           runner: als-huge
-        - arch: arm64
-          larch: aarch64
-          runner: self-hosted-arm64-huge
 
     steps:
     - name: Checkout repository
@@ -94,14 +90,10 @@ jobs:
       matrix:
         arch:
         - amd64
-        - arm64
         include:
         - arch: amd64
           larch: x86_64
           runner: als-huge
-        - arch: arm64
-          larch: aarch64
-          runner: self-hosted-arm64-huge
 
     steps:
     - name: Checkout repository
@@ -147,7 +139,7 @@ jobs:
             '${{ github.repository }}-minimal/nightly' || 
             '${{ github.repository }}-minimal/nightly-branch' 
           }}
-        arch-tags: amd64 arm64
+        arch-tags: amd64
         image-tag: >-
           ${{
             github.ref_name == 'main' &&
@@ -186,7 +178,7 @@ jobs:
             '${{ github.repository }}/nightly' || 
             '${{ github.repository }}/nightly-branch' 
           }}
-        arch-tags: amd64 arm64
+        arch-tags: amd64
         image-tag: >-
           ${{
             github.ref_name == 'main' &&
