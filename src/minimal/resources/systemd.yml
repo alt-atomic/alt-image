@@ -2,12 +2,12 @@ modules:
   - type: systemd
     body:
       targets:
-        - ostree-remount
-        - NetworkManager
+        - bootloader-update
         - chrony
+        - fstrim.timer
+        - locked-db-migrate.service
+        - NetworkManager
+        - ostree-remount
         - podman.socket
         - sync-users.service
-#        - sync-directory.service
-        - locked-db-migrate.service
-        - fstrim.timer
       enabled: true
