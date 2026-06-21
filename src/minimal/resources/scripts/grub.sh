@@ -5,7 +5,7 @@
 #
 BOOTUPD_UPDATES_DIR="/usr/lib/bootupd/updates"
 EFI_SOURCE_DIR="/usr/lib64/efi"
-SHIM_SIGNED_DIR="/usr/lib/shim"
+SHIM_CSV_DIR="/usr/lib/shim"
 SHIM_UNSIGNED_DIR="/usr/share/shim/16.1"
 
 message() {
@@ -92,36 +92,37 @@ message "Setting up EFI/BOOT directory..."
 # Copy EFI certificates if present (for Secure Boot)
 copy_efi_certificates
 
-# Determine which shim set to use: signed (with certificates) or unsigned
-if [ -n "$EFI_CERT" ] && [ -f "$SHIM_SIGNED_DIR/shim${EFI_ARCH}.efi.signed" ]; then
+# Pick signed (shim-signed, flat in /usr/lib64/efi) or unsigned shim set.
+if [ -n "$EFI_CERT" ] && [ -f "$EFI_SOURCE_DIR/shim${EFI_ARCH}.efi" ]; then
     message "Using signed shim set for Secure Boot"
-    SHIM_DIR="$SHIM_SIGNED_DIR"
-    SHIM_SUFFIX=".signed"
-    CSV_DIR="$SHIM_SIGNED_DIR"
+    SHIM_SIGNED=1
+    SHIM_DIR="$EFI_SOURCE_DIR"
+    CSV_DIR="$SHIM_CSV_DIR"
 elif [ -f "$SHIM_UNSIGNED_DIR/${EFI_ARCH}/shim${EFI_ARCH}.efi" ]; then
     message "Using unsigned shim set"
+    SHIM_SIGNED=0
     SHIM_DIR="$SHIM_UNSIGNED_DIR"
-    SHIM_SUFFIX=""
     CSV_DIR="$SHIM_UNSIGNED_DIR"
 else
     message "No shim found, using GRUB directly"
+    SHIM_SIGNED=-1
     SHIM_DIR=""
 fi
 
 # Primary bootloader - try shim first, fallback to grub
 if [ -n "$SHIM_DIR" ]; then
-    if [ -n "$SHIM_SUFFIX" ]; then
+    if [ "$SHIM_SIGNED" = 1 ]; then
         # Signed shim
-        copy_efi_file "$SHIM_DIR/shim${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/BOOT${EFI_ARCH_UPPER}.EFI" "signed shim bootloader"
+        copy_efi_file "$SHIM_DIR/shim${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/BOOT${EFI_ARCH_UPPER}.EFI" "signed shim bootloader"
         copy_efi_file "$EFI_SOURCE_DIR/grub${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/grub${EFI_ARCH}.efi" "GRUB EFI loader"
-        copy_efi_file "$SHIM_DIR/mm${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/mm${EFI_ARCH}.efi" "signed MokManager"
-        copy_efi_file "$SHIM_DIR/fb${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/fb${EFI_ARCH}.efi" "signed fallback loader"
+        copy_efi_file "$SHIM_DIR/mm${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/mm${EFI_ARCH}.efi" "signed MokManager"
+        copy_efi_file "$SHIM_DIR/fb${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/fb${EFI_ARCH}.efi" "signed fallback loader"
 
         # Secondary arch support (ia32 on x86_64)
         if [ -n "$EFI_ALT_ARCH" ]; then
-            if copy_efi_file "$SHIM_DIR/shim${EFI_ALT_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/boot${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} shim"; then
-                copy_efi_file "$SHIM_DIR/mm${EFI_ALT_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/mm${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} MokManager"
-                copy_efi_file "$SHIM_DIR/fb${EFI_ALT_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/fb${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} fallback loader"
+            if copy_efi_file "$SHIM_DIR/shim${EFI_ALT_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/boot${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} shim"; then
+                copy_efi_file "$SHIM_DIR/mm${EFI_ALT_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/mm${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} MokManager"
+                copy_efi_file "$SHIM_DIR/fb${EFI_ALT_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/BOOT/fb${EFI_ALT_ARCH}.efi" "signed ${EFI_ALT_ARCH} fallback loader"
             fi
         fi
     else
@@ -151,11 +152,11 @@ message "Setting up EFI/altlinux directory..."
 copy_efi_file "$EFI_SOURCE_DIR/grub${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/grub${EFI_ARCH}.efi" "vendor GRUB loader"
 
 if [ -n "$SHIM_DIR" ]; then
-    if [ -n "$SHIM_SUFFIX" ]; then
+    if [ "$SHIM_SIGNED" = 1 ]; then
         # Signed shim set for altlinux
-        copy_efi_file "$SHIM_DIR/shim${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/shim${EFI_ARCH}.efi" "signed vendor shim loader"
-        copy_efi_file "$SHIM_DIR/mm${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/mm${EFI_ARCH}.efi" "signed vendor MokManager"
-        copy_efi_file "$SHIM_DIR/fb${EFI_ARCH}.efi$SHIM_SUFFIX" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/fb${EFI_ARCH}.efi" "signed vendor fallback loader"
+        copy_efi_file "$SHIM_DIR/shim${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/shim${EFI_ARCH}.efi" "signed vendor shim loader"
+        copy_efi_file "$SHIM_DIR/mm${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/mm${EFI_ARCH}.efi" "signed vendor MokManager"
+        copy_efi_file "$SHIM_DIR/fb${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/fb${EFI_ARCH}.efi" "signed vendor fallback loader"
     else
         # Unsigned shim set for altlinux
         copy_efi_file "$SHIM_DIR/${EFI_ARCH}/shim${EFI_ARCH}.efi" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/shim${EFI_ARCH}.efi" "unsigned vendor shim loader"
@@ -166,7 +167,7 @@ fi
 
 # Copy CSV metadata files (use appropriate directory)
 if [ -n "$SHIM_DIR" ]; then
-    if [ -n "$SHIM_SUFFIX" ]; then
+    if [ "$SHIM_SIGNED" = 1 ]; then
         copy_efi_file "$CSV_DIR/BOOT${EFI_ARCH_UPPER}.CSV" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/BOOT${EFI_ARCH_UPPER}.CSV" "boot entry metadata"
         if [ -n "$EFI_ALT_ARCH_UPPER" ]; then
             copy_efi_file "$CSV_DIR/BOOT${EFI_ALT_ARCH_UPPER}.CSV" "$BOOTUPD_UPDATES_DIR/EFI/altlinux/BOOT${EFI_ALT_ARCH_UPPER}.CSV" "${EFI_ALT_ARCH} boot entry metadata"
