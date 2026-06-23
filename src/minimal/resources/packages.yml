@@ -29,6 +29,7 @@ modules:
         - grub-btrfs
         - grub-efi
         - shim-unsigned
+        - shim-signed
 
         # Container
         - bootupd
@@ -66,5 +67,4 @@ modules:
     if: Env.ARCH == 'x86_64'
     body:
       install:
-        - shim-signed
         - grub-pc
