@@ -93,8 +93,8 @@ jobs:
 
         build-args: |
           YEAR=${{ needs.gather-build-data.outputs.year }}
-          MONTH=${{ needs.gather-build-data.outputs.year }}
-          DAY=${{ needs.gather-build-data.outputs.year }}
+          MONTH=${{ needs.gather-build-data.outputs.month }}
+          DAY=${{ needs.gather-build-data.outputs.day }}
           IMAGE_TYPE=nightly
           IMAGE=registry.altlinux.org/sisyphus/base:latest
           ARCH=${{ matrix.larch }}
@@ -158,8 +158,8 @@ jobs:
 
         build-args: |
           YEAR=${{ needs.gather-build-data.outputs.year }}
-          MONTH=${{ needs.gather-build-data.outputs.year }}
-          DAY=${{ needs.gather-build-data.outputs.year }}
+          MONTH=${{ needs.gather-build-data.outputs.month }}
+          DAY=${{ needs.gather-build-data.outputs.day }}
           IMAGE_TYPE=nightly
           IMAGE=${{ env.REGISTRY }}/${{ github.repository }}-minimal/${{ github.ref_name == 'main' && 'nightly' || 'nightly-branch' }}:${{ matrix.arch }}
           ARCH=${{ matrix.larch }}
