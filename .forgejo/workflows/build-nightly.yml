@@ -90,6 +90,8 @@ jobs:
         containerfile-path: ./container-files/main-minimal
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        push-enabled: ${{ github.event_name != 'pull_request' }}
+        rechunk-enabled: ${{ github.event_name != 'pull_request' }}
 
         pretty-name: ALT Atomic Core Nightly
         version: ${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
@@ -141,6 +143,8 @@ jobs:
         containerfile-path: ./container-files/main-default
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        push-enabled: ${{ github.event_name != 'pull_request' }}
+        rechunk-enabled: ${{ github.event_name != 'pull_request' }}
 
         pretty-name: ALT Atomic Core Nightly
         version: ${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
