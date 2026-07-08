@@ -10,8 +10,14 @@ on:
   - cron: '0 4 * * *'
 
 env:
-  LOCAL_BUILD_NAME: localhost/core
   REGISTRY: altlinux.space
+
+  PRETTY_NAME: ALT Atomic Core
+  VENDOR: ALT Atomic Team
+  DESCRIPTION: Core image for ALT Atomic distros
+  LICENSES: GPL-3.0-or-later
+  URL: atomic.alt-gnome.ru
+  AUTHORS: ALT Atomic Team
 
 jobs:
   gather-build-data:
@@ -24,7 +30,8 @@ jobs:
       month: ${{ steps.date.outputs.month }}
       day: ${{ steps.date.outputs.day }}
       pretty-date: ${{ steps.date.outputs.pretty-date }}
-      tag: ${{ steps.get_tag.outputs.tag }}
+      version: ${{ format('{0}-{1}', steps.get_tag.outputs.tag, steps.date.outputs.date) }}
+      aliases: ${{ format('{0} {1}', steps.date.outputs.date, steps.get_tag.outputs.tag) }}
 
     steps:
     - name: Get date
@@ -41,8 +48,8 @@ jobs:
       name: Get latest tag
       uses: alt-atomic/actions/get-tag@main
 
-  build-minimal:
-    name: Build minimal ${{ matrix.arch }} image
+  build:
+    name: Build ${{ matrix.arch }} images
     needs:
     - gather-build-data
     runs-on: ${{ matrix.runner }}
@@ -66,111 +73,98 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build minimal image
-      uses: ./.forgejo/actions/build-and-push-release-image
+      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
-        build: minimal
-        image-name: ${{ github.repository }}-minimal
-        name-pretty: '(Minimal)'
-        year: ${{ needs.gather-build-data.outputs.year }}
-        month: ${{ needs.gather-build-data.outputs.month }}
-        day: ${{ needs.gather-build-data.outputs.day }}
-        version: ${{ needs.gather-build-data.outputs.tag }}-${{ needs.gather-build-data.outputs.date }}
-        pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
-        registry-token: ${{ secrets.REGISTRY_TOKEN }}
+        image-name: ${{ format('{0}-minimal/stable/{2}', github.repository, matrix.arch) }}
+        image-tag: latest
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
+        arch: ${{ matrix.arch }}
+        containerfile-path: ./container-files/main-minimal
+        local-build-name: localhost/core-minimal
+
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+
+        pretty-name: ${{ env.PRETTY_NAME }}
+        version: ${{ needs.gather-build-data.outputs.version }}
+        vendor: ${{ env.VENDOR }}
+        description: ${{ env.DESCRIPTION }}
+        licenses: ${{ env.LICENSES }}
+        url: ${{ env.URL }}
+        authors: ${{ env.AUTHORS }}
+        repo-date: ${{ needs.gather-build-data.outputs.pretty-date }}
+
+        build-args: |
+          YEAR=${{ needs.gather-build-data.outputs.year }}
+          MONTH=${{ needs.gather-build-data.outputs.month }}
+          DAY=${{ needs.gather-build-data.outputs.day }}
+          IMAGE_TYPE=stable
+          IMAGE=registry.altlinux.org/sisyphus/base:latest
+          ARCH=${{ matrix.larch }}
+          VERSION=${{ needs.gather-build-data.outputs.version }}
+
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-        local-build-name: localhost/core/minimal
-        arch: ${{ matrix.arch }}
-        larch: ${{ matrix.larch }}
 
-  build-default:
-    name: Build default ${{ matrix.arch }} image
+    - name: Build default image
+      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
+      with:
+        image-name: ${{ format('{0}/stable/{2}', github.repository, matrix.arch) }}
+        image-tag: latest
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
+        arch: ${{ matrix.arch }}
+        containerfile-path: ./container-files/main-default
+        local-build-name: localhost/core
+
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+
+        pretty-name: ${{ env.PRETTY_NAME }}
+        version: ${{ needs.gather-build-data.outputs.version }}
+        vendor: ${{ env.VENDOR }}
+        description: ${{ env.DESCRIPTION }}
+        licenses: ${{ env.LICENSES }}
+        url: ${{ env.URL }}
+        authors: ${{ env.AUTHORS }}
+        repo-date: ${{ needs.gather-build-data.outputs.pretty-date }}
+
+        build-args: |
+          YEAR=${{ needs.gather-build-data.outputs.year }}
+          MONTH=${{ needs.gather-build-data.outputs.month }}
+          DAY=${{ needs.gather-build-data.outputs.day }}
+          IMAGE_TYPE=stable
+          IMAGE=localhost/core-minimal
+          ARCH=${{ matrix.larch }}
+          VERSION=${{ needs.gather-build-data.outputs.version }}
+
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+  manifest:
+    name: Multiarch ${{ matrix.name }} manifest push
     needs:
-    - build-minimal
+    - build
     - gather-build-data
-    runs-on: ${{ matrix.runner }}
+    runs-on: als-tiny
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
     strategy:
       matrix:
-        arch:
-        - amd64
-        - arm64
         include:
-        - arch: amd64
-          larch: x86_64
-          runner: als-huge
-        - arch: arm64
-          larch: aarch64
-          runner: self-hosted-arm64-huge
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-tags: true
-        ref: ${{ needs.gather-build-data.outputs.tag }}
-
-    - name: Build default image
-      uses: ./.forgejo/actions/build-and-push-release-image
-      with:
-        build: default
-        image-name: ${{ github.repository }}
-        name-pretty: ''
-        year: ${{ needs.gather-build-data.outputs.year }}
-        month: ${{ needs.gather-build-data.outputs.month }}
-        day: ${{ needs.gather-build-data.outputs.day }}
-        version: ${{ needs.gather-build-data.outputs.tag }}-${{ needs.gather-build-data.outputs.date }}
-        pretty-date: ${{ needs.gather-build-data.outputs.pretty-date }}
-        registry-token: ${{ secrets.REGISTRY_TOKEN }}
-        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-        local-build-name: localhost/core
-        arch: ${{ matrix.arch }}
-        larch: ${{ matrix.larch }}
-
-  manifest-minimal:
-    name: Multiarch minimal manifest push
-    needs:
-    - build-minimal
-    - gather-build-data
-    runs-on: als-tiny
-    container:
-      image: altlinux.space/alt-atomic/builder-image:sisyphus
+        - name: minimal
+          suffix: -minimal
+        - name: default
+          suffix: ''
 
     steps:
     - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
+      uses: alt-atomic/actions/create-manifest@d1b311b7bc99d19264377b009549632312e525c1
       with:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: ${{ github.repository }}-minimal/stable
+        image-name: ${{ format('{0}{1}/stable', github.repository, matrix.suffix) }}
         arch-tags: amd64 arm64
+        image-wildcard: ${{ format('{0}/{1}{2}/stable/@ARCH@:latest', env.REGISTRY, github.repository, matrix.suffix) }}
         image-tag: latest
-        image-aliases: ${{ needs.gather-build-data.outputs.date }}
-        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-
-  manifest-default:
-    name: Multiarch default manifest push
-    needs:
-    - build-default
-    - gather-build-data
-    runs-on: als-tiny
-    container:
-      image: altlinux.space/alt-atomic/builder-image:sisyphus
-
-    steps:
-    - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
-      with:
-        registry: ${{ env.REGISTRY }}
-        registry-username: "<token>"
-        registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: ${{ github.repository }}/stable
-        arch-tags: amd64 arm64
-        image-tag: latest
-        image-aliases: ${{ needs.gather-build-data.outputs.date }}
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
