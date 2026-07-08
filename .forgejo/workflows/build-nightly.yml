@@ -15,6 +15,13 @@ env:
   LOCAL_BUILD_NAME: localhost/core
   REGISTRY: altlinux.space
 
+  PRETTY_NAME: ALT Atomic Core Nightly
+  VENDOR: ALT Atomic Team
+  DESCRIPTION: Nightly Core image for ALT Atomic distros
+  LICENSES: GPL-3.0-or-later
+  URL: atomic.alt-gnome.ru
+  AUTHORS: ALT Atomic Team
+
 jobs:
   gather-build-data:
     name: Gather build data
@@ -26,7 +33,10 @@ jobs:
       month: ${{ steps.date.outputs.month }}
       day: ${{ steps.date.outputs.day }}
       pretty-date: ${{ steps.date.outputs.pretty-date }}
-      commit: ${{ steps.get_commit.outputs.commit }} 
+      commit: ${{ steps.get_commit.outputs.commit }}
+      channel: ${{ github.ref_name == 'main' && 'nightly' || 'nightly-branch' }}
+      tag: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+      aliases: ${{ github.ref_name == 'main' && format('{0} {1}', steps.date.outputs.date, steps.get_commit.outputs.commit) || steps.get_commit.outputs.commit }}
 
     steps:
     - name: Get date
@@ -42,7 +52,7 @@ jobs:
         echo "commit=$(git rev-parse HEAD)" >> $FORGEJO_OUTPUT
 
   build:
-    name: Build minimal ${{ matrix.arch }} image
+    name: Build ${{ matrix.arch }} images
     needs:
     - gather-build-data
     runs-on: ${{ matrix.runner }}
@@ -68,40 +78,24 @@ jobs:
     - name: Build minimal image
       uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
-        image-name: >-
-          ${{
-            github.ref_name == 'main' && 
-            format('{0}-minimal/nightly/{1}', github.repository, matrix.arch) || 
-            format('{0}-minimal/nightly-branch/{1}', github.repository, matrix.arch) 
-          }}
-        image-tag: >-
-          ${{
-            github.ref_name == 'main' &&
-            'latest' ||
-            github.ref_name
-          }}
-        image-aliases: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            needs.gather-build-data.outputs.date || 
-            '' 
-          }} ${{ needs.gather-build-data.outputs.commit }}
+        image-name: ${{ format('{0}-minimal/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
+        image-tag: ${{ needs.gather-build-data.outputs.tag }}
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
         containerfile-path: ./container-files/main-minimal
+        local-build-name: localhost/core-minimal
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' }}
         rechunk-enabled: ${{ github.event_name != 'pull_request' }}
 
-        pretty-name: ALT Atomic Core Nightly
-        version: ${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
-
-        vendor: ALT Atomic Team
-        description: Nightly Core image for ALT Atomic distros
-        licenses: GPL-3.0-or-later
-        url: atomic.alt-gnome.ru
-        authors: ALT Atomic Team
-
+        pretty-name: ${{ env.PRETTY_NAME }}
+        version: ${{ needs.gather-build-data.outputs.date }}
+        vendor: ${{ env.VENDOR }}
+        description: ${{ env.DESCRIPTION }}
+        licenses: ${{ env.LICENSES }}
+        url: ${{ env.URL }}
+        authors: ${{ env.AUTHORS }}
         repo-date: ${{ needs.gather-build-data.outputs.pretty-date }}
 
         build-args: |
@@ -111,50 +105,32 @@ jobs:
           IMAGE_TYPE=nightly
           IMAGE=registry.altlinux.org/sisyphus/base:latest
           ARCH=${{ matrix.larch }}
-          VERSION=${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
+          VERSION=${{ needs.gather-build-data.outputs.date }}
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-        
-        local-build-name: localhost/core-minimal
 
     - name: Build default image
       uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
-        image-name: >-
-          ${{
-            github.ref_name == 'main' && 
-            format('{0}/nightly/{1}', github.repository, matrix.arch) || 
-            format('{0}/nightly-branch/{1}', github.repository, matrix.arch) 
-          }}
-        image-tag: >-
-          ${{
-            github.ref_name == 'main' &&
-            'latest' ||
-            github.ref_name
-          }}
-        image-aliases: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            needs.gather-build-data.outputs.date || 
-            '' 
-          }} ${{ needs.gather-build-data.outputs.commit }}
+        image-name: ${{ format('{0}/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
+        image-tag: ${{ needs.gather-build-data.outputs.tag }}
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
         containerfile-path: ./container-files/main-default
+        local-build-name: localhost/core
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' }}
         rechunk-enabled: ${{ github.event_name != 'pull_request' }}
 
-        pretty-name: ALT Atomic Core Nightly
-        version: ${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
-
-        vendor: ALT Atomic Team
-        description: Nightly Core image for ALT Atomic distros
-        licenses: GPL-3.0-or-later
-        url: atomic.alt-gnome.ru
-        authors: ALT Atomic Team
-
+        pretty-name: ${{ env.PRETTY_NAME }}
+        version: ${{ needs.gather-build-data.outputs.date }}
+        vendor: ${{ env.VENDOR }}
+        description: ${{ env.DESCRIPTION }}
+        licenses: ${{ env.LICENSES }}
+        url: ${{ env.URL }}
+        authors: ${{ env.AUTHORS }}
         repo-date: ${{ needs.gather-build-data.outputs.pretty-date }}
 
         build-args: |
@@ -164,15 +140,13 @@ jobs:
           IMAGE_TYPE=nightly
           IMAGE=localhost/core-minimal
           ARCH=${{ matrix.larch }}
-          VERSION=${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
+          VERSION=${{ needs.gather-build-data.outputs.date }}
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-        
-        local-build-name: localhost/core
 
-  manifest-minimal:
-    name: Multiarch minimal manifest push
+  manifest:
+    name: Multiarch ${{ matrix.name }} manifest push
     needs:
     - build
     - gather-build-data
@@ -180,6 +154,13 @@ jobs:
     runs-on: als-tiny
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
+    strategy:
+      matrix:
+        include:
+        - name: minimal
+          suffix: -minimal
+        - name: default
+          suffix: ''
 
     steps:
     - name: Create manifest
@@ -188,86 +169,19 @@ jobs:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            '${{ github.repository }}-minimal/nightly' || 
-            '${{ github.repository }}-minimal/nightly-branch' 
-          }}
+        image-name: ${{ format('{0}{1}/{2}', github.repository, matrix.suffix, needs.gather-build-data.outputs.channel) }}
         arch-tags: amd64 arm64
-        image-wildcard: >-
-          ${{
-            github.ref_name == 'main' && 
-            format('{0}-minimal/nightly/@ARCH@:latest', github.repository) || 
-            format('{0}-minimal/nightly-branch/@ARCH@:{1}', github.repository, github.ref_name == 'main' && 'latest' || github.ref_name) 
-          }}
-        image-tag: >-
-          ${{
-            github.ref_name == 'main' &&
-            'latest' ||
-            github.ref_name
-          }}
-        image-aliases: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            needs.gather-build-data.outputs.date || 
-            '' 
-          }} ${{ needs.gather-build-data.outputs.commit }}
-        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-
-  manifest-default:
-    name: Multiarch default manifest push
-    needs:
-    - build
-    - gather-build-data
-    if: github.event_name != 'pull_request'
-    runs-on: als-tiny
-    container:
-      image: altlinux.space/alt-atomic/builder-image:sisyphus
-
-    steps:
-    - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@d1b311b7bc99d19264377b009549632312e525c1
-      with:
-        registry: ${{ env.REGISTRY }}
-        registry-username: "<token>"
-        registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            '${{ github.repository }}/nightly' || 
-            '${{ github.repository }}/nightly-branch' 
-          }}
-        arch-tags: amd64 arm64
-        image-wildcard: >-
-          ${{
-            github.ref_name == 'main' && 
-            format('{0}/nightly/@ARCH@:latest', github.repository) || 
-            format('{0}/nightly-branch/@ARCH@:{1}', github.repository, github.ref_name == 'main' && 'latest' || github.ref_name) 
-          }}
-        image-tag: >-
-          ${{
-            github.ref_name == 'main' &&
-            'latest' ||
-            github.ref_name
-          }}
-        image-aliases: >-
-          ${{ 
-            github.ref_name == 'main' && 
-            needs.gather-build-data.outputs.date || 
-            '' 
-          }} ${{ needs.gather-build-data.outputs.commit }}
+        image-wildcard: ${{ format('{0}{1}/{2}/@ARCH@:{3}', github.repository, matrix.suffix, needs.gather-build-data.outputs.channel, needs.gather-build-data.outputs.tag) }}
+        image-tag: ${{ needs.gather-build-data.outputs.tag }}
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
   run-derivatives:
     name: Run ${{ matrix.image }} build-nightly workflow
     needs:
-    - manifest-minimal
-    - manifest-default
-    if: >
-      github.event_name == 'schedule'
+    - manifest
+    if: github.event_name == 'schedule'
     runs-on: als-tiny
     strategy:
       matrix:
@@ -286,7 +200,7 @@ jobs:
           await forgejo.repos.dispatchWorkflow(
             "alt-atomic",
             process.env.IMAGE,
-            "build-nightly.yml", 
+            "build-nightly.yml",
             {
               ref: "main",
             },
