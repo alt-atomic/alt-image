@@ -99,7 +99,6 @@ jobs:
           IMAGE=registry.altlinux.org/sisyphus/base:latest
           ARCH=${{ matrix.larch }}
           VERSION=${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
-        podman-extra-args: --from 
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
