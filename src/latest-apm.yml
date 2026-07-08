@@ -4,7 +4,7 @@ modules:
     if: Env.IMAGE_TYPE == 'nightly'
     body:
       custom:
-        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/apm-nightly/sisyphus.repo ${{ Env.ARCH }} classic
+        - rpm https://altlinux.space/api/packages/alt-atomic/alt/group/apm-nightly/sisyphus.repo _arch_ classic
 
   - name: Install apm
     type: packages
