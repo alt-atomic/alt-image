@@ -41,7 +41,7 @@ jobs:
       run: |
         echo "commit=$(git rev-parse HEAD)" >> $FORGEJO_OUTPUT
 
-  build-minimal:
+  build:
     name: Build minimal ${{ matrix.arch }} image
     needs:
     - gather-build-data
@@ -71,10 +71,21 @@ jobs:
         image-name: >-
           ${{
             github.ref_name == 'main' && 
-            format('{0}-minimal/nightly', github.repository) || 
-            format('{0}-minimal/nightly-branch', github.repository) 
+            format('{0}-minimal/nightly/{1}', github.repository, matrix.arch) || 
+            format('{0}-minimal/nightly-branch/{1}', github.repository, matrix.arch) 
           }}
-        image-tag: ${{ matrix.arch }}
+        image-tag: >-
+          ${{
+            github.ref_name == 'main' &&
+            'latest' ||
+            github.ref_name
+          }}
+        image-aliases: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            needs.gather-build-data.outputs.date || 
+            '' 
+          }} ${{ needs.gather-build-data.outputs.commit }}
         arch: ${{ matrix.arch }}
         containerfile-path: ./container-files/main-minimal
 
@@ -105,41 +116,27 @@ jobs:
         
         local-build-name: localhost/core-minimal
 
-  build-default:
-    name: Build default ${{ matrix.arch }} image
-    needs:
-    - build-minimal
-    - gather-build-data
-    runs-on: ${{ matrix.runner }}
-    container:
-      image: altlinux.space/alt-atomic/builder-image:sisyphus
-    strategy:
-      matrix:
-        arch:
-        - amd64
-        - arm64
-        include:
-        - arch: amd64
-          larch: x86_64
-          runner: als-huge
-        - arch: arm64
-          larch: aarch64
-          runner: self-hosted-arm64-huge
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Build minimal image
+    - name: Build default image
       uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
         image-name: >-
           ${{
             github.ref_name == 'main' && 
-            format('{0}/nightly', github.repository) || 
-            format('{0}/nightly-branch', github.repository) 
+            format('{0}/nightly/{1}', github.repository, matrix.arch) || 
+            format('{0}/nightly-branch/{1}', github.repository, matrix.arch) 
           }}
-        image-tag: ${{ matrix.arch }}
+        image-tag: >-
+          ${{
+            github.ref_name == 'main' &&
+            'latest' ||
+            github.ref_name
+          }}
+        image-aliases: >-
+          ${{ 
+            github.ref_name == 'main' && 
+            needs.gather-build-data.outputs.date || 
+            '' 
+          }} ${{ needs.gather-build-data.outputs.commit }}
         arch: ${{ matrix.arch }}
         containerfile-path: ./container-files/main-default
 
@@ -161,7 +158,7 @@ jobs:
           MONTH=${{ needs.gather-build-data.outputs.month }}
           DAY=${{ needs.gather-build-data.outputs.day }}
           IMAGE_TYPE=nightly
-          IMAGE=${{ env.REGISTRY }}/${{ github.repository }}-minimal/${{ github.ref_name == 'main' && 'nightly' || 'nightly-branch' }}:${{ matrix.arch }}
+          IMAGE=localhost/core-minimal
           ARCH=${{ matrix.larch }}
           VERSION=${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
 
@@ -173,7 +170,7 @@ jobs:
   manifest-minimal:
     name: Multiarch minimal manifest push
     needs:
-    - build-minimal
+    - build
     - gather-build-data
     if: github.event_name != 'pull_request'
     runs-on: als-tiny
@@ -182,7 +179,7 @@ jobs:
 
     steps:
     - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
+      uses: alt-atomic/actions/create-manifest@d1b311b7bc99d19264377b009549632312e525c1
       with:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
@@ -194,6 +191,12 @@ jobs:
             '${{ github.repository }}-minimal/nightly-branch' 
           }}
         arch-tags: amd64 arm64
+        image-wildcard: >-
+          ${{
+            github.ref_name == 'main' && 
+            format('{0}-minimal/nightly/@ARCH@:latest', github.repository) || 
+            format('{0}-minimal/nightly-branch/@ARCH@:{1}', github.repository, github.ref_name == 'main' && 'latest' || github.ref_name) 
+          }}
         image-tag: >-
           ${{
             github.ref_name == 'main' &&
@@ -212,7 +215,7 @@ jobs:
   manifest-default:
     name: Multiarch default manifest push
     needs:
-    - build-default
+    - build
     - gather-build-data
     if: github.event_name != 'pull_request'
     runs-on: als-tiny
@@ -221,7 +224,7 @@ jobs:
 
     steps:
     - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@9553cbf63780d0252b503904b7e3ca35f566a943
+      uses: alt-atomic/actions/create-manifest@d1b311b7bc99d19264377b009549632312e525c1
       with:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
@@ -233,6 +236,12 @@ jobs:
             '${{ github.repository }}/nightly-branch' 
           }}
         arch-tags: amd64 arm64
+        image-wildcard: >-
+          ${{
+            github.ref_name == 'main' && 
+            format('{0}/nightly/@ARCH@:latest', github.repository) || 
+            format('{0}/nightly-branch/@ARCH@:{1}', github.repository, github.ref_name == 'main' && 'latest' || github.ref_name) 
+          }}
         image-tag: >-
           ${{
             github.ref_name == 'main' &&
@@ -247,7 +256,6 @@ jobs:
           }} ${{ needs.gather-build-data.outputs.commit }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-
 
   run-derivatives:
     name: Run ${{ matrix.image }} build-nightly workflow
