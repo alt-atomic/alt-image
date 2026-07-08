@@ -66,7 +66,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build minimal image
-      uses: alt-atomic/actions/build-and-push@3cb38fcf1dc4771396a94dbcc717eb6aa529c110
+      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
         image-name: >-
           ${{
@@ -99,6 +99,7 @@ jobs:
           IMAGE=registry.altlinux.org/sisyphus/base:latest
           ARCH=${{ matrix.larch }}
           VERSION=${{ needs.gather-build-data.outputs.year }}${{ needs.gather-build-data.outputs.month }}${{ needs.gather-build-data.outputs.day }}
+        podman-extra-args: --from 
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
@@ -131,7 +132,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build minimal image
-      uses: alt-atomic/actions/build-and-push@3cb38fcf1dc4771396a94dbcc717eb6aa529c110
+      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
         image-name: >-
           ${{
