@@ -11,7 +11,6 @@ modules:
         - tzdata
         - which
         - pam-limits-off
-        # used by fix-dracut and fix-grub
         - wget
         # used by check_var_directory and init-ostree.sh
         - rsync
