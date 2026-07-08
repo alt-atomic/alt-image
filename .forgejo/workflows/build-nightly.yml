@@ -171,7 +171,7 @@ jobs:
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         image-name: ${{ format('{0}{1}/{2}', github.repository, matrix.suffix, needs.gather-build-data.outputs.channel) }}
         arch-tags: amd64 arm64
-        image-wildcard: ${{ format('{0}{1}/{2}/@ARCH@:{3}', github.repository, matrix.suffix, needs.gather-build-data.outputs.channel, needs.gather-build-data.outputs.tag) }}
+        image-wildcard: ${{ format('{0}/{1}{2}/{3}/@ARCH@:{4}', env.REGISTRY, github.repository, matrix.suffix, needs.gather-build-data.outputs.channel, needs.gather-build-data.outputs.tag) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
