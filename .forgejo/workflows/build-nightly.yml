@@ -12,7 +12,6 @@ on:
   pull_request:
 
 env:
-  LOCAL_BUILD_NAME: localhost/core
   REGISTRY: altlinux.space
 
   PRETTY_NAME: ALT Atomic Core Nightly
