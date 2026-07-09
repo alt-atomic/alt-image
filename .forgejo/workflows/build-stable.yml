@@ -75,7 +75,7 @@ jobs:
     - name: Build minimal image
       uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
-        image-name: ${{ format('{0}-minimal/stable/{2}', github.repository, matrix.arch) }}
+        image-name: ${{ format('{0}-minimal/stable/{1}', github.repository, matrix.arch) }}
         image-tag: latest
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
@@ -108,7 +108,7 @@ jobs:
     - name: Build default image
       uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
       with:
-        image-name: ${{ format('{0}/stable/{2}', github.repository, matrix.arch) }}
+        image-name: ${{ format('{0}/stable/{1}', github.repository, matrix.arch) }}
         image-tag: latest
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
