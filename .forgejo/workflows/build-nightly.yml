@@ -163,7 +163,7 @@ jobs:
 
     steps:
     - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@d1b311b7bc99d19264377b009549632312e525c1
+      uses: alt-atomic/actions/create-manifest@0a7fd4632a415b0f4316c37d9be29325dbe32af9
       with:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
