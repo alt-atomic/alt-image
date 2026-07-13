@@ -7,6 +7,8 @@ modules:
     body:
       branch: sisyphus
       date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
+      tasks:
+        - 424531
       clean: true
 
   - name: Initial includes
