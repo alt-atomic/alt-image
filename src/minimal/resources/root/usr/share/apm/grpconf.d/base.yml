@@ -1,12 +1,9 @@
 sync:
   groups:
-    - docker
     - lxd
     - cuse
     - fuse
-    - libvirt
     - adm
-    - wheel
     - uucp
     - cdrom
     - cdwriter
@@ -19,3 +16,7 @@ sync:
     - camera
     - render
     - usershares
+  users:
+    - uid_range:
+        min: 1000
+        max: 60000
