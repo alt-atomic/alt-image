@@ -86,7 +86,7 @@ jobs:
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' }}
-        rechunk-enabled: ${{ github.event_name != 'pull_request' }}
+        rechunk-enabled: false
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.date }}
@@ -121,7 +121,7 @@ jobs:
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' }}
-        rechunk-enabled: ${{ github.event_name != 'pull_request' }}
+        rechunk-enabled: false
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.date }}

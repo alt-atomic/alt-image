@@ -83,6 +83,7 @@ jobs:
         local-build-name: localhost/core-minimal
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        rechunk-enabled: false
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.version }}
@@ -116,6 +117,7 @@ jobs:
         local-build-name: localhost/core
 
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        rechunk-enabled: false
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.version }}
