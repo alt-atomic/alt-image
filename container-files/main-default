@@ -28,6 +28,9 @@ RUN --mount=type=bind,ro,source=./src/default/image.yml,target=/etc/apm/image.ym
 # Lint image
 RUN echo -e "\033[1;33m$(bootc container lint)\033[0m"
 
+FROM scratch
+COPY --from=altbase / /
+
 WORKDIR /
 
 CMD ["/sbin/init"]
