@@ -31,6 +31,9 @@ RUN echo -e "\033[1;33m$(bootc container lint)\033[0m"
 FROM scratch
 COPY --from=altbase / /
 
+LABEL ostree.bootable="true"
+LABEL containers.bootc="1"
+
 WORKDIR /
 
 CMD ["/sbin/init"]
