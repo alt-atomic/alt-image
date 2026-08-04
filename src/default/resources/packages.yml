@@ -37,6 +37,7 @@ modules:
 
         # Graphic
         - fontconfig
+        - fontconfig-usr-cache
         - glxinfo
         - mesa-dri-drivers
 
