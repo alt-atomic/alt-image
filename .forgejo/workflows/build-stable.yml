@@ -73,7 +73,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build minimal image
-      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
+      uses: alt-atomic/actions/build-and-push@8af0ff9413a5552b106cb623a3e81f98df9a9684
       with:
         image-name: ${{ format('{0}-minimal/stable/{1}', github.repository, matrix.arch) }}
         image-tag: latest
@@ -107,7 +107,7 @@ jobs:
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
     - name: Build default image
-      uses: alt-atomic/actions/build-and-push@c882944ee9b49d04f3f2030aa47c435515a66657
+      uses: alt-atomic/actions/build-and-push@8af0ff9413a5552b106cb623a3e81f98df9a9684
       with:
         image-name: ${{ format('{0}/stable/{1}', github.repository, matrix.arch) }}
         image-tag: latest
