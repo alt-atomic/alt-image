@@ -22,7 +22,7 @@ Known projects based on this image:
 `core/nightly:<git-commit>`
 `core/nightly:latest`
 
-Built upon every change in the repository, using the main branch, and on a daily basis. Changes in external branches are uploaded under the name core/nightly-branch:<branch-name> for testing purposes.
+Built upon every change in the repository, using the main branch, and on a daily basis. Pull requests from this repository are published under the name core/pr:<PR number> for testing purposes.
 
 `core/stable:<date>`
 `core/stable:<git-tag>`
