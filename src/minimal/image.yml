@@ -57,6 +57,8 @@ modules:
 
   - name: Configurate grub
     type: shell
+    env:
+      ARCH: ${{ Arch }}
     body:
       command: scripts/grub.sh
 

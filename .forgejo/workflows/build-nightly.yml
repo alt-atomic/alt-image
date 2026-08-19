@@ -102,7 +102,6 @@ jobs:
           DAY=${{ needs.gather-build-data.outputs.day }}
           IMAGE_TYPE=nightly
           IMAGE=registry.altlinux.org/sisyphus/base:latest
-          ARCH=${{ matrix.larch }}
           VERSION=${{ needs.gather-build-data.outputs.date }}
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
@@ -137,7 +136,6 @@ jobs:
           DAY=${{ needs.gather-build-data.outputs.day }}
           IMAGE_TYPE=nightly
           IMAGE=localhost/core-minimal
-          ARCH=${{ matrix.larch }}
           VERSION=${{ needs.gather-build-data.outputs.date }}
 
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}

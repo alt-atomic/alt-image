@@ -63,7 +63,7 @@ modules:
 
   - name: Install x86_64-only packages
     type: packages
-    if: Env.ARCH == 'x86_64'
+    if: Arch == 'x86_64'
     body:
       install:
         - grub-pc
