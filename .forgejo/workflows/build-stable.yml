@@ -60,11 +60,6 @@ jobs:
         arch:
         - amd64
         - arm64
-        include:
-        - arch: amd64
-          larch: x86_64
-        - arch: arm64
-          larch: aarch64
 
     steps:
     - name: Checkout repository
