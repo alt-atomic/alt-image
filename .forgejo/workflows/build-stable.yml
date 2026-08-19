@@ -52,7 +52,7 @@ jobs:
     name: Build ${{ matrix.arch }} images
     needs:
     - gather-build-data
-    runs-on: ${{ matrix.runner }}
+    runs-on: als-huge
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
     strategy:
@@ -63,10 +63,8 @@ jobs:
         include:
         - arch: amd64
           larch: x86_64
-          runner: als-huge
         - arch: arm64
           larch: aarch64
-          runner: self-hosted-arm64-huge
 
     steps:
     - name: Checkout repository
