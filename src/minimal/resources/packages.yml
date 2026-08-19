@@ -60,6 +60,8 @@ modules:
         - systemd
         - zram-generator
         - libnss-altfiles
+        - systemd-networkd
+        - libnss-resolve
 
   - name: Install x86_64-only packages
     type: packages

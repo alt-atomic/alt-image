@@ -7,7 +7,18 @@ modules:
         - fstrim.timer
         - locked-db-migrate.service
         - NetworkManager
+        - systemd-resolved
         - ostree-remount
         - podman.socket
         - sync-users.service
       enabled: true
+
+  - name: Disable autoenabled networkd service
+    type: systemd
+    body:
+      targets:
+        - systemd-networkd
+        - systemd-networkd.socket
+        - systemd-networkd-wait-online
+        - systemd-network-generator
+        - systemd-networkd-persistent-storage
