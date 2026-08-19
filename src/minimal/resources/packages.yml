@@ -61,6 +61,8 @@ modules:
         - systemd
         - libnss-altfiles
         - polkit-rule-wheel-admin
+        - systemd-networkd
+        - libnss-resolve
 
         # Fonts
         - fonts-console-terminus
