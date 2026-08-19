@@ -56,7 +56,6 @@ jobs:
     runs-on: als-huge
     container:
       image: altlinux.space/alt-atomic/builder-image:sisyphus
-      options: --platform linux/${{ matrix.arch }}
     strategy:
       matrix:
         arch:
