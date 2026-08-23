@@ -1,7 +1,10 @@
+# Runs in early sysinit so NSS databases are consistent BEFORE
+# udev coldplug and tmpfiles resolve owner/group names.
 [Unit]
 Description=Sync system users and groups for nss-altfiles
-After=systemd-tmpfiles-setup.service local-fs.target
-Before=nss-user-lookup.target
+DefaultDependencies=no
+After=systemd-remount-fs.service
+Before=sysinit.target systemd-udev-trigger.service
 
 [Service]
 Type=oneshot
@@ -10,4 +13,4 @@ ExecStart=/usr/bin/apm s i sync-groups -ft plain
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sysinit.target
