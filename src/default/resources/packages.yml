@@ -18,6 +18,7 @@ modules:
         - time
         - unzip
         - vim-enhanced
+        - zram-generator
 
         # Container
         - docker-compose
