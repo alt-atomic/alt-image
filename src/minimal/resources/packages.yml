@@ -58,7 +58,6 @@ modules:
         - policycoreutils
         - sfdisk
         - systemd
-        - zram-generator
         - libnss-altfiles
 
   - name: Install x86_64-only packages
