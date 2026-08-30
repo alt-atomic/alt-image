@@ -9,7 +9,7 @@ modules:
     body:
       release-overrides:
         VARIANT: ${{ Env.VARIANT }}
-        VARIANT_ID: ${{ Env.BUILD_TYPE }}
+        VARIANT_ID: ${{ Env.VARIANT_ID }}
 
   - name: Install packages
     type: include

@@ -15,10 +15,10 @@ ENV IMAGE_TYPE=$IMAGE_TYPE
 ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
-ENV BUILD_TYPE="minimal"
 
 ENV VERSION=$VERSION
-ENV VARIANT="Minimal"
+ENV VARIANT="Core Minimal"
+ENV VARIANT_ID="core-minimal"
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates
