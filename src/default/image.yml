@@ -8,8 +8,8 @@ modules:
     type: branding
     body:
       release-overrides:
-        VARIANT: ${{ Env.VARIANT }}
-        VARIANT_ID: ${{ Env.VARIANT_ID }}
+        VARIANT: Core
+        VARIANT_ID: core
 
   - name: Install packages
     type: include

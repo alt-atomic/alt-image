@@ -17,8 +17,6 @@ ENV MONTH=$MONTH
 ENV DAY=$DAY
 
 ENV VERSION=$VERSION
-ENV VARIANT="Core Minimal"
-ENV VARIANT_ID="core-minimal"
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates

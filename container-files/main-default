@@ -16,9 +16,6 @@ ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
 
-ENV VARIANT="Core"
-ENV VARIANT_ID="core"
-
 RUN --mount=type=bind,ro,source=./src/default/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/default/resources,target=/etc/apm/resources \
     apm system image build
