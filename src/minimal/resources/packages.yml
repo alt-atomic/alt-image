@@ -60,6 +60,9 @@ modules:
         - systemd
         - libnss-altfiles
 
+        # Fonts
+        - fonts-console-terminus
+
   - name: Install x86_64-only packages
     type: packages
     if: Arch == 'x86_64'
