@@ -9,7 +9,7 @@ modules:
       INCLUDES_DIR: /usr/share/apm/includes/common
     body:
       url: https://altlinux.space/alt-atomic/common-includes.git
-      rev: 30b69987d3320b19515d87a2f2c4c95af40129d2
+      rev: b826c0537b272b1f99bcfb82b7448861105139d0
       command: |
         for file in *; do
           if [ -f "$file" ]; then
