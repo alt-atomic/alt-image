@@ -19,6 +19,7 @@ modules:
         - unzip
         - vim-enhanced
         - zram-generator
+        - kmscon
 
         # Container
         - docker-compose
