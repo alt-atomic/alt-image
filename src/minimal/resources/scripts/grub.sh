@@ -64,15 +64,17 @@ msg "enroll certificate: altlinux.cer"
 find "$DEST/EFI" -type f -exec chmod 0644 {} +
 
 write_meta() {
-    printf '{\n  "timestamp": "%s",\n  "version": "%s"\n}\n' \
-        "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$2" > "$DEST/$1.json"
+    local extra=''
+    [ -n "${3:-}" ] && extra=$(printf ',\n  "default-bootloader": "%s"' "$3")
+    printf '{\n  "timestamp": "%s",\n  "version": "%s"%s\n}\n' \
+        "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$2" "$extra" > "$DEST/$1.json"
     msg "metadata: $1.json ($2)"
 }
 
 shim_v=$(rpm -q shim-signed 2>/dev/null || echo shim-signed-unknown)
 grub_efi_v=$(rpm -q grub-efi 2>/dev/null || echo grub-efi-unknown)
 grub_pc_v=$(rpm -q grub-pc 2>/dev/null || echo grub-pc-unknown)
-write_meta EFI  "$grub_efi_v,$shim_v"
+write_meta EFI  "$grub_efi_v,$shim_v" Grub
 write_meta BIOS "$grub_pc_v"
 
 # Convenience wrapper for `bootupctl update`.
