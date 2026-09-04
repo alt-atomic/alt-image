@@ -45,7 +45,6 @@ modules:
         # System
         - fprintd
         - jq
-        - kbd-data
         - yq
 
         # Virtualization

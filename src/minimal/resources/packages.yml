@@ -50,6 +50,7 @@ modules:
         # System
         - chrony
         - kbd
+        - kbd-data
         - libselinux
         - losetup
         - mount
