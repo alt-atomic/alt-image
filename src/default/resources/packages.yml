@@ -52,6 +52,4 @@ modules:
         - lxd
         - open-vm-tools
         - qemu-guest-agent
-        - spice-vdagent
-        - spice-webdavd
         - virtiofsd
