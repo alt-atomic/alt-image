@@ -60,6 +60,7 @@ modules:
         - sfdisk
         - systemd
         - libnss-altfiles
+        - polkit-rule-wheel-admin
 
         # Fonts
         - fonts-console-terminus
