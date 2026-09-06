@@ -1,0 +1,52 @@
+name: systemd
+description: The system booted and the units enabled in image.yml are active
+
+steps:
+  - name: multi-user.target reached
+    run: systemctl is-active multi-user.target
+    wait: 120s
+    on-fail: systemctl list-jobs --no-pager
+
+  # Stable must be strictly running; nightly may be degraded, failed units
+  # are caught by a dedicated step below.
+  - name: system state is running
+    only:
+      RELEASE_TYPE: [ stable ]
+    run: systemctl is-system-running
+    expect:
+      stdout: running
+    on-fail: systemctl --failed --no-pager
+
+  - name: system state is running or degraded
+    only:
+      RELEASE_TYPE: [ development ]
+    run: systemctl is-system-running || true
+    expect:
+      stdout: "~^(running|degraded)$"
+    on-fail: systemctl list-jobs --no-pager
+
+  - name: no failed units
+    run: systemctl --failed --no-legend --plain
+    expect:
+      empty: true
+    continue: true
+    on-fail: |
+      for u in $(systemctl --failed --no-legend --plain | awk '{print $1}'); do
+        echo "== $u"
+        journalctl -b -u "$u" --no-pager -o cat | tail -20
+      done
+
+  - name: minimal base services are enabled
+    run: systemctl is-enabled bootloader-update chrony fstrim.timer NetworkManager podman.socket sync-users.service
+    on-fail: systemctl status bootloader-update chrony NetworkManager podman.socket --no-pager | head -60
+
+  - name: default services are enabled
+    only:
+      VARIANT_ID: [ core ]
+    run: systemctl is-enabled libvirtd docker.socket systemd-oomd
+    on-fail: systemctl status libvirtd docker.socket systemd-oomd --no-pager | head -60
+
+  - name: chrony and NetworkManager are active
+    run: systemctl is-active chronyd NetworkManager
+    wait: 60s
+    on-fail: journalctl -b -u chronyd -u NetworkManager --no-pager -o cat | tail -40

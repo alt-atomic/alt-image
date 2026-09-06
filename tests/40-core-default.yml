@@ -1,0 +1,24 @@
+name: core defaults
+description: What core adds on top of core-minimal
+only:
+  VARIANT_ID: [ core ]
+steps:
+  - name: zram is active
+    run: swapon --noheadings --show=NAME,TYPE
+    expect:
+      stdout: zram0
+    on-fail: systemctl status systemd-zram-setup@zram0 --no-pager; cat /etc/systemd/zram-generator.conf
+
+  - name: systemd-oomd runs with our limits
+    run: oomctl
+    expect:
+      stdout: "Swap Used Limit: 80"
+    on-fail: systemctl status systemd-oomd --no-pager; cat /usr/lib/systemd/oomd.conf.d/10-atomic-oomd.conf
+
+  - name: sudo for wheel is enabled
+    run: control sudowheel
+    expect:
+      stdout: enabled
+
+  - name: firmware-linux is installed
+    run: rpm -q firmware-linux

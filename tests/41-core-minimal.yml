@@ -1,0 +1,11 @@
+name: core-minimal limits
+description: core-minimal does not pull in extras
+only:
+  VARIANT_ID: [ core-minimal ]
+steps:
+  - name: no firmware-linux
+    run: "! rpm -q firmware-linux"
+
+  - name: no docker and libvirt
+    run: "! rpm -q docker-engine libvirt"
+    on-fail: rpm -qa | sort

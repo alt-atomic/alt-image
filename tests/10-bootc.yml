@@ -1,0 +1,41 @@
+name: bootc and bootloader
+description: The image is installed via bootc, bootupd sees the ESP, ostree is mounted
+
+steps:
+  - name: bootc status works
+    run: bootc status
+    on-fail: journalctl -b -u bootc-fetch-apply-updates --no-pager -o cat | tail -20
+
+  - name: bootc reports a core image
+    run: bootc status --format json
+    expect:
+      stdout: "~\"image\":\\s*\"[^\"]*core"
+
+  - name: ostree remount finished
+    run: systemctl is-active ostree-remount
+    on-fail: findmnt
+
+  - name: /usr is read-only
+    run: findmnt -no OPTIONS -T /usr
+    expect:
+      stdout: "~(^|,)ro(,|$)"
+    on-fail: findmnt -T /usr; findmnt /sysroot
+
+  - name: bootloader-update finished without errors
+    run: systemctl is-active bootloader-update
+    wait: 30s
+    continue: true
+    on-fail: journalctl -b -u bootloader-update.service --no-pager -o cat
+
+  - name: bootupctl sees its components
+    run: bootupctl status
+    expect:
+      stdout: "Component EFI"
+    on-fail: |
+      findmnt /boot /boot/efi /efi
+      lsblk -o NAME,PARTTYPENAME,FSTYPE,MOUNTPOINT
+      rpm -q bootupd grub-efi shim-signed
+
+  - name: ESP contains a shim
+    run: ls /boot/efi/EFI/*/shim*.efi 2>/dev/null || ls /efi/EFI/*/shim*.efi
+    on-fail: find /boot/efi /efi -maxdepth 3 2>/dev/null

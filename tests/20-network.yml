@@ -1,0 +1,19 @@
+name: Network
+description: NetworkManager brought the interface up, the guest has DNS and internet access
+
+steps:
+  - name: default route exists
+    run: ip route show default
+    wait: 60s
+    expect:
+      stdout: "default via"
+    on-fail: nmcli device status; ip addr
+
+  - name: DNS and HTTPS work
+    run: wget -q --spider --timeout=10 https://altlinux.space
+    continue: true
+    on-fail: cat /etc/resolv.conf; nmcli general status
+
+  - name: time is synchronized or syncing
+    run: chronyc tracking
+    continue: true

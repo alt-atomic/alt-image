@@ -1,0 +1,31 @@
+name: Containers
+description: podman and docker work inside the guest
+
+steps:
+  - name: podman info
+    run: podman info --format '{{.Store.GraphDriverName}}'
+    expect:
+      stdout: overlay
+    on-fail: podman info
+
+  - name: podman.socket is listening
+    run: test -S /run/podman/podman.sock
+    on-fail: systemctl status podman.socket --no-pager
+
+  - name: subuid and subgid for rootless are configured
+    run: test -f /etc/subuid && test -x /usr/bin/newuidmap
+    on-fail: ls -l /usr/bin/newuidmap /etc/subuid /etc/subgid
+
+  - name: docker responds
+    only:
+      VARIANT_ID: [ core ]
+    run: docker info
+    wait: 30s
+    on-fail: journalctl -b -u docker --no-pager -o cat | tail -30
+
+  - name: user namespaces are allowed
+    only:
+      VARIANT_ID: [ core ]
+    run: sysctl -n kernel.unprivileged_userns_clone 2>/dev/null || sysctl -n user.max_user_namespaces
+    expect:
+      stdout: "~^[1-9]"
