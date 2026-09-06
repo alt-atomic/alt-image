@@ -22,9 +22,8 @@ steps:
     run: docker info
     wait: 160s
     on-fail: |
-      systemctl list-jobs --no-pager
-      systemctl show docker.service -p ActiveEnterTimestamp -p ExecMainStartTimestamp -p After
-      journalctl -b -u docker.socket -u docker.service -u containerd.service -o short-precise --no-pager
+      systemctl list-jobs --no-legend --no-pager
+      journalctl -b -u docker.socket -u docker.service -u containerd.service -o short-precise --no-pager | grep -E 'Listening|Starting|Started|activat|completed initialization|error' | head -8
 
   - name: user namespaces are allowed
     only:
