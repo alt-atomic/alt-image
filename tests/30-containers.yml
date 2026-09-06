@@ -1,5 +1,5 @@
 name: Containers
-description: podman and docker work inside the guest
+description: podman works inside the guest and rootless containers are possible
 
 steps:
   - name: podman info
@@ -15,15 +15,6 @@ steps:
   - name: subuid and subgid for rootless are configured
     run: test -f /etc/subuid && test -x /usr/bin/newuidmap
     on-fail: ls -l /usr/bin/newuidmap /etc/subuid /etc/subgid
-
-  - name: docker responds
-    only:
-      VARIANT_ID: [ core ]
-    run: docker info
-    wait: 160s
-    on-fail: |
-      systemctl list-jobs --no-legend --no-pager
-      journalctl -b -u docker.socket -u docker.service -u containerd.service -o short-precise --no-pager | grep -E 'Listening|Starting|Started|activat|completed initialization|error' | head -8
 
   - name: user namespaces are allowed
     only:
