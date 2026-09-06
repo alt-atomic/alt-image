@@ -11,3 +11,17 @@ modules:
     body:
       command: |
         control sudowheel enabled
+
+  - name: Disable getty
+    type: systemd
+    body:
+      targets:
+        - getty@.service
+      enabled: false
+
+  - name: Enable kmsconvt
+    type: systemd
+    body:
+      targets:
+        - kmsconvt@.service
+      enabled: true
