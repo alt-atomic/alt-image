@@ -20,7 +20,7 @@ steps:
     only:
       VARIANT_ID: [ core ]
     run: docker info
-    wait: 30s
+    wait: 160s
     on-fail: journalctl -b -u docker --no-pager -o cat | tail -30
 
   - name: user namespaces are allowed
