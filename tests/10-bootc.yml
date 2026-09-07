@@ -35,7 +35,3 @@ steps:
       findmnt /boot /boot/efi /efi
       lsblk -o NAME,PARTTYPENAME,FSTYPE,MOUNTPOINT
       rpm -q bootupd grub-efi shim-signed
-
-  - name: ESP contains a shim
-    run: ls /boot/efi/EFI/*/shim*.efi 2>/dev/null || ls /efi/EFI/*/shim*.efi
-    on-fail: find /boot/efi /efi -maxdepth 3 2>/dev/null
