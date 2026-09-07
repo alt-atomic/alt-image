@@ -36,6 +36,7 @@ modules:
         # Firmware
         - firmware-alsa-sof
         - firmware-linux
+        - bolt
 
         # Graphic
         - fontconfig
