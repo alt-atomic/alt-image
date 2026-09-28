@@ -177,6 +177,7 @@ jobs:
         image:
         - kyanite
         - onyx
+        - phosphophyllite
 
     steps:
     - name: Trigger rebuild
