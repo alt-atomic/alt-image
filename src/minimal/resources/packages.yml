@@ -9,6 +9,7 @@ modules:
         - shadow-change
         - su
         - tzdata
+        - tzdata-zonetab-legacy
         - which
         - pam-limits-off
         - wget
