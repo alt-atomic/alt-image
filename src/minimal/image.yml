@@ -5,9 +5,10 @@ modules:
   - name: Set repos
     type: repos
     body:
-      branch: sisyphus
-      date: ${{ Env.YEAR }}${{ Env.MONTH }}${{ Env.DAY }}
       clean: true
+      custom:
+        - rpm [alt] http://ftp.altlinux.org/pub/distributions/archive/sisyphus/date/${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }} _arch_ classic
+        - rpm [alt] http://ftp.altlinux.org/pub/distributions/archive/sisyphus/date/${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }} noarch classic
 
   - name: Initial includes
     type: include
