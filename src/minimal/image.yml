@@ -10,6 +10,14 @@ modules:
         - rpm [alt] http://ftp.altlinux.org/pub/distributions/archive/sisyphus/date/${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }} _arch_ classic
         - rpm [alt] http://ftp.altlinux.org/pub/distributions/archive/sisyphus/date/${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }} noarch classic
 
+  - name: Set arepo
+    type: repos
+    if: Arch == 'x86_64'
+    body:
+      no-update: true
+      custom:
+        - rpm [alt] http://ftp.altlinux.org/pub/distributions/archive/sisyphus/date/${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }} x86_64-i586 classic
+
   - name: Initial includes
     type: include
     body:
