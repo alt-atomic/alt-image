@@ -39,3 +39,7 @@ steps:
     run: systemctl is-active chronyd NetworkManager
     wait: 60s
     on-fail: journalctl -b -u chronyd -u NetworkManager --no-pager -o cat | tail -40
+
+  - name: systemd-boot EFI directory exists
+    run: test -d /usr/lib/systemd/boot/efi
+    on-fail: ls -la /usr/lib/systemd/boot/ 2>&1
