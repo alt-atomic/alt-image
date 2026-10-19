@@ -6,6 +6,7 @@ modules:
         - chrony
         - fstrim.timer
         - locked-db-migrate.service
+        - systemd-resolved
         - NetworkManager
         - ostree-remount
         - podman.socket
