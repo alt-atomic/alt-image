@@ -29,8 +29,9 @@ modules:
       build-type: ${{ Env.IMAGE_TYPE }}
       release-overrides:
         VERSION: ${{ Env.VERSION }}
-        VARIANT: Core Minimal
-        VARIANT_ID: core-minimal
+        IMAGE_ID: alt-atomic-core-minimal
+        VARIANT: Minimal
+        VARIANT_ID: minimal
 
   - name: Install packages
     type: include

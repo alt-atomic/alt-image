@@ -7,9 +7,12 @@ modules:
   - name: Set variant to branding
     type: branding
     body:
+      build-type: ${{ Env.IMAGE_TYPE }}
       release-overrides:
-        VARIANT: Core
-        VARIANT_ID: core
+        VERSION: ${{ Env.VERSION }}
+        IMAGE_ID: alt-atomic-core
+        VARIANT: ""
+        VARIANT_ID: ""
 
   - name: Install packages
     type: include
