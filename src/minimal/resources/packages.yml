@@ -30,6 +30,7 @@ modules:
         - grub-efi
         - shim-unsigned
         - shim-signed
+        - systemd-boot-efi
 
         # Container
         - bootupd
