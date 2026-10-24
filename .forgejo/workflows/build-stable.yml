@@ -30,6 +30,7 @@ jobs:
       month: ${{ steps.date.outputs.month }}
       day: ${{ steps.date.outputs.day }}
       pretty-date: ${{ steps.date.outputs.pretty-date }}
+      tag: ${{ steps.get_tag.outputs.tag }}
       version: ${{ format('{0}-{1}', steps.get_tag.outputs.tag, steps.date.outputs.date) }}
       aliases: ${{ format('{0} {1}', steps.date.outputs.date, steps.get_tag.outputs.tag) }}
 
@@ -64,6 +65,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      with:
+        ref: ${{ needs.gather-build-data.outputs.tag }}
 
     - name: Build minimal image
       uses: alt-atomic/actions/build-and-push@48ae7df7152c3c9b41fe8611cfa73b3d594a216b
