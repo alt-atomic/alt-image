@@ -37,7 +37,7 @@ modules:
       name: alt-atomic-${{ Env.IMAGE_NAME }}
       build-type: ${{ Env.IMAGE_TYPE }}
       release-overrides:
-        VERSION: ${{ Env.VERSION }}
+        VERSION_ID: ${{ Env.VERSION }}
         IMAGE_ID: alt-atomic-core-minimal
         VARIANT: Minimal
         VARIANT_ID: minimal
