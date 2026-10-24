@@ -18,19 +18,32 @@ Known projects based on this image:
 
 ### Images
 
-`core/nightly:<date>`
-`core/nightly:<git-commit>`
-`core/nightly:latest`
+Main images:
 
-Built upon every change in the repository, using the main branch, and on a daily basis. Pull requests from this repository are published under the name core/pr:<PR number> for testing purposes.
+`core:latest`
+`core:<date>`
+`core:<git-commit>`
+`core-minimal:latest`
+`core-minimal:<date>`
+`core-minimal:<git-commit>`
 
-`core/stable:<date>`
-`core/stable:<git-tag>`
-`core/stable:<git-release>`
-`core/stable:<git-commit>`
+They are built for every push to `main` and once a day.
+
+Pull requests from this repository are published for testing as:
+
+`core/pr:<PR number>`
+`core-minimal/pr:<PR number>`
+
+Compatibility aliases for existing consumers:
+
 `core/stable:latest`
+`core/stable:<date>`
+`core/stable:<git-commit>`
+`core-minimal/stable:latest`
+`core-minimal/stable:<date>`
+`core-minimal/stable:<git-commit>`
 
-Built upon tag push. Also built daily using the latest tag and fresh date.
+The `/stable` aliases point to the same images as the canonical names.
 
 The OCI storage retains up to 50 versions of each image. Versions, except for latest, live for up to 30 days.
 

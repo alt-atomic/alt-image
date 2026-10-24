@@ -35,7 +35,6 @@ modules:
     type: branding
     body:
       name: alt-atomic-${{ Env.IMAGE_NAME }}
-      build-type: ${{ Env.IMAGE_TYPE }}
       release-overrides:
         VERSION: ${{ Env.VERSION }}
         IMAGE_ID: alt-atomic-core-minimal

@@ -3,7 +3,6 @@ ARG IMAGE
 FROM $IMAGE AS altbase
 
 ARG IMAGE
-ARG IMAGE_TYPE="nightly"
 ARG YEAR
 ARG MONTH
 ARG DAY
@@ -11,7 +10,6 @@ ARG VERSION
 
 ENV IMAGE_NAME="core"
 ENV IMAGE=$IMAGE
-ENV IMAGE_TYPE=$IMAGE_TYPE
 ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
@@ -21,9 +19,6 @@ ENV VERSION=$VERSION
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 RUN apt-get install -y apm bootc
-
-RUN --mount=type=bind,ro,source=./src/latest-apm.yml,target=/etc/apm/image.yml \
-    apm system image build
 
 # Needs for apm build validation
 RUN --mount=type=bind,ro,source=./src/install-includes.yml,target=/etc/apm/image.yml \

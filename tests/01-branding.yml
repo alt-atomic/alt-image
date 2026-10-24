@@ -1,5 +1,5 @@
 name: Branding
-description: /etc/os-release is self-consistent and matches the release type
+description: /etc/os-release is self-consistent and identifies a stable Core image
 
 steps:
   - name: os-release is a symlink to /usr/lib/os-release
@@ -9,20 +9,13 @@ steps:
   - name: ID names core
     run: . /etc/os-release && echo "$ID"
     expect:
-      stdout: "~^alt-atomic-core-(nightly|stable)$"
+      stdout: alt-atomic-core-stable
     on-fail: cat /etc/os-release
 
   - name: ID_LIKE contains altlinux
     run: . /etc/os-release && echo "$ID_LIKE"
     expect:
       stdout: altlinux
-
-  - name: nightly is marked as development
-    only:
-      RELEASE_TYPE: [ development ]
-    run: . /etc/os-release && echo "$ID $VERSION_ID"
-    expect:
-      stdout: "~-nightly"
 
   - name: stable is marked as stable
     only:

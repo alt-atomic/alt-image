@@ -1,4 +1,4 @@
-name: Build nightly images
+name: Build images
 
 on:
   workflow_dispatch:
@@ -13,9 +13,9 @@ on:
 env:
   REGISTRY: altlinux.space
 
-  PRETTY_NAME: ALT Atomic Core Nightly
+  PRETTY_NAME: ALT Atomic Core
   VENDOR: ALT Atomic Team
-  DESCRIPTION: Nightly Core image for ALT Atomic distros
+  DESCRIPTION: Core image for ALT Atomic distros
   LICENSES: GPL-3.0-or-later
   URL: alt-atomic.org
   AUTHORS: ALT Atomic Team
@@ -32,9 +32,9 @@ jobs:
       day: ${{ steps.date.outputs.day }}
       pretty-date: ${{ steps.date.outputs.pretty-date }}
       commit: ${{ steps.get_commit.outputs.commit }}
-      channel: ${{ github.event_name != 'pull_request' && 'nightly' || 'pr' }}
+      path: ${{ github.event_name == 'pull_request' && '/pr' || '' }}
       tag: ${{ github.event_name != 'pull_request' && 'latest' || github.event.pull_request.number }}
-      aliases: ${{ github.event_name != 'pull_request' && steps.date.outputs.date || '' }}
+      aliases: ${{ github.event_name != 'pull_request' && format('{0} {1}', steps.date.outputs.date, steps.get_commit.outputs.commit) || '' }}
 
     steps:
     - name: Get date
@@ -69,7 +69,7 @@ jobs:
     - name: Build minimal image
       uses: alt-atomic/actions/build-and-push@48ae7df7152c3c9b41fe8611cfa73b3d594a216b
       with:
-        image-name: ${{ format('{0}-minimal/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
+        image-name: ${{ format('{0}-minimal{1}/{2}', github.repository, needs.gather-build-data.outputs.path, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
@@ -93,7 +93,6 @@ jobs:
           YEAR=${{ needs.gather-build-data.outputs.year }}
           MONTH=${{ needs.gather-build-data.outputs.month }}
           DAY=${{ needs.gather-build-data.outputs.day }}
-          IMAGE_TYPE=nightly
           IMAGE=registry.altlinux.org/sisyphus/base:latest
           VERSION=${{ needs.gather-build-data.outputs.date }}
 
@@ -103,7 +102,7 @@ jobs:
     - name: Build default image
       uses: alt-atomic/actions/build-and-push@48ae7df7152c3c9b41fe8611cfa73b3d594a216b
       with:
-        image-name: ${{ format('{0}/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
+        image-name: ${{ format('{0}{1}/{2}', github.repository, needs.gather-build-data.outputs.path, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         arch: ${{ matrix.arch }}
@@ -127,7 +126,6 @@ jobs:
           YEAR=${{ needs.gather-build-data.outputs.year }}
           MONTH=${{ needs.gather-build-data.outputs.month }}
           DAY=${{ needs.gather-build-data.outputs.day }}
-          IMAGE_TYPE=nightly
           IMAGE=localhost/core-minimal
           VERSION=${{ needs.gather-build-data.outputs.date }}
 
@@ -158,9 +156,24 @@ jobs:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        image-name: ${{ format('{0}{1}/{2}', github.repository, matrix.suffix, needs.gather-build-data.outputs.channel) }}
+        image-name: ${{ format('{0}{1}{2}', github.repository, matrix.suffix, needs.gather-build-data.outputs.path) }}
         arch-tags: amd64 arm64
-        image-wildcard: ${{ format('{0}/{1}{2}/{3}/@ARCH@:{4}', env.REGISTRY, github.repository, matrix.suffix, needs.gather-build-data.outputs.channel, needs.gather-build-data.outputs.tag) }}
+        image-wildcard: ${{ format('{0}/{1}{2}{3}/@ARCH@:{4}', env.REGISTRY, github.repository, matrix.suffix, needs.gather-build-data.outputs.path, needs.gather-build-data.outputs.tag) }}
+        image-tag: ${{ needs.gather-build-data.outputs.tag }}
+        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
+        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
+        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+
+    - name: Create stable compatibility manifest
+      if: github.event_name != 'pull_request'
+      uses: alt-atomic/actions/create-manifest@0a7fd4632a415b0f4316c37d9be29325dbe32af9
+      with:
+        registry: ${{ env.REGISTRY }}
+        registry-username: "<token>"
+        registry-password: ${{ secrets.REGISTRY_TOKEN }}
+        image-name: ${{ format('{0}{1}/stable', github.repository, matrix.suffix) }}
+        arch-tags: amd64 arm64
+        image-wildcard: ${{ format('{0}/{1}{2}/@ARCH@:{3}', env.REGISTRY, github.repository, matrix.suffix, needs.gather-build-data.outputs.tag) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
