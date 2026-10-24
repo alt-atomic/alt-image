@@ -15,6 +15,7 @@ ENV IMAGE_TYPE=$IMAGE_TYPE
 ENV YEAR=$YEAR
 ENV MONTH=$MONTH
 ENV DAY=$DAY
+ENV VERSION=$VERSION
 
 RUN --mount=type=bind,ro,source=./src/default/image.yml,target=/etc/apm/image.yml \
     --mount=type=bind,ro,source=./src/default/resources,target=/etc/apm/resources \
