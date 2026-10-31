@@ -1,7 +1,7 @@
 name: core-minimal limits
 description: core-minimal does not pull in extras
 only:
-  VARIANT_ID: [ core-minimal ]
+  VERSION_ID: [ "~^[0-9]+-minimal$" ]
 steps:
   - name: no firmware-linux
     run: "! rpm -q firmware-linux"

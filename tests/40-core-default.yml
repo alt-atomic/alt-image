@@ -1,7 +1,7 @@
 name: core defaults
 description: What core adds on top of core-minimal
 only:
-  VARIANT_ID: [ core ]
+  VERSION_ID: [ "~^[0-9]+$" ]
 steps:
   - name: zram is active
     run: swapon --noheadings --show=NAME,TYPE
@@ -22,3 +22,14 @@ steps:
 
   - name: firmware-linux is installed
     run: rpm -q firmware-linux
+
+  - name: user namespaces are allowed
+    run: sysctl -n kernel.unprivileged_userns_clone 2>/dev/null || sysctl -n user.max_user_namespaces
+    expect:
+      stdout: "~^[1-9]"
+
+  - name: default services are enabled
+    only:
+      VERSION_ID: [ "~^[0-9]+$" ]
+    run: systemctl is-enabled libvirtd docker.socket systemd-oomd
+    on-fail: systemctl status libvirtd docker.socket systemd-oomd --no-pager | head -60

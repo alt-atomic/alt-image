@@ -9,7 +9,7 @@ steps:
   - name: ID names core
     run: . /etc/os-release && echo "$ID"
     expect:
-      stdout: "~^alt-atomic-core-(nightly|stable)$"
+      stdout: "~^org[.]alt_atomic[.]Core(-nightly)?$"
     on-fail: cat /etc/os-release
 
   - name: ID_LIKE contains altlinux

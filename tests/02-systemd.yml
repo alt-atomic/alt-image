@@ -29,12 +29,6 @@ steps:
     run: systemctl is-enabled bootloader-update chrony fstrim.timer NetworkManager podman.socket sync-users.service
     on-fail: systemctl status bootloader-update chrony NetworkManager podman.socket --no-pager | head -60
 
-  - name: default services are enabled
-    only:
-      VARIANT_ID: [ core ]
-    run: systemctl is-enabled libvirtd docker.socket systemd-oomd
-    on-fail: systemctl status libvirtd docker.socket systemd-oomd --no-pager | head -60
-
   - name: chrony and NetworkManager are active
     run: systemctl is-active chronyd NetworkManager
     wait: 60s
