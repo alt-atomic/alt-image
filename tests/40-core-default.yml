@@ -1,7 +1,7 @@
 name: core defaults
 description: What core adds on top of core-minimal
 only:
-  VERSION_ID: [ "~^[0-9]+$" ]
+  VERSION_ID: [ "^[0-9]+$" ]
 steps:
   - name: zram is active
     run: swapon --noheadings --show=NAME,TYPE
