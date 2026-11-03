@@ -35,8 +35,10 @@ modules:
 
         # Firmware
         - firmware-alsa-sof
+        - firmware-intel-ucode
         - firmware-linux
         - bolt
+        - iucode_tool
 
         # Graphic
         - fontconfig
