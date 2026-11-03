@@ -1,0 +1,20 @@
+name: D-Bus
+
+steps:
+  - name: system bus runs dbus-broker
+    run: |
+      test "$(systemctl show dbus.service --property=Id --value)" = dbus-broker.service &&
+      systemctl is-active dbus-broker.service
+    wait: 30s
+    on-fail: systemctl status dbus.service dbus-broker.service --no-pager; journalctl -b -u dbus-broker.service --no-pager -o cat
+
+  - name: system bus responds to requests
+    run: busctl --system call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus ListNames
+    expect:
+      stdout: org.freedesktop.DBus
+
+  - name: user buses use dbus-broker by default
+    run: |
+      test "$(basename "$(readlink -f /etc/systemd/user/dbus.service)")" = dbus-broker.service &&
+      systemctl --global is-enabled dbus-broker.service
+    on-fail: ls -l /etc/systemd/user/dbus.service; systemctl --global is-enabled dbus-broker.service
