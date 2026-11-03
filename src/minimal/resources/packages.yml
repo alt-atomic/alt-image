@@ -51,6 +51,7 @@ modules:
 
         # System
         - chrony
+        - dbus-broker
         - kbd
         - kbd-data
         - libselinux

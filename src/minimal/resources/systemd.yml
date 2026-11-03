@@ -12,3 +12,10 @@ modules:
         - podman.socket
         - sync-users.service
       enabled: true
+
+  - name: Enabling dbus-broker for system and user buses
+    type: shell
+    body:
+      command: |
+        systemctl enable --force dbus-broker.service
+        systemctl --global enable --force dbus-broker.service
