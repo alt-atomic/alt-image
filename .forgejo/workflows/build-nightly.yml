@@ -67,7 +67,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
     - name: Build minimal image
-      uses: alt-atomic/actions/build-and-push@48ae7df7152c3c9b41fe8611cfa73b3d594a216b
+      uses: alt-atomic/actions/build-and-push@f3be0be279429961a041cf03221640ddafb0f396
       with:
         image-name: ${{ format('{0}-minimal/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
@@ -113,6 +113,7 @@ jobs:
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         rechunk-enabled: false
+        sbom-attestation-enabled: true
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.date }}
