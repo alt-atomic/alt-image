@@ -35,10 +35,8 @@ modules:
 
         # Firmware
         - firmware-alsa-sof
-        - firmware-intel-ucode
         - firmware-linux
         - bolt
-        - iucode_tool
 
         # Graphic
         - fontconfig
@@ -57,3 +55,11 @@ modules:
         - open-vm-tools
         - qemu-guest-agent
         - virtiofsd
+
+  - name: Install x86_64 firmware packages
+    type: packages
+    if: Arch == 'x86_64'
+    body:
+      install:
+        - firmware-intel-ucode
+        - iucode_tool
