@@ -6,3 +6,11 @@ modules:
         - docker.socket
         - systemd-oomd
       enabled: true
+
+  - name: Enable journal consoles
+    type: systemd
+    body:
+      targets:
+        - kmsconvt@tty12.service
+        - kmsconvt@tty9.service
+      enabled: true
