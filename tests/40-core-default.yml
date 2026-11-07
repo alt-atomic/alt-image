@@ -33,3 +33,28 @@ steps:
       VERSION_ID: [ "~^[0-9]+$" ]
     run: systemctl is-enabled libvirtd docker.socket systemd-oomd
     on-fail: systemctl status libvirtd docker.socket systemd-oomd --no-pager | head -60
+
+  - name: journal consoles are enabled
+    run: systemctl is-enabled kmsconvt@tty12.service kmsconvt@tty9.service
+
+  - name: journal runs on the console selected for this machine
+    run: |
+      # Containers and serial-only machines cannot run a VT console.
+      if systemd-detect-virt --container --quiet || ! test -c /dev/tty0; then
+        exit 0
+      fi
+      if systemd-detect-virt --vm --quiet; then
+        selected=tty9
+        other=tty12
+      else
+        selected=tty12
+        other=tty9
+      fi
+      unit="kmsconvt@$selected.service"
+      systemctl is-active --quiet "$unit" &&
+      test "$(systemctl show -p ActiveState --value "kmsconvt@$other.service")" = inactive &&
+      pid=$(systemctl show -p MainPID --value "$unit") &&
+      test "$pid" -gt 0 &&
+      ps --ppid "$pid" -o args= | grep -F '/usr/bin/journalctl --boot --follow --no-pager'
+    wait: 30s
+    on-fail: systemctl status kmsconvt@tty9.service kmsconvt@tty12.service debug-shell.service --no-pager
