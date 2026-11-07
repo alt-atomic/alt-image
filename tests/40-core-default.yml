@@ -50,11 +50,18 @@ steps:
         selected=tty12
         other=tty9
       fi
+      # kmscon --no-switchvt starts its child only after VT activation.
+      previous=$(fgconsole) || exit 1
+      trap 'chvt "$previous"' EXIT
+      chvt "${selected#tty}" || exit 1
       unit="kmsconvt@$selected.service"
       systemctl is-active --quiet "$unit" &&
       test "$(systemctl show -p ActiveState --value "kmsconvt@$other.service")" = inactive &&
       pid=$(systemctl show -p MainPID --value "$unit") &&
       test "$pid" -gt 0 &&
-      ps --ppid "$pid" -o args= | grep -F '/usr/bin/journalctl --boot --follow --no-pager'
+      ps -ww --ppid "$pid" -o args= | grep -F '/usr/bin/journalctl --boot --follow --no-pager'
     wait: 30s
-    on-fail: systemctl status kmsconvt@tty9.service kmsconvt@tty12.service debug-shell.service --no-pager
+    on-fail: |
+      systemctl show kmsconvt@tty9.service kmsconvt@tty12.service -p Id -p ActiveState -p SubState -p MainPID -p Result
+      ps -ww -C kmscon,journalctl -o pid,ppid,args
+      journalctl -b -u kmsconvt@tty9.service -u kmsconvt@tty12.service --no-pager -n 15
