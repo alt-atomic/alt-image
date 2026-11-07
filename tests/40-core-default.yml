@@ -34,34 +34,25 @@ steps:
     run: systemctl is-enabled libvirtd docker.socket systemd-oomd
     on-fail: systemctl status libvirtd docker.socket systemd-oomd --no-pager | head -60
 
-  - name: journal consoles are enabled
-    run: systemctl is-enabled kmsconvt@tty12.service kmsconvt@tty9.service
+  - name: journal console on tty12 is enabled
+    run: systemctl is-enabled kmsconvt@tty12.service
 
-  - name: journal runs on the console selected for this machine
+  - name: journal runs on tty12 when activated
     run: |
-      # Containers and serial-only machines cannot run a VT console.
-      if systemd-detect-virt --container --quiet || ! test -c /dev/tty0; then
-        exit 0
-      fi
-      if systemd-detect-virt --vm --quiet; then
-        selected=tty9
-        other=tty12
-      else
-        selected=tty12
-        other=tty9
-      fi
-      # kmscon --no-switchvt starts its child only after VT activation.
-      previous=$(fgconsole) || exit 1
-      trap 'chvt "$previous"' EXIT
-      chvt "${selected#tty}" || exit 1
-      unit="kmsconvt@$selected.service"
-      systemctl is-active --quiet "$unit" &&
-      test "$(systemctl show -p ActiveState --value "kmsconvt@$other.service")" = inactive &&
-      pid=$(systemctl show -p MainPID --value "$unit") &&
-      test "$pid" -gt 0 &&
-      ps -ww --ppid "$pid" -o args= | grep -F '/usr/bin/journalctl --boot --follow --no-pager'
+      set -eu
+      unit=kmsconvt@tty12.service
+      systemctl is-active --quiet "$unit"
+
+      # kmscon starts journalctl only when its VT is activated.
+      previous=$(cat /sys/class/tty/tty0/active)
+      trap 'chvt "${previous#tty}"' EXIT
+      chvt 12
+
+      pid=$(systemctl show -p MainPID --value "$unit")
+      test "$pid" -gt 0
+      ps -ww --ppid "$pid" -o args= | grep -Fx '/usr/bin/journalctl --boot --follow --no-pager'
     wait: 30s
     on-fail: |
-      systemctl show kmsconvt@tty9.service kmsconvt@tty12.service -p Id -p ActiveState -p SubState -p MainPID -p Result
-      ps -ww -C kmscon,journalctl -o pid,ppid,args
-      journalctl -b -u kmsconvt@tty9.service -u kmsconvt@tty12.service --no-pager -n 15
+      systemctl status kmsconvt@tty12.service --no-pager -l
+      cat /sys/class/tty/tty0/active
+      journalctl -b -u kmsconvt@tty12.service -n 30 --no-pager

@@ -7,10 +7,9 @@ modules:
         - systemd-oomd
       enabled: true
 
-  - name: Enable journal consoles
+  - name: Enable journal console
     type: systemd
     body:
       targets:
         - kmsconvt@tty12.service
-        - kmsconvt@tty9.service
       enabled: true

@@ -1,0 +1,26 @@
+[Unit]
+Description=System journal on %I
+Documentation=man:kmscon(1)
+After=systemd-user-sessions.service
+After=plymouth-quit-wait.service
+After=rc-local.service
+After=systemd-vconsole-setup.service
+After=getty@%i.service
+Before=getty.target
+Conflicts=getty@%i.service
+IgnoreOnIsolate=yes
+ConditionPathExists=/dev/tty0
+ConditionVirtualization=!container
+
+[Service]
+ExecStart=/usr/bin/kmscon --vt=%I --no-switchvt --oneshot --login -- /usr/bin/journalctl --boot --follow --no-pager
+Restart=always
+RestartSec=2s
+UtmpIdentifier=%I
+TTYPath=/dev/%I
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+
+[Install]
+WantedBy=getty.target
