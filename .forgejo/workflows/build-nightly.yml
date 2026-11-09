@@ -39,7 +39,7 @@ jobs:
     steps:
     - name: Get date
       id: date
-      uses: alt-atomic/actions/parse-date@main
+      uses: alt-atomic/actions/parse-date@916bd6b5ffbdaa0e2079c1e02180f72b01990a32
 
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -67,7 +67,7 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
     - name: Build minimal image
-      uses: alt-atomic/actions/build-and-push@f3be0be279429961a041cf03221640ddafb0f396
+      uses: alt-atomic/actions/build-and-push@916bd6b5ffbdaa0e2079c1e02180f72b01990a32
       with:
         image-name: ${{ format('{0}-minimal/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
@@ -101,7 +101,7 @@ jobs:
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
     - name: Build default image
-      uses: alt-atomic/actions/build-and-push@48ae7df7152c3c9b41fe8611cfa73b3d594a216b
+      uses: alt-atomic/actions/build-and-push@916bd6b5ffbdaa0e2079c1e02180f72b01990a32
       with:
         image-name: ${{ format('{0}/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
@@ -154,7 +154,7 @@ jobs:
 
     steps:
     - name: Create manifest
-      uses: alt-atomic/actions/create-manifest@0a7fd4632a415b0f4316c37d9be29325dbe32af9
+      uses: alt-atomic/actions/create-manifest@916bd6b5ffbdaa0e2079c1e02180f72b01990a32
       with:
         registry: ${{ env.REGISTRY }}
         registry-username: "<token>"
