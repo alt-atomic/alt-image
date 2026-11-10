@@ -63,7 +63,7 @@ modules:
         - sfdisk
         - systemd
         - libnss-altfiles
-        - polkit-rule-wheel-admin
+        - polkit-default-rules
         - systemd-resolved
         - libnss-resolve
 
