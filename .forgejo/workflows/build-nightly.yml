@@ -66,9 +66,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-    - name: Build minimal image
+    - &build-and-push
+      name: Build minimal image
       uses: alt-atomic/actions/build-and-push@fed21a21ea3491b4e2a5a24100d10885ed7daa48
-      with:
+      with: &build-and-push-minimal-args
         image-name: ${{ format('{0}-minimal/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
         image-tag: ${{ needs.gather-build-data.outputs.tag }}
         image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
@@ -79,6 +80,7 @@ jobs:
         registry-password: ${{ secrets.REGISTRY_TOKEN }}
         push-enabled: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         rechunk-enabled: false
+        sbom-attestation-enabled: true
 
         pretty-name: ${{ env.PRETTY_NAME }}
         version: ${{ needs.gather-build-data.outputs.date }}
@@ -100,29 +102,14 @@ jobs:
         cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
         cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
-    - name: Build default image
-      uses: alt-atomic/actions/build-and-push@fed21a21ea3491b4e2a5a24100d10885ed7daa48
+    - <<: *build-and-push
+      name: Build default image
       with:
+        <<: *build-and-push-minimal-args
         image-name: ${{ format('{0}/{1}/{2}', github.repository, needs.gather-build-data.outputs.channel, matrix.arch) }}
-        image-tag: ${{ needs.gather-build-data.outputs.tag }}
-        image-aliases: ${{ needs.gather-build-data.outputs.aliases }}
-        arch: ${{ matrix.arch }}
+        
         containerfile-path: ./container-files/main-default
         local-build-name: localhost/core
-
-        registry-password: ${{ secrets.REGISTRY_TOKEN }}
-        push-enabled: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-        rechunk-enabled: false
-        sbom-attestation-enabled: true
-
-        pretty-name: ${{ env.PRETTY_NAME }}
-        version: ${{ needs.gather-build-data.outputs.date }}
-        vendor: ${{ env.VENDOR }}
-        description: ${{ env.DESCRIPTION }}
-        licenses: ${{ env.LICENSES }}
-        url: ${{ env.URL }}
-        authors: ${{ env.AUTHORS }}
-        repo-date: ${{ needs.gather-build-data.outputs.pretty-date }}
 
         build-args: |
           YEAR=${{ needs.gather-build-data.outputs.year }}
@@ -131,9 +118,6 @@ jobs:
           IMAGE_TYPE=nightly
           IMAGE=localhost/core-minimal
           VERSION=${{ needs.gather-build-data.outputs.date }}
-
-        cosign-image-sign: ${{ secrets.IMAGE_SIGN }}
-        cosign-password: ${{ secrets.COSIGN_PASSWORD }}
 
   manifest:
     name: Multiarch ${{ matrix.name }} manifest push
