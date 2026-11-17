@@ -63,3 +63,10 @@ modules:
       install:
         - firmware-intel-ucode
         - iucode_tool
+
+  - name: Install aarch64 firmware packages
+    type: packages
+    if: Arch == 'aarch64'
+    body:
+      install:
+        - firmware-linux-qcom
