@@ -22,54 +22,10 @@ modules:
       upgrade: true
 
   - name: Set branding
-    type: branding
+    type: include
     body:
-      name: alt-atomic-${{ Env.IMAGE_NAME }}
-      build-type: ${{ Env.IMAGE_TYPE }}
-      release-overrides:
-        VERSION_ID: ${{ Env.VERSION }}
-        VARIANT: Minimal
-        VARIANT_ID: minimal
-      metainfo:
-        summary:
-          C: ALT Atomic base image (${{ Env.IMAGE_TYPE }})
-          ru: Базовый образ ALT Atomic (${{ Env.IMAGE_TYPE }})
-        description:
-          C: |
-            <p>Doesn't contain a desktop environment.</p>
-            <p>Not designed for end use.</p>
-          ru: |
-            <p>Не содержит окружения рабочего стола.</p>
-            <p>Не предназначен для конечного использования.</p>
-        variants:
-          - image: altlinux.space/alt-atomic/core-minimal/${{ Env.IMAGE_TYPE }}:latest
-            name:
-              C: ALT Atomic Core Minimal
-              ru: ALT Atomic Core Минимальный
-            summary:
-              C: Minimal variant of Core image
-              ru: Минимальный вариант Core образа
-            description:
-              C: |
-                <p>It contains only the essentials and may require improvements to work on real hardware.</p>
-                <p>Doesn't contain Linux firmware.</p>
-              ru: |
-                <p>Он содержит только самое необходимое и может требовать доработок для работы на реальном железе.</p>
-                <p>Не содержит прошивки Linux.</p>
-          - image: altlinux.space/alt-atomic/core/${{ Env.IMAGE_TYPE }}:latest
-            name:
-              C: ALT Atomic Core
-              ru: ALT Atomic Core
-            summary:
-              C: Default variant of Core image
-              ru: Обычный вариант Core образа
-            description:
-              C: |
-                <p>The minimum image that can already be run on hardware.</p>
-                <p>It is a recommended base for end-user images.</p>
-              ru: |
-                <p>Минимальный образ, который уже можно запустить на оборудовании.</p>
-                <p>Это рекомендуемая основа для образов конечных пользователей.</p>
+      targets:
+        - branding.yml
 
   - name: Install packages
     type: include
