@@ -7,6 +7,7 @@ modules:
     body:
       clean: true
       date: ${{ Env.YEAR }}/${{ Env.MONTH }}/${{ Env.DAY }}
+      branch: sisyphus
 
   - name: Initial includes
     type: include
