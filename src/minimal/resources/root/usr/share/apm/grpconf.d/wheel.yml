@@ -1,7 +1,6 @@
 sync:
   groups:
     - wheel
-    - docker
     - libvirt
   users:
     - uid: 1000
