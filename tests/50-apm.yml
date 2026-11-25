@@ -1,0 +1,17 @@
+name: APM
+
+steps:
+  - name: APM reads the booted image status
+    run: apm system image status
+
+  - name: Install hello through APM
+    run: |
+      ! rpm -q --quiet hello &&
+      apm system install -y hello
+
+  - name: The installed hello package runs
+    run: rpm -q hello && hello
+    continue: true
+
+  - name: Remove the test package
+    run: apm system remove -y hello
