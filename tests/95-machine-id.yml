@@ -1,0 +1,19 @@
+name: Machine and boot IDs
+
+steps:
+  - name: The image ships an empty machine-id
+    run: test -f /usr/etc/machine-id && test ! -s /usr/etc/machine-id
+
+  - name: The installed machine ID is valid
+    run: systemd-id128 machine-id >/dev/null
+
+  - name: Save the machine ID before reboot
+    run: install -m 600 -T /etc/machine-id /var/tmp/atomvm-machine-id
+
+  - name: Reboot and wait for a new boot ID
+    reboot: true
+
+  - name: The machine ID survives reboot
+    run: |
+      trap 'rm -f /var/tmp/atomvm-machine-id' EXIT
+      cmp /var/tmp/atomvm-machine-id /etc/machine-id
