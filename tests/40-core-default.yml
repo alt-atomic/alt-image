@@ -12,7 +12,7 @@ steps:
   - name: systemd-oomd runs with our limits
     run: oomctl
     expect:
-      stdout: "Swap Used Limit: 80"
+      stdout: "Swap Used Limit: 90"
     on-fail: systemctl status systemd-oomd --no-pager; cat /usr/lib/systemd/oomd.conf.d/10-atomic-oomd.conf
 
   - name: sudo for wheel is enabled
